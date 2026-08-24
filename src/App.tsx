@@ -6,27 +6,11 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { Partnership } from './components/Partnership';
-import { Journey } from './components/Journey';
-import { SeasonTimeline } from './components/SeasonTimeline';
-import { ProgramFLL } from './components/ProgramFLL';
-import { ProgramFTC } from './components/ProgramFTC';
-import { ProgramFRC } from './components/ProgramFRC';
-import { ProgramComparator } from './components/ProgramComparator';
+import { HomePage } from './components/HomePage';
 import { Footer } from './components/Footer';
 import { NotFoundPage } from './components/NotFoundPage';
 
 const ProgramDetailPage = lazy(() => import('./components/ProgramDetailPage').then(m => ({ default: m.ProgramDetailPage })));
-const BeyondRobots = lazy(() => import('./components/BeyondRobots').then(m => ({ default: m.BeyondRobots })));
-const ArenaGallery = lazy(() => import('./components/ArenaGallery').then(m => ({ default: m.ArenaGallery })));
-const ImpactStats = lazy(() => import('./components/ImpactStats').then(m => ({ default: m.ImpactStats })));
-const BrazilMapSection = lazy(() => import('./components/BrazilMapSection').then(m => ({ default: m.BrazilMapSection })));
-const EventsSection = lazy(() => import('./components/EventsSection').then(m => ({ default: m.EventsSection })));
-const TestimonialsSection = lazy(() => import('./components/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })));
-const NewsSection = lazy(() => import('./components/NewsSection').then(m => ({ default: m.NewsSection })));
-const FaqSection = lazy(() => import('./components/FaqSection').then(m => ({ default: m.FaqSection })));
-const FinalCta = lazy(() => import('./components/FinalCta').then(m => ({ default: m.FinalCta })));
 const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
@@ -54,7 +38,9 @@ const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description
 };
 
 const LoadingBlock = () => (
-  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite"><span className="text-sm font-semibold">Carregando conteúdo…</span></div>
+  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite">
+    <span className="text-sm font-semibold">Carregando conteúdo…</span>
+  </div>
 );
 
 export function AppContent() {
@@ -69,7 +55,7 @@ export function AppContent() {
     const syncRoute = () => {
       setActiveProgramPage(getProgramFromLocation());
       setNotFound(isUnknownPath());
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!window.location.hash) window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     window.addEventListener('popstate', syncRoute);
     window.addEventListener('hashchange', syncRoute);
@@ -134,6 +120,7 @@ export function AppContent() {
     setNotFound(isUnknownPath());
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
   const handleOpenParticipation = (tabOrProgram?: string) => {
     setParticipationInitialTab(tabOrProgram);
     setIsParticipationOpen(true);
@@ -141,35 +128,30 @@ export function AppContent() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
-      <Header isProgramPage={Boolean(activeProgramPage) || notFound} onNavigateHome={() => navigateTo('/')} onOpenProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={() => handleOpenParticipation()} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+      <Header
+        isProgramPage={Boolean(activeProgramPage) || notFound}
+        onNavigateHome={() => navigateTo('/')}
+        onOpenProgram={(program) => navigateTo(`/program/${program}`)}
+        onOpenParticipation={() => handleOpenParticipation()}
+        onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
+      />
+
       {notFound ? (
         <NotFoundPage onNavigateHome={() => navigateTo('/')} />
       ) : activeProgramPage ? (
-        <Suspense fallback={<LoadingBlock />}><ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} /></Suspense>
+        <Suspense fallback={<LoadingBlock />}>
+          <ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} />
+        </Suspense>
       ) : (
-        <main id="conteudo-principal">
-          <Hero onOpenParticipation={() => handleOpenParticipation()} />
-          <Partnership />
-          <Journey />
-          <SeasonTimeline />
-          <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
-          <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
-          <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
-          <ProgramComparator onSelectProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={(program) => handleOpenParticipation(program)} />
-          <Suspense fallback={<LoadingBlock />}>
-            <BeyondRobots />
-            <ArenaGallery />
-            <ImpactStats />
-            <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-            <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-            <TestimonialsSection />
-            <NewsSection />
-            <FaqSection />
-            <FinalCta onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
-          </Suspense>
-        </main>
+        <HomePage
+          onNavigateProgram={(program) => navigateTo(`/program/${program}`)}
+          onOpenParticipation={handleOpenParticipation}
+          onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
+        />
       )}
+
       <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} />
+
       <Suspense fallback={null}>
         {isParticipationOpen && <ParticipationModal isOpen={isParticipationOpen} onClose={() => setIsParticipationOpen(false)} initialTab={participationInitialTab} />}
         {isTeamFinderOpen && <TeamFinderModal isOpen={isTeamFinderOpen} onClose={() => setIsTeamFinderOpen(false)} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
