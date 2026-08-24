@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -14,20 +14,21 @@ import { ProgramFLL } from './components/ProgramFLL';
 import { ProgramFTC } from './components/ProgramFTC';
 import { ProgramFRC } from './components/ProgramFRC';
 import { ProgramComparator } from './components/ProgramComparator';
-import { ProgramDetailPage } from './components/ProgramDetailPage';
-import { BeyondRobots } from './components/BeyondRobots';
-import { ArenaGallery } from './components/ArenaGallery';
-import { ImpactStats } from './components/ImpactStats';
-import { BrazilMapSection } from './components/BrazilMapSection';
-import { EventsSection } from './components/EventsSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
-import { NewsSection } from './components/NewsSection';
-import { FaqSection } from './components/FaqSection';
-import { FinalCta } from './components/FinalCta';
 import { Footer } from './components/Footer';
-import { ProgramQuizModal } from './components/ProgramQuizModal';
-import { ParticipationModal } from './components/ParticipationModal';
-import { TeamFinderModal } from './components/TeamFinderModal';
+
+const ProgramDetailPage = lazy(() => import('./components/ProgramDetailPage').then(m => ({ default: m.ProgramDetailPage })));
+const BeyondRobots = lazy(() => import('./components/BeyondRobots').then(m => ({ default: m.BeyondRobots })));
+const ArenaGallery = lazy(() => import('./components/ArenaGallery').then(m => ({ default: m.ArenaGallery })));
+const ImpactStats = lazy(() => import('./components/ImpactStats').then(m => ({ default: m.ImpactStats })));
+const BrazilMapSection = lazy(() => import('./components/BrazilMapSection').then(m => ({ default: m.BrazilMapSection })));
+const EventsSection = lazy(() => import('./components/EventsSection').then(m => ({ default: m.EventsSection })));
+const TestimonialsSection = lazy(() => import('./components/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })));
+const NewsSection = lazy(() => import('./components/NewsSection').then(m => ({ default: m.NewsSection })));
+const FaqSection = lazy(() => import('./components/FaqSection').then(m => ({ default: m.FaqSection })));
+const FinalCta = lazy(() => import('./components/FinalCta').then(m => ({ default: m.FinalCta })));
+const ProgramQuizModal = lazy(() => import('./components/ProgramQuizModal').then(m => ({ default: m.ProgramQuizModal })));
+const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
+const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
 
@@ -37,7 +38,6 @@ const getProgramFromLocation = (): ProgramRoute => {
   const pathMatch = window.location.pathname.match(/^\/program\/(fll|ftc|frc)\/?$/i);
   if (pathMatch) return pathMatch[1].toLowerCase() as ProgramRoute;
 
-  // Backward compatibility with old hash links.
   const hashMatch = window.location.hash.match(/^#\/program\/(fll|ftc|frc)$/i);
   return hashMatch ? (hashMatch[1].toLowerCase() as ProgramRoute) : null;
 };
@@ -45,17 +45,23 @@ const getProgramFromLocation = (): ProgramRoute => {
 const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string }> = {
   fll: {
     title: 'FIRST® LEGO® League | FIRST + SENAI',
-    description: 'Conheça a FIRST LEGO League, o programa de robótica e STEM para jovens, com desafios práticos, inovação e trabalho em equipe.'
+    description: 'Conheça a FIRST LEGO League, programa de robótica e STEM com desafios práticos, inovação e trabalho em equipe.'
   },
   ftc: {
     title: 'FIRST® Tech Challenge | FIRST + SENAI',
-    description: 'Conheça a FIRST Tech Challenge: engenharia aplicada, programação e robôs competitivos para estudantes de 12 a 18 anos.'
+    description: 'Conheça a FIRST Tech Challenge: engenharia aplicada, programação e robôs competitivos para estudantes.'
   },
   frc: {
     title: 'FIRST® Robotics Competition | FIRST + SENAI',
-    description: 'Conheça a FIRST Robotics Competition: engenharia em grande escala, software, estratégia e colaboração para estudantes do ensino médio.'
+    description: 'Conheça a FIRST Robotics Competition: engenharia em grande escala, software, estratégia e colaboração.'
   }
 };
+
+const LoadingBlock = () => (
+  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite">
+    <span className="text-sm font-semibold">Carregando conteúdo…</span>
+  </div>
+);
 
 export function AppContent() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -66,15 +72,13 @@ export function AppContent() {
 
   useEffect(() => {
     const syncRoute = () => {
-      const route = getProgramFromLocation();
-      setActiveProgramPage(route);
+      setActiveProgramPage(getProgramFromLocation());
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.addEventListener('popstate', syncRoute);
     window.addEventListener('hashchange', syncRoute);
 
-    // Migrate old hash program URLs to real paths.
     const initialRoute = getProgramFromLocation();
     if (initialRoute && window.location.hash.startsWith('#/program/')) {
       window.history.replaceState({}, '', `/program/${initialRoute}`);
@@ -134,18 +138,17 @@ export function AppContent() {
       />
 
       {activeProgramPage ? (
-        <ProgramDetailPage
-          program={activeProgramPage}
-          onNavigateHome={() => navigateTo('/')}
-          onOpenParticipation={(program) => handleOpenParticipation(program)}
-          onOpenQuiz={() => setIsQuizOpen(true)}
-        />
+        <Suspense fallback={<LoadingBlock />}>
+          <ProgramDetailPage
+            program={activeProgramPage}
+            onNavigateHome={() => navigateTo('/')}
+            onOpenParticipation={(program) => handleOpenParticipation(program)}
+            onOpenQuiz={() => setIsQuizOpen(true)}
+          />
+        </Suspense>
       ) : (
         <main id="conteudo-principal">
-          <Hero
-            onOpenQuiz={() => setIsQuizOpen(true)}
-            onOpenParticipation={() => handleOpenParticipation()}
-          />
+          <Hero onOpenQuiz={() => setIsQuizOpen(true)} onOpenParticipation={() => handleOpenParticipation()} />
           <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
           <Journey onOpenQuiz={() => setIsQuizOpen(true)} />
           <SeasonTimeline />
@@ -157,44 +160,49 @@ export function AppContent() {
             onSelectProgram={(program) => navigateTo(`/program/${program}`)}
             onOpenParticipation={(program) => handleOpenParticipation(program)}
           />
-          <BeyondRobots />
-          <ArenaGallery />
-          <ImpactStats />
-          <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-          <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-          <TestimonialsSection />
-          <NewsSection />
-          <FaqSection />
-          <FinalCta
-            onOpenParticipation={(tab) => handleOpenParticipation(tab)}
-            onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
-          />
+          <Suspense fallback={<LoadingBlock />}>
+            <BeyondRobots />
+            <ArenaGallery />
+            <ImpactStats />
+            <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
+            <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
+            <TestimonialsSection />
+            <NewsSection />
+            <FaqSection />
+            <FinalCta
+              onOpenParticipation={(tab) => handleOpenParticipation(tab)}
+              onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
+            />
+          </Suspense>
         </main>
       )}
 
-      <Footer
-        onOpenParticipation={(tab) => handleOpenParticipation(tab)}
-        onOpenQuiz={() => setIsQuizOpen(true)}
-      />
+      <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenQuiz={() => setIsQuizOpen(true)} />
 
-      <ProgramQuizModal
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
-        onSelectProgram={handleSelectProgramFromQuiz}
-        onOpenParticipation={(program) => handleOpenParticipation(program)}
-      />
-
-      <ParticipationModal
-        isOpen={isParticipationOpen}
-        onClose={() => setIsParticipationOpen(false)}
-        initialTab={participationInitialTab}
-      />
-
-      <TeamFinderModal
-        isOpen={isTeamFinderOpen}
-        onClose={() => setIsTeamFinderOpen(false)}
-        onOpenParticipation={(program) => handleOpenParticipation(program)}
-      />
+      <Suspense fallback={null}>
+        {isQuizOpen && (
+          <ProgramQuizModal
+            isOpen={isQuizOpen}
+            onClose={() => setIsQuizOpen(false)}
+            onSelectProgram={handleSelectProgramFromQuiz}
+            onOpenParticipation={(program) => handleOpenParticipation(program)}
+          />
+        )}
+        {isParticipationOpen && (
+          <ParticipationModal
+            isOpen={isParticipationOpen}
+            onClose={() => setIsParticipationOpen(false)}
+            initialTab={participationInitialTab}
+          />
+        )}
+        {isTeamFinderOpen && (
+          <TeamFinderModal
+            isOpen={isTeamFinderOpen}
+            onClose={() => setIsTeamFinderOpen(false)}
+            onOpenParticipation={(program) => handleOpenParticipation(program)}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }
