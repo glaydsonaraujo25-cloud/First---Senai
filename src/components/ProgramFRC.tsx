@@ -11,7 +11,7 @@ export const ProgramFRC: React.FC<ProgramFRCProps> = ({ onOpenParticipation }) =
   const highlights = ['Engenharia mecânica, elétrica e software', 'Integração e validação de sistemas', 'Estratégia e operação em alianças', 'Gestão, liderança e comunicação'];
 
   return (
-    <section id="frc" className={`py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-950 border-slate-200'}`}>
+    <section id="frc" className={`scroll-mt-24 py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-950 border-slate-200'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-7">
