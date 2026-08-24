@@ -31,10 +31,10 @@ const isUnknownPath = () => {
   return path !== '/' && !/^\/program\/(fll|ftc|frc)$/i.test(path);
 };
 
-const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string }> = {
-  fll: { title: 'FIRST® LEGO® League | SENAI-DF', description: 'Conheça a FIRST LEGO League com foco no contexto educacional do SENAI-DF e nas oportunidades de robótica no Distrito Federal.' },
-  ftc: { title: 'FIRST® Tech Challenge | SENAI-DF', description: 'Conheça a FIRST Tech Challenge com foco em engenharia, programação e formação tecnológica no contexto do SENAI-DF.' },
-  frc: { title: 'FIRST® Robotics Competition | SENAI-DF', description: 'Conheça a FIRST Robotics Competition e sua conexão com engenharia, software, estratégia e formação tecnológica no Distrito Federal.' }
+const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string; name: string; audience: string }> = {
+  fll: { title: 'FIRST® LEGO® League | SENAI-DF', description: 'Conheça a FIRST LEGO League com foco no contexto educacional do SENAI-DF e nas oportunidades de robótica no Distrito Federal.', name: 'FIRST LEGO League', audience: 'Estudantes em fase de descoberta e fundamentos STEM' },
+  ftc: { title: 'FIRST® Tech Challenge | SENAI-DF', description: 'Conheça a FIRST Tech Challenge com foco em engenharia, programação e formação tecnológica no contexto do SENAI-DF.', name: 'FIRST Tech Challenge', audience: 'Estudantes interessados em engenharia aplicada, software e competição' },
+  frc: { title: 'FIRST® Robotics Competition | SENAI-DF', description: 'Conheça a FIRST Robotics Competition e sua conexão com engenharia, software, estratégia e formação tecnológica no Distrito Federal.', name: 'FIRST Robotics Competition', audience: 'Estudantes do ensino médio interessados em engenharia multidisciplinar' }
 };
 
 const LoadingBlock = () => (
@@ -96,6 +96,44 @@ export function AppContent() {
     twitterTitle?.setAttribute('content', meta.title);
     twitterDescription?.setAttribute('content', meta.description);
     canonical?.setAttribute('href', currentUrl);
+  }, [activeProgramPage, notFound]);
+
+  useEffect(() => {
+    const scriptId = 'program-page-structured-data';
+    document.getElementById(scriptId)?.remove();
+    if (!activeProgramPage || notFound) return;
+
+    const meta = pageMeta[activeProgramPage];
+    const url = `${SITE_URL}/program/${activeProgramPage}`;
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${url}#webpage`,
+          url,
+          name: meta.title,
+          description: meta.description,
+          inLanguage: 'pt-BR',
+          isPartOf: { '@id': `${SITE_URL}/#website` },
+          about: { '@type': 'Thing', name: meta.name },
+          audience: { '@type': 'EducationalAudience', educationalRole: meta.audience }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Início', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Programas', item: `${SITE_URL}/#fll` },
+            { '@type': 'ListItem', position: 3, name: meta.name, item: url }
+          ]
+        }
+      ]
+    });
+    document.head.appendChild(script);
+    return () => script.remove();
   }, [activeProgramPage, notFound]);
 
   useEffect(() => {
