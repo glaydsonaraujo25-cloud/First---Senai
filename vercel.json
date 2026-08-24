@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/program/:path*", "destination": "/index.html" }
+  ]
+}
