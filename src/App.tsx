@@ -32,12 +32,12 @@ const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
 
+const SITE_URL = 'https://first-senai.vercel.app';
+
 const getProgramFromLocation = (): ProgramRoute => {
   if (typeof window === 'undefined') return null;
-
   const pathMatch = window.location.pathname.match(/^\/program\/(fll|ftc|frc)\/?$/i);
   if (pathMatch) return pathMatch[1].toLowerCase() as ProgramRoute;
-
   const hashMatch = window.location.hash.match(/^#\/program\/(fll|ftc|frc)$/i);
   return hashMatch ? (hashMatch[1].toLowerCase() as ProgramRoute) : null;
 };
@@ -69,6 +69,7 @@ export function AppContent() {
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
   const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
   const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
+  const isAnyModalOpen = isQuizOpen || isParticipationOpen || isTeamFinderOpen;
 
   useEffect(() => {
     const syncRoute = () => {
@@ -93,15 +94,48 @@ export function AppContent() {
 
   useEffect(() => {
     const metaDescription = document.querySelector('meta[name="description"]');
-    if (activeProgramPage) {
-      const meta = pageMeta[activeProgramPage];
-      document.title = meta.title;
-      metaDescription?.setAttribute('content', meta.description);
-    } else {
-      document.title = 'FIRST® + SENAI | Robótica, Educação STEM e Inovação';
-      metaDescription?.setAttribute('content', 'Conheça FLL, FTC e FRC e explore uma experiência educacional sobre robótica, STEM, engenharia e inovação.');
-    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    const canonical = document.querySelector('link[rel="canonical"]');
+
+    const defaultTitle = 'FIRST® + SENAI | Robótica, Educação STEM e Inovação';
+    const defaultDescription = 'Conheça FLL, FTC e FRC e explore uma experiência educacional sobre robótica, STEM, engenharia e inovação.';
+    const meta = activeProgramPage ? pageMeta[activeProgramPage] : { title: defaultTitle, description: defaultDescription };
+    const path = activeProgramPage ? `/program/${activeProgramPage}` : '/';
+    const currentUrl = `${SITE_URL}${path}`;
+
+    document.title = meta.title;
+    metaDescription?.setAttribute('content', meta.description);
+    ogTitle?.setAttribute('content', meta.title);
+    ogDescription?.setAttribute('content', meta.description);
+    ogUrl?.setAttribute('content', currentUrl);
+    twitterTitle?.setAttribute('content', meta.title);
+    twitterDescription?.setAttribute('content', meta.description);
+    canonical?.setAttribute('href', currentUrl);
   }, [activeProgramPage]);
+
+  useEffect(() => {
+    if (!isAnyModalOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (isParticipationOpen) setIsParticipationOpen(false);
+      else if (isTeamFinderOpen) setIsTeamFinderOpen(false);
+      else if (isQuizOpen) setIsQuizOpen(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isAnyModalOpen, isParticipationOpen, isQuizOpen, isTeamFinderOpen]);
 
   const navigateTo = (path: string) => {
     window.history.pushState({}, '', path);
