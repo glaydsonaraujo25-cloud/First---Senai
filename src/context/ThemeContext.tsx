@@ -11,22 +11,23 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = 'first_senai_theme';
+// v2 intentionally resets the previous default so existing visitors receive
+// the new light-first experience once, while future manual choices persist.
+const THEME_STORAGE_KEY = 'first_senai_theme_v2';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Check localStorage first
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-      if (savedTheme === 'light' || savedTheme === 'dark') {
-        return savedTheme;
-      }
-      // Check system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'light';
+      try {
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
+        if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+      } catch (e) {
+        console.warn('Unable to read theme from localStorage', e);
       }
     }
-    return 'dark';
+
+    // Light is the product default. Dark mode remains available through the toggle.
+    return 'light';
   });
 
   useEffect(() => {
