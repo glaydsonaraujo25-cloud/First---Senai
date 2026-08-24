@@ -1,170 +1,62 @@
 import React from 'react';
-import { 
-  Bot, 
-  Flame, 
-  Cpu, 
-  Radio, 
-  ArrowRight, 
-  CheckCircle2, 
-  Zap, 
-  ShieldAlert, 
-  Award,
-  Factory,
-  Compass
-} from 'lucide-react';
+import { ArrowRight, Bot, CheckCircle2, ExternalLink, Leaf, Sparkles } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface ProgramFRCProps {
   onOpenParticipation: (program?: string) => void;
 }
 
 export const ProgramFRC: React.FC<ProgramFRCProps> = ({ onOpenParticipation }) => {
-  const highlights = [
-    { title: 'Engenharia Mecânica', desc: 'Usinagem CNC, corte a laser e cálculo de tensões em perfis estruturais' },
-    { title: 'Eletrônica & Pneumática', desc: 'Sistemas pneumáticos de 120 PSI, barramentos CAN e sensores de alta taxa' },
-    { title: 'Programação Avançada', desc: 'C++ e Java com WPILib, controle PID multivariável e visão PhotonVision' },
-    { title: 'Tração Swerve Drive', desc: 'Módulos de 360° com motores brushless independentes em cada roda' },
-    { title: 'Gestão de Projetos & Pits', desc: 'Operação como uma empresa de alta tecnologia com orçamento, mídia e captação' },
-    { title: 'Liderança & Coopertition®', desc: 'Negociação em tempo real de estratégias com alianças de diferentes países' }
-  ];
-
-  const scaleStats = [
-    { value: '56 kg', label: 'PESO MÁXIMO DO ROBÔ', note: 'Escala industrial real' },
-    { value: '1,5 m', label: 'ALTURA ESTRUTURAL', note: 'Com elevadores e braços' },
-    { value: '16 × 8 m', label: 'DIMENSÃO DA ARENA', note: 'Piso de carpete com grids' },
-    { value: '3 vs 3', label: 'ALIANÇAS EM QUADRA', note: 'Partidas de alta velocidade' }
-  ];
+  const { isDark } = useTheme();
+  const highlights = ['Engenharia mecânica, elétrica e software', 'Integração e validação de sistemas', 'Estratégia e operação em alianças', 'Gestão, liderança e comunicação'];
 
   return (
-    <section id="frc" className="py-24 bg-slate-950 text-white relative overflow-hidden border-t border-slate-800">
-      {/* Background High Energy Glows */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-10 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute inset-0 tech-grid-dark opacity-50 pointer-events-none"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Header Badges */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="px-3.5 py-1 text-xs font-black uppercase tracking-wider bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md shadow-lg">
-            FIRST® ROBOTICS COMPETITION
-          </span>
-          <span className="text-xs font-semibold text-blue-300 bg-blue-950/80 border border-blue-800 px-2.5 py-1 rounded">
-            14 a 19 anos • Ensino Médio, Técnico SENAI e Integrado
-          </span>
-          <span className="text-xs font-mono font-bold text-amber-400 bg-amber-950/60 border border-amber-800/80 px-2.5 py-1 rounded hidden sm:inline">
-            ★ MAIOR DESAFIO ESTUDANTIL DO MUNDO
-          </span>
-        </div>
-
-        {/* Section Headline */}
-        <div className="max-w-3xl mb-12">
-          <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase mb-4 font-mono-tech">
-            Engenharia em escala real.
-          </h2>
-          <p className="text-base sm:text-xl text-slate-300 leading-relaxed">
-            Uma experiência avançada de engenharia e tecnologia industrial, na qual estudantes trabalham lado a lado com mentores da indústria para desenvolver robôs de grande porte para desafios competitivos globais.
-          </p>
-        </div>
-
-        {/* Panoramic Arena Showcase */}
-        <div className="relative rounded-2xl overflow-hidden border-2 border-blue-500/40 shadow-2xl mb-14 group">
-          <img 
-            src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=2000&q=80" 
-            alt="Arena panorâmica gigante do FIRST Robotics Competition com milhares de espectadores e robôs em ação"
-            className="w-full h-80 sm:h-[450px] object-cover object-center group-hover:scale-102 transition-transform duration-700 filter brightness-95"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-
-          {/* Panoramic Overlay Bar */}
-          <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 bg-slate-950/90 border border-slate-700 rounded-xl backdrop-blur-md">
-            <div>
-              <span className="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest block">
-                ARENA OFICIAL FRC BRASIL
-              </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white">
-                Partidas 3 vs 3 com Transmissão ao Vivo e Torcidas Vibrantes
-              </h3>
+    <section id="frc" className={`py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-950 border-slate-200'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="lg:col-span-7">
+            <div className="flex flex-wrap items-center gap-2 mb-5">
+              <span className="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-black tracking-wider">FRC</span>
+              <span className={`px-3 py-1 rounded-lg border text-xs font-bold ${isDark ? 'bg-blue-500/10 border-blue-500/30 text-blue-300' : 'bg-blue-50 border-blue-200 text-blue-800'}`}>14–18 anos · Grades 9–12</span>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="px-3 py-1.5 rounded-lg bg-blue-900/60 border border-blue-700 text-xs font-bold text-blue-200">
-                RoboRIO Industrial
-              </span>
-              <span className="px-3 py-1.5 rounded-lg bg-red-900/60 border border-red-700 text-xs font-bold text-red-200">
-                Motors Brushless 500W
-              </span>
-            </div>
-          </div>
-        </div>
 
-        {/* Large Scale Graphic Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-14">
-          {scaleStats.map((stat, idx) => (
-            <div 
-              key={idx}
-              className="bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 rounded-xl p-6 text-center transition-all group"
-            >
-              <div className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-300 mb-1 font-mono-tech">
-                {stat.value}
-              </div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                {stat.label}
-              </h4>
-              <p className="text-[11px] text-slate-400 font-mono">
-                {stat.note}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Highlight Competencies Grid */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 sm:p-10 mb-12">
-          <div className="max-w-2xl mb-8">
-            <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-bold block mb-1">
-              COMPETÊNCIAS PROFISSIONAIS
-            </span>
-            <h3 className="text-2xl font-bold text-white">
-              Formando os Engenheiros e Líderes da Indústria 4.0
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {highlights.map((h, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 bg-slate-950/70 border border-slate-800/80 rounded-xl">
-                <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="text-sm font-bold text-white mb-1">
-                    {h.title}
-                  </h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    {h.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA Banner */}
-        <div className="bg-gradient-to-r from-blue-950/90 via-slate-900 to-red-950/90 border border-blue-500/30 rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
-          <div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
-              Sua unidade SENAI ou escola no maior palco da robótica
-            </h3>
-            <p className="text-sm text-slate-300 max-w-2xl">
-              Equipes de FRC no SENAI têm acesso a centros de usinagem, oficinas completas e mentores voluntários de indústrias automotivas, aeroespaciais e de tecnologia.
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">FIRST® Robotics Competition</h2>
+            <p className={`text-base sm:text-lg leading-relaxed mb-6 max-w-3xl ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              Uma experiência avançada de engenharia em que equipes do ensino médio projetam, programam e constroem robôs de porte industrial e competem em alianças.
             </p>
+
+            <div className="grid sm:grid-cols-2 gap-3 mb-7">
+              {highlights.map(item => (
+                <div key={item} className={`flex items-start gap-2.5 rounded-xl border p-3.5 ${isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <span className="text-sm font-medium">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a href="/program/frc" className="min-h-12 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2">Explorar FRC <ArrowRight className="w-4 h-4" /></a>
+              <button onClick={() => onOpenParticipation('FRC')} className={`min-h-12 px-5 py-3 rounded-xl border font-bold ${isDark ? 'bg-slate-900 border-slate-700 text-white hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-900 hover:bg-slate-50'}`}>Tenho interesse</button>
+            </div>
           </div>
 
-          <button
-            id="frc-participate-cta"
-            onClick={() => onOpenParticipation('FRC')}
-            className="shrink-0 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-xl hover:shadow-blue-600/30 transition-all flex items-center gap-2 cursor-pointer"
-          >
-            <span>CONHECER ROBOTICS COMPETITION</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
+          <div className="lg:col-span-5">
+            <div className={`rounded-3xl border p-6 sm:p-8 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-blue-50 border-blue-200'}`}>
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center"><Bot className="w-7 h-7 text-blue-600" /></div>
+                <Leaf className="w-6 h-6 text-emerald-600" />
+              </div>
+              <p className="text-xs font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400">FIRST® CANOPY™ 2026–2027</p>
+              <h3 className="text-2xl font-black mt-2 mb-2">BIOCORE™ presented by Haas</h3>
+              <p className={`text-sm leading-relaxed mb-5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>O jogo da temporada 2027 será revelado no kickoff de 9 de janeiro de 2027 e explorará o que sustenta a vida na Terra.</p>
+              <div className={`rounded-2xl border p-4 text-xs leading-relaxed ${isDark ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-white border-blue-200 text-slate-600'}`}>
+                <Sparkles className="w-4 h-4 text-blue-600 mb-2" />
+                A FRC combina engenharia, software, fabricação, estratégia e funções não técnicas como gestão, comunicação e impacto comunitário em um grande projeto de equipe.
+              </div>
+              <a href="https://www.firstinspires.org/programs/frc/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 mt-5 text-sm font-bold text-blue-600 hover:text-blue-500">Fonte oficial <ExternalLink className="w-4 h-4" /></a>
+            </div>
+          </div>
         </div>
-
       </div>
     </section>
   );
