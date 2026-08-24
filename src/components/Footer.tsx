@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
             <div className="flex items-center gap-2.5">
               <div className="bg-blue-600 text-white font-black px-3 py-1.5 rounded-lg tracking-wider">FIRST<sup className="text-[9px]">®</sup></div>
               <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>+</span>
-              <div className="bg-red-600 text-white font-black px-3 py-1.5 rounded-lg tracking-widest">SENAI-DF</div>
+              <div className="bg-blue-700 text-white font-black px-3 py-1.5 rounded-lg tracking-widest border-b-2 border-orange-500">SENAI-DF</div>
             </div>
             <p className={`text-sm leading-relaxed max-w-md ${muted}`}>Projeto educacional voltado ao Distrito Federal, organizando informações sobre FLL, FTC e FRC e conectando a experiência às referências e aos canais do SENAI-DF.</p>
             <div className={`rounded-xl border p-4 text-xs leading-relaxed flex items-start gap-3 max-w-md ${card}`}><Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><p className={muted}>Este site não substitui canais oficiais de inscrição ou atendimento. Confirme regulamentos, equipes, eventos e oportunidades diretamente com o Sistema Fibra/SENAI-DF e com a FIRST®.</p></div>
@@ -38,22 +38,23 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-xs font-black text-red-600 uppercase tracking-widest">Distrito Federal</h4>
+            <h4 className="text-xs font-black text-orange-600 uppercase tracking-widest">Distrito Federal</h4>
             <ul className={`space-y-2.5 text-sm ${muted}`}>
-              <li><a href="/#mapa-brasil" className="hover:text-red-600 transition-colors">Unidades SENAI-DF</a></li>
-              <li><a href="/#eventos" className="hover:text-red-600 transition-colors">Eventos e marcos</a></li>
-              <li><a href="/#programas" className="hover:text-red-600 transition-colors">Comparar programas</a></li>
-              <li><a href="/#temporada" className="hover:text-red-600 transition-colors">Temporada 2026–2027</a></li>
-              <li><a href="/#faq" className="hover:text-red-600 transition-colors">Perguntas frequentes</a></li>
-              <li><button onClick={() => onOpenParticipation()} className="hover:text-red-600 transition-colors text-left">Interesse no DF</button></li>
+              <li><a href="/#unidades-df" className="hover:text-blue-600 transition-colors">Unidades SENAI-DF</a></li>
+              <li><a href="/#eventos" className="hover:text-blue-600 transition-colors">Eventos e marcos</a></li>
+              <li><a href="/#programas" className="hover:text-blue-600 transition-colors">Comparar programas</a></li>
+              <li><a href="/#temporada" className="hover:text-blue-600 transition-colors">Temporada 2026–2027</a></li>
+              <li><a href="/#faq" className="hover:text-blue-600 transition-colors">Perguntas frequentes</a></li>
+              <li><a href="/participar" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Como participar</a></li>
+              <li><button onClick={() => onOpenParticipation()} className="hover:text-blue-600 transition-colors text-left">Registrar interesse</button></li>
             </ul>
           </div>
 
           <div className="space-y-4">
             <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest">Canais oficiais</h4>
             <div className="space-y-2.5">
-              <a href={SENAI_DF_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-red-400`}><School className="w-4 h-4 text-red-500" /> SENAI-DF <ExternalLink className="w-3.5 h-3.5 ml-auto" /></a>
-              <div className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${card}`}><Phone className="w-4 h-4 text-red-500" /> (61) 4042-6565</div>
+              <a href={SENAI_DF_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-orange-400`}><School className="w-4 h-4 text-orange-500" /> SENAI-DF <ExternalLink className="w-3.5 h-3.5 ml-auto" /></a>
+              <div className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${card}`}><Phone className="w-4 h-4 text-orange-500" /> (61) 4042-6565</div>
               <a href={FIRST_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}><ExternalLink className="w-4 h-4 text-blue-500" /> FIRST® oficial</a>
               <a href={FIRST_SEARCH_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}><Search className="w-4 h-4 text-blue-500" /> Equipes e eventos</a>
             </div>
