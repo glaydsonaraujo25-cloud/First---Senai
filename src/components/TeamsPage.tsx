@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Building2, ExternalLink, Info, MapPin, Search, School, Users } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, ExternalLink, Info, MapPin, Search, School, Users } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface TeamsPageProps {
@@ -67,6 +67,27 @@ export const TeamsPage: React.FC<TeamsPageProps> = ({ onNavigateHome, onOpenPart
             <a href={FIRST_TEAM_SEARCH_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-700 hover:bg-blue-600 text-white font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
               Abrir busca FIRST® <ExternalLink className="w-4 h-4" />
             </a>
+          </div>
+        </section>
+
+        <section className={`rounded-3xl border p-6 sm:p-8 mb-6 ${card}`} aria-labelledby="team-checklist-title">
+          <div className="flex items-center gap-2 mb-5">
+            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+            <h2 id="team-checklist-title" className="text-xl font-black">Antes de entrar em contato</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              ['Escolha a modalidade', 'Compare FLL, FTC e FRC e veja qual combina melhor com sua etapa.'],
+              ['Confirme a localização', 'Priorize equipes e instituições acessíveis no Distrito Federal.'],
+              ['Verifique a temporada', 'Datas, vagas e atividades podem mudar ao longo do ciclo.'],
+              ['Use fontes oficiais', 'Confirme qualquer oportunidade antes de enviar dados ou realizar inscrição.'],
+            ].map(([title, description], index) => (
+              <div key={title} className={`rounded-2xl border p-4 ${isDark ? 'border-slate-800 bg-slate-950/60' : 'border-slate-200 bg-slate-50'}`}>
+                <span className="text-xs font-black text-blue-600">0{index + 1}</span>
+                <h3 className="font-bold text-sm mt-1 mb-2">{title}</h3>
+                <p className={`text-xs leading-relaxed ${muted}`}>{description}</p>
+              </div>
+            ))}
           </div>
         </section>
 
