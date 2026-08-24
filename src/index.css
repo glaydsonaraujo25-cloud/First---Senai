@@ -2,28 +2,24 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    letter-spacing: -0.01em;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.008em;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Archivo', 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Archivo', 'Outfit', sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  .font-display { font-family: 'Archivo', 'Syne', 'Outfit', sans-serif; }
-  .font-heading { font-family: 'Outfit', 'Archivo', sans-serif; }
+  .font-display { font-family: 'Archivo', 'Outfit', sans-serif; }
+  .font-heading { font-family: 'Archivo', 'Outfit', sans-serif; }
   .font-mono-tech { font-family: 'Space Grotesk', monospace; }
 }
 
 .text-stroke-1 { -webkit-text-stroke: 1px currentColor; }
 .text-stroke-2 { -webkit-text-stroke: 2px currentColor; }
 .tracking-ultra-wide { letter-spacing: 0.2em; }
-
-/* ========================================================
-   THEME ADAPTATION ARCHITECTURE
-   ======================================================== */
 
 html.light {
   color-scheme: light;
@@ -40,7 +36,6 @@ html.dark {
   color: #0f172a;
 }
 
-/* Neutral backgrounds */
 .light .bg-slate-950 { background-color: #f8fafc; }
 .light .bg-slate-900 { background-color: #ffffff; }
 .light .bg-slate-850,
@@ -71,7 +66,6 @@ html.dark {
 .light .bg-slate-800\/50,
 .light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.98); }
 
-/* Dark neutral gradients become light neutral gradients. Brand gradients stay untouched. */
 .light [class*="from-slate-950"] {
   --tw-gradient-from: #f8fafc var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(248 250 252 / 0) var(--tw-gradient-to-position) !important;
@@ -85,7 +79,6 @@ html.dark {
 .light [class*="via-slate-900"] { --tw-gradient-via: #ffffff var(--tw-gradient-via-position) !important; }
 .light [class*="to-slate-900"] { --tw-gradient-to: #ffffff var(--tw-gradient-to-position) !important; }
 
-/* Borders and dividers */
 .light .border-slate-900,
 .light .border-slate-800,
 .light .border-slate-800\/80,
@@ -99,91 +92,112 @@ html.dark {
 .light .divide-slate-800 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0; }
 .light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1; }
 
-/* Text hierarchy */
+.light .text-slate-50,
 .light .text-slate-100 { color: #0f172a; }
 .light .text-slate-200 { color: #1e293b; }
 .light .text-slate-300 { color: #334155; }
 .light .text-slate-400 { color: #64748b; }
 .light .text-slate-500 { color: #64748b; }
 .light .text-slate-600 { color: #475569; }
+.light .text-sky-100 { color: #0c4a6e; }
+.light .text-blue-100 { color: #1e3a8a; }
+.light .text-indigo-100 { color: #312e81; }
+.light .text-emerald-100 { color: #064e3b; }
+.light .text-amber-100 { color: #78350f; }
+.light .text-orange-100 { color: #7c2d12; }
+.light .text-red-100 { color: #7f1d1d; }
+.light .text-rose-100 { color: #881337; }
 
-/* In light mode, plain white text should never disappear on converted white cards. */
 .light .text-white { color: #0f172a; }
 
-/* Preserve white text for controls and branded surfaces that remain dark/colored. */
-.light [class*="bg-blue-"] .text-white,
-.light [class*="bg-red-"] .text-white,
-.light [class*="bg-orange-"] .text-white,
-.light [class*="bg-emerald-"] .text-white,
-.light [class*="bg-indigo-"] .text-white,
-.light [class*="bg-rose-"] .text-white,
-.light [class*="from-blue-"] .text-white,
-.light [class*="from-red-"] .text-white,
-.light [class*="from-orange-"] .text-white,
-.light [class*="from-indigo-"] .text-white,
-.light [class*="from-rose-"] .text-white { color: #ffffff; }
+/* Keep white text only on strong branded surfaces. */
+.light .bg-blue-500,
+.light .bg-blue-600,
+.light .bg-blue-700,
+.light .bg-red-500,
+.light .bg-red-600,
+.light .bg-red-700,
+.light .bg-orange-500,
+.light .bg-orange-600,
+.light .bg-orange-700,
+.light .bg-emerald-500,
+.light .bg-emerald-600,
+.light .bg-emerald-700,
+.light .bg-indigo-500,
+.light .bg-indigo-600,
+.light .bg-indigo-700,
+.light .bg-rose-500,
+.light .bg-rose-600,
+.light .bg-rose-700 { color: #ffffff; }
 
-.light button[class*="bg-blue-"],
-.light button[class*="bg-red-"],
-.light button[class*="bg-orange-"],
-.light button[class*="bg-emerald-"],
-.light button[class*="bg-indigo-"],
-.light button[class*="bg-rose-"],
-.light button[class*="from-blue-"],
-.light button[class*="from-red-"],
-.light button[class*="from-orange-"],
-.light button[class*="from-indigo-"],
-.light button[class*="from-rose-"],
-.light a[class*="bg-blue-"],
-.light a[class*="bg-red-"],
-.light a[class*="bg-orange-"],
-.light a[class*="bg-emerald-"],
-.light a[class*="bg-indigo-"],
-.light a[class*="bg-rose-"],
-.light a[class*="from-blue-"],
-.light a[class*="from-red-"],
-.light a[class*="from-orange-"],
-.light a[class*="from-indigo-"],
-.light a[class*="from-rose-"] { color: #ffffff; }
+.light .bg-blue-500 *,
+.light .bg-blue-600 *,
+.light .bg-blue-700 *,
+.light .bg-red-500 *,
+.light .bg-red-600 *,
+.light .bg-red-700 *,
+.light .bg-orange-500 *,
+.light .bg-orange-600 *,
+.light .bg-orange-700 *,
+.light .bg-emerald-500 *,
+.light .bg-emerald-600 *,
+.light .bg-emerald-700 *,
+.light .bg-indigo-500 *,
+.light .bg-indigo-600 *,
+.light .bg-indigo-700 *,
+.light .bg-rose-500 *,
+.light .bg-rose-600 *,
+.light .bg-rose-700 * { color: inherit; }
 
-.light button[class*="bg-blue-"] *,
-.light button[class*="bg-red-"] *,
-.light button[class*="bg-orange-"] *,
-.light button[class*="bg-emerald-"] *,
-.light button[class*="bg-indigo-"] *,
-.light button[class*="bg-rose-"] *,
-.light button[class*="from-blue-"] *,
-.light button[class*="from-red-"] *,
-.light button[class*="from-orange-"] *,
-.light button[class*="from-indigo-"] *,
-.light button[class*="from-rose-"] *,
-.light a[class*="bg-blue-"] *,
-.light a[class*="bg-red-"] *,
-.light a[class*="bg-orange-"] *,
-.light a[class*="bg-emerald-"] *,
-.light a[class*="bg-indigo-"] *,
-.light a[class*="bg-rose-"] *,
-.light a[class*="from-blue-"] *,
-.light a[class*="from-red-"] *,
-.light a[class*="from-orange-"] *,
-.light a[class*="from-indigo-"] *,
-.light a[class*="from-rose-"] * { color: inherit; }
+.light [class*="from-blue-600"][class*="to-"],
+.light [class*="from-red-600"][class*="to-"],
+.light [class*="from-orange-600"][class*="to-"],
+.light [class*="from-indigo-600"][class*="to-"],
+.light [class*="from-rose-600"][class*="to-"] { color: #ffffff; }
+
+.light [class*="from-blue-600"][class*="to-"] *,
+.light [class*="from-red-600"][class*="to-"] *,
+.light [class*="from-orange-600"][class*="to-"] *,
+.light [class*="from-indigo-600"][class*="to-"] *,
+.light [class*="from-rose-600"][class*="to-"] * { color: inherit; }
 
 .light a.bg-amber-500,
 .light button.bg-amber-500,
 .light a.bg-amber-400,
 .light button.bg-amber-400 { color: #0f172a; }
 
-/* Extra contrast for white/light cards that inherited dark-mode white typography. */
 .light .bg-white .text-white,
 .light [class*="bg-slate-950"] .text-white,
 .light [class*="bg-slate-900"] .text-white,
 .light [class*="bg-slate-800"] .text-white { color: #0f172a; }
 
+.light .bg-white .text-slate-50,
+.light .bg-white .text-slate-100,
+.light .bg-white .text-slate-200,
+.light [class*="bg-slate-900"] .text-slate-50,
+.light [class*="bg-slate-900"] .text-slate-100,
+.light [class*="bg-slate-900"] .text-slate-200 { color: #1e293b; }
+
 .light .bg-white .text-slate-300,
 .light [class*="bg-slate-900"] .text-slate-300 { color: #334155; }
 
-/* Transparent gradient text must remain transparent */
+/* Explicitly protect pale program cards from inherited white text. */
+.light .bg-amber-50,
+.light .bg-orange-50,
+.light .bg-blue-50,
+.light .bg-emerald-50,
+.light .bg-red-50,
+.light .bg-indigo-50,
+.light .bg-rose-50 { color: #0f172a; }
+
+.light .bg-amber-50 *,
+.light .bg-orange-50 *,
+.light .bg-blue-50 *,
+.light .bg-emerald-50 *,
+.light .bg-red-50 *,
+.light .bg-indigo-50 *,
+.light .bg-rose-50 * { color: inherit; }
+
 .light .text-transparent,
 .light [class*="text-transparent"],
 .light .bg-clip-text {
@@ -191,7 +205,6 @@ html.dark {
   color: transparent !important;
 }
 
-/* Forms */
 .light input,
 .light select,
 .light textarea {
@@ -212,19 +225,16 @@ html.dark {
 .light textarea::placeholder { color: #94a3b8 !important; }
 .light select option { background-color: #ffffff !important; color: #0f172a !important; }
 
-/* Modal backdrop remains intentionally dark */
 .light .fixed.inset-0.bg-slate-950\/80,
 .light .fixed.inset-0.bg-slate-950\/70,
 .light [class*="fixed inset-0 bg-slate-950"] {
   background-color: rgba(15, 23, 42, 0.7) !important;
 }
 
-/* Hover states */
 .light .hover\:bg-slate-900:hover { background-color: #f8fafc; }
 .light .hover\:bg-slate-800:hover { background-color: #e2e8f0; }
 .light .hover\:bg-slate-700:hover { background-color: #cbd5e1; }
 
-/* Light cards receive softer depth */
 .light .bg-slate-900,
 .light .bg-slate-800 {
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
@@ -234,12 +244,10 @@ html.dark {
 .light .shadow-xl { box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.09), 0 4px 6px -2px rgba(15, 23, 42, 0.04) !important; }
 .light .shadow-lg { box-shadow: 0 8px 16px -4px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.03) !important; }
 
-/* Improve visibly separated sections in light mode */
 .light section.border-t { border-top-color: #e2e8f0; }
 .light article[class*="bg-slate-950"],
 .light div[class*="bg-slate-950"][class*="border"] { background-color: #ffffff; }
 
-/* Tech grids */
 .tech-grid-pattern {
   background-size: 32px 32px;
   background-image: linear-gradient(to right, rgba(14, 116, 144, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(14, 116, 144, 0.05) 1px, transparent 1px);
