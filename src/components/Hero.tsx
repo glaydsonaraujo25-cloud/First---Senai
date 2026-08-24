@@ -8,9 +8,9 @@ interface HeroProps {
 }
 
 const programs = [
-  { code: 'FLL', name: 'BIOGLOW™', detail: '5–16 anos*', icon: Cpu, accent: 'text-amber-600', lightAccent: '#b45309', soft: 'bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/30' },
-  { code: 'FTC', name: 'BIOBUZZ™', detail: '12–18 anos', icon: Wrench, accent: 'text-orange-600', lightAccent: '#c2410c', soft: 'bg-orange-50 border-orange-200 dark:bg-orange-500/10 dark:border-orange-500/30' },
-  { code: 'FRC', name: 'BIOCORE™', detail: '14–18 anos', icon: Bot, accent: 'text-blue-600', lightAccent: '#2563eb', soft: 'bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/30' },
+  { code: 'FLL', name: 'BIOGLOW™', detail: '5–16 anos*', icon: Cpu, accent: 'text-amber-600', soft: 'bg-amber-50 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/30' },
+  { code: 'FTC', name: 'BIOBUZZ™', detail: '12–18 anos', icon: Wrench, accent: 'text-orange-600', soft: 'bg-orange-50 border-orange-200 dark:bg-orange-500/10 dark:border-orange-500/30' },
+  { code: 'FRC', name: 'BIOCORE™', detail: '14–18 anos', icon: Bot, accent: 'text-blue-600', soft: 'bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/30' },
 ];
 
 export const Hero: React.FC<HeroProps> = ({ onOpenParticipation, onOpenQuiz }) => {
@@ -66,27 +66,24 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation, onOpenQuiz }) =
               </div>
 
               <div className="space-y-3">
-                {programs.map(({ code, name, detail, icon: Icon, accent, lightAccent, soft }) => (
+                {programs.map(({ code, name, detail, icon: Icon, accent, soft }) => (
                   <a
                     key={code}
                     href="#programas"
-                    className={`group flex items-center gap-4 rounded-2xl border p-4 transition-all hover:-translate-y-0.5 ${soft}`}
-                    style={!isDark ? { color: '#0f172a' } : undefined}
+                    data-program-card={code}
+                    className={`hero-program-card hero-program-${code.toLowerCase()} group flex items-center gap-4 rounded-2xl border p-4 transition-all hover:-translate-y-0.5 ${soft}`}
                   >
-                    <div
-                      className="w-11 h-11 rounded-xl bg-white/80 dark:bg-slate-950/70 border border-slate-300 dark:border-slate-800 flex items-center justify-center shrink-0"
-                      style={!isDark ? { color: lightAccent } : undefined}
-                    >
-                      <Icon className={`w-5 h-5 ${isDark ? accent : ''}`} style={!isDark ? { color: lightAccent } : undefined} />
+                    <div className="hero-program-icon w-11 h-11 rounded-xl bg-white/80 dark:bg-slate-950/70 border border-slate-300 dark:border-slate-800 flex items-center justify-center shrink-0">
+                      <Icon className={`w-5 h-5 ${accent}`} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
-                        <span className={`text-xs font-black tracking-wider ${isDark ? accent : ''}`} style={!isDark ? { color: lightAccent } : undefined}>{code}</span>
-                        <span className={`text-[11px] font-semibold ${isDark ? 'text-slate-400' : ''}`} style={!isDark ? { color: '#475569' } : undefined}>{detail}</span>
+                        <span className={`hero-program-code text-xs font-black tracking-wider ${accent}`}>{code}</span>
+                        <span className="hero-program-age text-[11px] font-semibold">{detail}</span>
                       </div>
-                      <p className={`font-bold mt-0.5 ${isDark ? 'text-slate-100' : ''}`} style={!isDark ? { color: '#0f172a' } : undefined}>{name}</p>
+                      <p className="hero-program-name font-bold mt-0.5">{name}</p>
                     </div>
-                    <ArrowRight className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-1 ${isDark ? 'text-slate-500' : ''}`} style={!isDark ? { color: '#334155' } : undefined} />
+                    <ArrowRight className="hero-program-arrow w-4 h-4 shrink-0 transition-transform group-hover:translate-x-1" />
                   </a>
                 ))}
               </div>
