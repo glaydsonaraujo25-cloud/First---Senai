@@ -42,6 +42,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
             <ul className={`space-y-2.5 text-sm ${muted}`}>
               <li><a href="/unidades" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Unidades SENAI-DF</a></li>
               <li><a href="/eventos" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Eventos e marcos</a></li>
+              <li><a href="/equipes" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Encontrar equipes</a></li>
               <li><a href="/#programas" className="hover:text-blue-600 transition-colors">Comparar programas</a></li>
               <li><a href="/#temporada" className="hover:text-blue-600 transition-colors">Temporada 2026–2027</a></li>
               <li><a href="/#faq" className="hover:text-blue-600 transition-colors">Perguntas frequentes</a></li>
