@@ -1,0 +1,20 @@
+{
+  "name": "First — SENAI | Robótica e STEM",
+  "short_name": "First SENAI",
+  "description": "Projeto educacional demonstrativo sobre FIRST LEGO League, FIRST Tech Challenge e FIRST Robotics Competition.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#f8fafc",
+  "lang": "pt-BR",
+  "categories": ["education", "technology"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
