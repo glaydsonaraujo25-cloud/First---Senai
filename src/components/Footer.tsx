@@ -1,21 +1,17 @@
 import React from 'react';
-import { ArrowUp, ChevronRight, ExternalLink, Info, Search, School, Sparkles } from 'lucide-react';
+import { ArrowUp, ChevronRight, ExternalLink, Info, Phone, Search, School, Sparkles } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
-interface FooterProps {
-  onOpenParticipation: (tab?: string) => void;
-  onOpenQuiz: () => void;
-}
+interface FooterProps { onOpenParticipation: (tab?: string) => void; onOpenQuiz: () => void; }
 
 const FIRST_URL = 'https://www.firstinspires.org/';
 const FIRST_SEARCH_URL = 'https://www.firstinspires.org/team-event-search';
-const SENAI_URL = 'https://www.senai.br/';
+const SENAI_DF_URL = 'https://www.sistemafibra.org.br/senai/';
 
 export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz }) => {
   const { isDark } = useTheme();
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
   const surface = isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200';
   const muted = isDark ? 'text-slate-400' : 'text-slate-600';
   const card = isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
@@ -28,65 +24,39 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz 
             <div className="flex items-center gap-2.5">
               <div className="bg-blue-600 text-white font-black px-3 py-1.5 rounded-lg tracking-wider">FIRST<sup className="text-[9px]">®</sup></div>
               <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>+</span>
-              <div className="bg-red-600 text-white font-black px-3 py-1.5 rounded-lg tracking-widest">SENAI</div>
+              <div className="bg-red-600 text-white font-black px-3 py-1.5 rounded-lg tracking-widest">SENAI-DF</div>
             </div>
-
-            <p className={`text-sm leading-relaxed max-w-md ${muted}`}>
-              Projeto educacional demonstrativo que organiza informações sobre FLL, FTC e FRC e apresenta caminhos para consultar recursos oficiais da FIRST® e do SENAI.
-            </p>
-
-            <div className={`rounded-xl border p-4 text-xs leading-relaxed flex items-start gap-3 max-w-md ${card}`}>
-              <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-              <p className={muted}>Este site não é um canal oficial de inscrição nem representa comunicado institucional da FIRST ou do SENAI. Regulamentos, eventos e participação devem ser confirmados nas fontes oficiais.</p>
-            </div>
+            <p className={`text-sm leading-relaxed max-w-md ${muted}`}>Projeto educacional voltado ao Distrito Federal, organizando informações sobre FLL, FTC e FRC e conectando a experiência às referências e aos canais do SENAI-DF.</p>
+            <div className={`rounded-xl border p-4 text-xs leading-relaxed flex items-start gap-3 max-w-md ${card}`}><Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><p className={muted}>Este site não substitui canais oficiais de inscrição ou atendimento. Confirme regulamentos, equipes, eventos e oportunidades diretamente com o Sistema Fibra/SENAI-DF e com a FIRST®.</p></div>
           </div>
 
           <div className="space-y-4">
             <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest">Programas</h4>
             <ul className={`space-y-2.5 text-sm ${muted}`}>
-              {[
-                ['FIRST® LEGO® League', '/program/fll', 'text-amber-500'],
-                ['FIRST® Tech Challenge', '/program/ftc', 'text-orange-500'],
-                ['FIRST® Robotics Competition', '/program/frc', 'text-blue-500']
-              ].map(([label, href, color]) => (
-                <li key={href}>
-                  <a href={href} className="hover:text-blue-600 transition-colors flex items-start gap-1.5">
-                    <ChevronRight className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${color}`} />{label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <button onClick={onOpenQuiz} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 text-left">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-500" /> Descobrir meu programa
-                </button>
-              </li>
+              {([['FIRST® LEGO® League', '/program/fll', 'text-amber-500'], ['FIRST® Tech Challenge', '/program/ftc', 'text-orange-500'], ['FIRST® Robotics Competition', '/program/frc', 'text-blue-500']] as const).map(([label, href, color]) => <li key={href}><a href={href} className="hover:text-blue-600 transition-colors flex items-start gap-1.5"><ChevronRight className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${color}`} />{label}</a></li>)}
+              <li><button onClick={onOpenQuiz} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 text-left"><Sparkles className="w-3.5 h-3.5 text-blue-500" /> Descobrir meu programa</button></li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-xs font-black text-red-600 uppercase tracking-widest">Explorar</h4>
+            <h4 className="text-xs font-black text-red-600 uppercase tracking-widest">Distrito Federal</h4>
             <ul className={`space-y-2.5 text-sm ${muted}`}>
+              <li><a href="/#mapa-brasil" className="hover:text-red-600 transition-colors">Unidades SENAI-DF</a></li>
+              <li><a href="/#eventos" className="hover:text-red-600 transition-colors">Eventos e marcos</a></li>
               <li><a href="/#programas" className="hover:text-red-600 transition-colors">Comparar programas</a></li>
               <li><a href="/#temporada" className="hover:text-red-600 transition-colors">Temporada 2026–2027</a></li>
-              <li><a href="/#eventos" className="hover:text-red-600 transition-colors">Eventos e marcos</a></li>
-              <li><a href="/#mapa-brasil" className="hover:text-red-600 transition-colors">Buscar por região</a></li>
               <li><a href="/#faq" className="hover:text-red-600 transition-colors">Perguntas frequentes</a></li>
-              <li><button onClick={() => onOpenParticipation()} className="hover:text-red-600 transition-colors text-left">Registrar interesse</button></li>
+              <li><button onClick={() => onOpenParticipation()} className="hover:text-red-600 transition-colors text-left">Interesse no DF</button></li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest">Fontes oficiais</h4>
+            <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest">Canais oficiais</h4>
             <div className="space-y-2.5">
-              <a href={FIRST_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}>
-                <ExternalLink className="w-4 h-4 text-blue-500" /> FIRST®
-              </a>
-              <a href={FIRST_SEARCH_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}>
-                <Search className="w-4 h-4 text-blue-500" /> Equipes e eventos
-              </a>
-              <a href={SENAI_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-red-400`}>
-                <School className="w-4 h-4 text-red-500" /> Escolas SENAI
-              </a>
+              <a href={SENAI_DF_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-red-400`}><School className="w-4 h-4 text-red-500" /> SENAI-DF <ExternalLink className="w-3.5 h-3.5 ml-auto" /></a>
+              <div className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${card}`}><Phone className="w-4 h-4 text-red-500" /> (61) 4042-6565</div>
+              <a href={FIRST_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}><ExternalLink className="w-4 h-4 text-blue-500" /> FIRST® oficial</a>
+              <a href={FIRST_SEARCH_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}><Search className="w-4 h-4 text-blue-500" /> Equipes e eventos</a>
             </div>
           </div>
         </div>
@@ -94,16 +64,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz 
 
       <div className={`border-t py-6 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-slate-50'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className={`text-xs leading-relaxed ${muted}`}>
-            <p>© {new Date().getFullYear()} First — SENAI · Projeto educacional demonstrativo.</p>
-            <p className="mt-1">FIRST® e os nomes de seus programas pertencem à For Inspiration and Recognition of Science and Technology.</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle showLabel={true} />
-            <button onClick={scrollToTop} className={`min-h-11 px-3 rounded-xl border flex items-center gap-2 text-xs font-bold transition-colors ${card} hover:border-blue-400`} aria-label="Voltar ao topo">
-              <ArrowUp className="w-4 h-4" /> Topo
-            </button>
-          </div>
+          <div className={`text-xs leading-relaxed ${muted}`}><p>© {new Date().getFullYear()} First — SENAI-DF · Projeto educacional.</p><p className="mt-1">FIRST® e os nomes de seus programas pertencem à For Inspiration and Recognition of Science and Technology.</p></div>
+          <div className="flex items-center gap-2"><ThemeToggle showLabel={true} /><button onClick={scrollToTop} className={`min-h-11 px-3 rounded-xl border flex items-center gap-2 text-xs font-bold transition-colors ${card} hover:border-blue-400`} aria-label="Voltar ao topo"><ArrowUp className="w-4 h-4" /> Topo</button></div>
         </div>
       </div>
     </footer>
