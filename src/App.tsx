@@ -31,28 +31,79 @@ import { TeamFinderModal } from './components/TeamFinderModal';
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
 
-const getProgramFromHash = (): ProgramRoute => {
+const getProgramFromLocation = (): ProgramRoute => {
   if (typeof window === 'undefined') return null;
-  const match = window.location.hash.match(/^#\/program\/(fll|ftc|frc)$/i);
-  return match ? (match[1].toLowerCase() as ProgramRoute) : null;
+
+  const pathMatch = window.location.pathname.match(/^\/program\/(fll|ftc|frc)\/?$/i);
+  if (pathMatch) return pathMatch[1].toLowerCase() as ProgramRoute;
+
+  // Backward compatibility with old hash links.
+  const hashMatch = window.location.hash.match(/^#\/program\/(fll|ftc|frc)$/i);
+  return hashMatch ? (hashMatch[1].toLowerCase() as ProgramRoute) : null;
+};
+
+const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string }> = {
+  fll: {
+    title: 'FIRST® LEGO® League | FIRST + SENAI',
+    description: 'Conheça a FIRST LEGO League, o programa de robótica e STEM para jovens, com desafios práticos, inovação e trabalho em equipe.'
+  },
+  ftc: {
+    title: 'FIRST® Tech Challenge | FIRST + SENAI',
+    description: 'Conheça a FIRST Tech Challenge: engenharia aplicada, programação e robôs competitivos para estudantes de 12 a 18 anos.'
+  },
+  frc: {
+    title: 'FIRST® Robotics Competition | FIRST + SENAI',
+    description: 'Conheça a FIRST Robotics Competition: engenharia em grande escala, software, estratégia e colaboração para estudantes do ensino médio.'
+  }
 };
 
 export function AppContent() {
-  const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
-  const [isParticipationOpen, setIsParticipationOpen] = useState<boolean>(false);
-  const [isTeamFinderOpen, setIsTeamFinderOpen] = useState<boolean>(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isParticipationOpen, setIsParticipationOpen] = useState(false);
+  const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
   const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
-  const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromHash());
+  const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setActiveProgramPage(getProgramFromHash());
+    const syncRoute = () => {
+      const route = getProgramFromLocation();
+      setActiveProgramPage(route);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', syncRoute);
+    window.addEventListener('hashchange', syncRoute);
+
+    // Migrate old hash program URLs to real paths.
+    const initialRoute = getProgramFromLocation();
+    if (initialRoute && window.location.hash.startsWith('#/program/')) {
+      window.history.replaceState({}, '', `/program/${initialRoute}`);
+      setActiveProgramPage(initialRoute);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', syncRoute);
+      window.removeEventListener('hashchange', syncRoute);
+    };
   }, []);
+
+  useEffect(() => {
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (activeProgramPage) {
+      const meta = pageMeta[activeProgramPage];
+      document.title = meta.title;
+      metaDescription?.setAttribute('content', meta.description);
+    } else {
+      document.title = 'FIRST® + SENAI | Robótica, Educação STEM e Inovação';
+      metaDescription?.setAttribute('content', 'Conheça FLL, FTC e FRC e explore uma experiência educacional sobre robótica, STEM, engenharia e inovação.');
+    }
+  }, [activeProgramPage]);
+
+  const navigateTo = (path: string) => {
+    window.history.pushState({}, '', path);
+    setActiveProgramPage(getProgramFromLocation());
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleOpenParticipation = (tabOrProgram?: string) => {
     setParticipationInitialTab(tabOrProgram);
@@ -63,7 +114,7 @@ export function AppContent() {
     const normalized = programId.toLowerCase();
     if (normalized === 'fll' || normalized === 'ftc' || normalized === 'frc') {
       setIsQuizOpen(false);
-      window.location.hash = `/program/${normalized}`;
+      navigateTo(`/program/${normalized}`);
       return;
     }
 
@@ -74,6 +125,9 @@ export function AppContent() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
       <Header
+        isProgramPage={Boolean(activeProgramPage)}
+        onNavigateHome={() => navigateTo('/')}
+        onOpenProgram={(program) => navigateTo(`/program/${program}`)}
         onOpenParticipation={() => handleOpenParticipation()}
         onOpenQuiz={() => setIsQuizOpen(true)}
         onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
@@ -82,6 +136,7 @@ export function AppContent() {
       {activeProgramPage ? (
         <ProgramDetailPage
           program={activeProgramPage}
+          onNavigateHome={() => navigateTo('/')}
           onOpenParticipation={(program) => handleOpenParticipation(program)}
           onOpenQuiz={() => setIsQuizOpen(true)}
         />
@@ -99,6 +154,7 @@ export function AppContent() {
           <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
           <ProgramComparator
             onOpenQuiz={() => setIsQuizOpen(true)}
+            onSelectProgram={(program) => navigateTo(`/program/${program}`)}
             onOpenParticipation={(program) => handleOpenParticipation(program)}
           />
           <BeyondRobots />
