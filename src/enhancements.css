@@ -41,8 +41,7 @@ a {
 
 /*
  * Light-mode contrast safety net.
- * Several dark-mode cards are converted to white/light surfaces by index.css.
- * These selectors also convert pale text tokens that previously remained nearly white.
+ * Dark-mode cards are converted to white/light surfaces by index.css.
  */
 .light :is(
   .bg-white,
@@ -79,7 +78,6 @@ a {
   -webkit-text-fill-color: currentColor;
 }
 
-/* Secondary text on light cards must remain clearly readable. */
 .light :is(
   .bg-white,
   .bg-slate-50,
@@ -94,36 +92,70 @@ a {
   color: #334155 !important;
 }
 
-/* Preserve white labels/icons on brand-colored actions after the safety rule above. */
-.light :is(button, a)[class*="bg-blue-"] ,
-.light :is(button, a)[class*="bg-red-"] ,
-.light :is(button, a)[class*="bg-indigo-"] ,
-.light :is(button, a)[class*="bg-orange-"] ,
-.light :is(button, a)[class*="bg-emerald-"] ,
-.light :is(button, a)[class*="bg-rose-"] ,
-.light :is(button, a)[class*="from-blue-"] ,
-.light :is(button, a)[class*="from-red-"] ,
-.light :is(button, a)[class*="from-indigo-"] ,
-.light :is(button, a)[class*="from-orange-"] ,
-.light :is(button, a)[class*="from-emerald-"] ,
-.light :is(button, a)[class*="from-rose-"] {
+/*
+ * White text is preserved ONLY on genuinely strong brand backgrounds.
+ * Never use wildcard bg-blue-/bg-orange- selectors here: they also match
+ * pale cards such as bg-blue-50 and bg-orange-50.
+ */
+.light :is(
+  .bg-blue-500, .bg-blue-600, .bg-blue-700,
+  .bg-red-500, .bg-red-600, .bg-red-700,
+  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700,
+  .bg-orange-500, .bg-orange-600, .bg-orange-700,
+  .bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
+  .bg-rose-500, .bg-rose-600, .bg-rose-700
+) {
   color: #ffffff !important;
 }
 
-.light :is(button, a)[class*="bg-blue-"] *,
-.light :is(button, a)[class*="bg-red-"] *,
-.light :is(button, a)[class*="bg-indigo-"] *,
-.light :is(button, a)[class*="bg-orange-"] *,
-.light :is(button, a)[class*="bg-emerald-"] *,
-.light :is(button, a)[class*="bg-rose-"] *,
-.light :is(button, a)[class*="from-blue-"] *,
-.light :is(button, a)[class*="from-red-"] *,
-.light :is(button, a)[class*="from-indigo-"] *,
-.light :is(button, a)[class*="from-orange-"] *,
-.light :is(button, a)[class*="from-emerald-"] *,
-.light :is(button, a)[class*="from-rose-"] * {
+.light :is(
+  .bg-blue-500, .bg-blue-600, .bg-blue-700,
+  .bg-red-500, .bg-red-600, .bg-red-700,
+  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700,
+  .bg-orange-500, .bg-orange-600, .bg-orange-700,
+  .bg-emerald-500, .bg-emerald-600, .bg-emerald-700,
+  .bg-rose-500, .bg-rose-600, .bg-rose-700
+) * {
   color: inherit !important;
   -webkit-text-fill-color: currentColor;
+}
+
+/* Explicit Hero program-card contrast. These rules intentionally win the cascade. */
+html.light .hero-program-card {
+  color: #0f172a !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+html.light .hero-program-card .hero-program-name {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+html.light .hero-program-card .hero-program-age,
+html.light .hero-program-card .hero-program-arrow {
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+html.light .hero-program-fll .hero-program-code,
+html.light .hero-program-fll .hero-program-icon,
+html.light .hero-program-fll .hero-program-icon svg {
+  color: #b45309 !important;
+  stroke: currentColor !important;
+}
+
+html.light .hero-program-ftc .hero-program-code,
+html.light .hero-program-ftc .hero-program-icon,
+html.light .hero-program-ftc .hero-program-icon svg {
+  color: #c2410c !important;
+  stroke: currentColor !important;
+}
+
+html.light .hero-program-frc .hero-program-code,
+html.light .hero-program-frc .hero-program-icon,
+html.light .hero-program-frc .hero-program-icon svg {
+  color: #2563eb !important;
+  stroke: currentColor !important;
 }
 
 /* Gradient headline text must stay transparent for background clipping. */
@@ -140,7 +172,6 @@ a {
   contain-intrinsic-size: 1px 760px;
 }
 
-/* Prevent oversized media from creating horizontal overflow on small screens. */
 img,
 video,
 svg {
@@ -151,7 +182,6 @@ img {
   height: auto;
 }
 
-/* Consistent keyboard focus across custom buttons and links. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -161,7 +191,6 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
-/* Comfortable touch targets for primary interactive controls on phones. */
 @media (max-width: 640px) {
   button:not([aria-label]),
   a[class*="rounded"] {
