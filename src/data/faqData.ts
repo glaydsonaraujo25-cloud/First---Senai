@@ -1,58 +1,13 @@
 import { FaqItem } from '../types';
 
 export const faqData: FaqItem[] = [
-  {
-    id: 'faq-1',
-    category: 'Geral',
-    question: 'O que é a FIRST®?',
-    answer: 'A FIRST® (For Inspiration and Recognition of Science and Technology) é uma organização global sem fins lucrativos fundada por Dean Kamen para inspirar o interesse e a participação de jovens no mundo da ciência, tecnologia, engenharia e matemática (STEM), por meio de programas esportivos de robótica que desenvolvem competências para toda a vida.'
-  },
-  {
-    id: 'faq-2',
-    category: 'Escolas & SENAI',
-    question: 'Qual é o papel do SENAI na parceria com a FIRST®?',
-    answer: 'O SENAI (Serviço Nacional de Aprendizagem Industrial) é a instituição líder em educação profissionalizante e inovação industrial no Brasil. Na parceria com a FIRST®, o SENAI atua como operador e impulsionador nacional, fornecendo infraestrutura de ponta (FabLabs, oficinas mecânicas, centros de usinagem e computação), formação de professores e mentores, além da realização de torneios regionais e do grande Festival Nacional de Robótica.'
-  },
-  {
-    id: 'faq-3',
-    category: 'Estudantes',
-    question: 'Quem pode participar dos programas?',
-    answer: 'Qualquer estudante entre 9 e 19 anos pode participar! O FIRST® LEGO® League (FLL) atende estudantes de 9 a 15 anos (Ensino Fundamental). O FIRST® Tech Challenge (FTC) é voltado para 12 a 18 anos (Fundamental II e Médio/Técnico). O FIRST® Robotics Competition (FRC) destina-se a jovens de 14 a 19 anos (Ensino Médio e Técnico).'
-  },
-  {
-    id: 'faq-4',
-    category: 'Estudantes',
-    question: 'Preciso saber programação ou engenharia antes de entrar?',
-    answer: 'Não! Ninguém precisa ser especialista para começar. Os programas da FIRST® foram desenhados para que você aprenda fazendo (hands-on). Em uma equipe há espaço para quem quer aprender programação, design, mecânica, elétrica, marketing, gestão financeira, oratória e fotografia.'
-  },
-  {
-    id: 'faq-5',
-    category: 'Estudantes',
-    question: 'Como posso entrar em uma equipe existente?',
-    answer: 'Você pode procurar a unidade do SENAI da sua cidade ou a direção pedagógica da sua escola para verificar se já existe uma equipe formada. Muitas equipes realizam processos seletivos e oficinas abertas no início de cada temporada letiva.'
-  },
-  {
-    id: 'faq-6',
-    category: 'Escolas & SENAI',
-    question: 'Minha escola ou unidade SENAI pode criar uma nova equipe?',
-    answer: 'Sim! Qualquer escola pública, privada, unidade SENAI, SESI ou grupo comunitário pode registrar uma equipe oficial. Para começar, são necessários pelo menos 2 mentores adultos responsáveis, um grupo de estudantes interessados e a aquisição do kit oficial de cada modalidade.'
-  },
-  {
-    id: 'faq-7',
-    category: 'Competições',
-    question: 'Existem competições oficiais da FIRST® no Brasil?',
-    answer: 'Sim! O Brasil possui um calendário oficial com torneios regionais em diversas capitais e o prestigioso Festival SESI SENAI de Robótica (Etapa Nacional em Brasília). Além disso, o Brasil sedia etapas do FIRST® Robotics Competition (FRC Brazil Regional), classificatórias para o Mundial em Houston (EUA).'
-  },
-  {
-    id: 'faq-8',
-    category: 'Competições',
-    question: 'O que são Gracious Professionalism® e Coopertition®?',
-    answer: 'São os dois pilares éticos centrais da FIRST®. "Gracious Professionalism®" é competir com garra e dedicação máxima, mantendo respeito absoluto, gentileza e integridade em relação aos concorrentes. "Coopertition®" ensina que equipes podem e devem cooperar intensamente e se ajudar mutuamente nos boxes (pits), mesmo quando estiverem prestes a se enfrentar na arena.'
-  },
-  {
-    id: 'faq-9',
-    category: 'Mentoria',
-    question: 'Como posso atuar como mentor ou voluntário nos eventos?',
-    answer: 'Profissionais da indústria, engenheiros, programadores, ex-competidores e entusiastas de STEM podem se cadastrar como mentores voluntários de equipes locais ou atuar como juízes, árbitros e técnicos de arena durante os torneios oficiais.'
-  }
+  { id:'faq-1', category:'Geral', question:'O que é a FIRST®?', answer:'A FIRST® é uma organização internacional de educação STEM que promove programas de robótica para jovens. Neste portal, o foco está em FLL, FTC e FRC e em como conhecer essas modalidades a partir do contexto do Distrito Federal.' },
+  { id:'faq-2', category:'Escolas & SENAI', question:'Este site é um canal oficial de inscrição do SENAI-DF?', answer:'Não. Este é um projeto educacional informativo voltado ao contexto do SENAI-DF. Inscrições, oferta de atividades, equipes, regulamentos e calendários devem ser confirmados diretamente nos canais oficiais do Sistema Fibra/SENAI-DF e da FIRST®.' },
+  { id:'faq-3', category:'Estudantes', question:'Qual programa combina com cada faixa etária?', answer:'Como referência atual, a FIRST LEGO League atende diferentes divisões e pode abranger aproximadamente 5 a 16 anos conforme região e edição; a FIRST Tech Challenge é voltada a 12–18 anos; e a FIRST Robotics Competition a 14–18 anos. Sempre confirme a elegibilidade da temporada vigente.' },
+  { id:'faq-4', category:'Estudantes', question:'Preciso saber programar ou construir robôs para começar?', answer:'Não. As equipes desenvolvem competências ao longo da experiência. Há atividades ligadas a programação, projeto mecânico, eletrônica, estratégia, comunicação, documentação, pesquisa e trabalho em equipe.' },
+  { id:'faq-5', category:'Estudantes', question:'Como procuro uma equipe no Distrito Federal?', answer:'Use a busca oficial de equipes e eventos da FIRST® e consulte escolas, organizações educacionais e os canais do SENAI-DF. A disponibilidade de equipes e vagas muda ao longo da temporada.' },
+  { id:'faq-6', category:'Escolas & SENAI', question:'Como uma escola do DF pode demonstrar interesse?', answer:'A escola pode consultar o SENAI-DF/Sistema Fibra para verificar oportunidades locais e usar os materiais oficiais da FIRST® para entender os requisitos de formação e registro de equipes. O formulário deste site é apenas demonstrativo.' },
+  { id:'faq-7', category:'Competições', question:'Onde encontro eventos e datas oficiais?', answer:'As datas globais e a busca de eventos devem ser consultadas nos canais oficiais da FIRST®. Para atividades específicas no Distrito Federal, confirme também as divulgações do Sistema Fibra/SENAI-DF.' },
+  { id:'faq-8', category:'Competições', question:'O que são Gracious Professionalism® e Coopertition®?', answer:'São conceitos importantes da cultura FIRST®. Em termos gerais, valorizam excelência, respeito, integridade e colaboração, inclusive em um ambiente competitivo.' },
+  { id:'faq-9', category:'Mentoria', question:'Como posso saber sobre mentoria ou voluntariado?', answer:'Consulte as oportunidades e orientações oficiais da FIRST® e, para iniciativas locais, os canais do Sistema Fibra/SENAI-DF. Requisitos e disponibilidade variam conforme programa, equipe e evento.' }
 ];
