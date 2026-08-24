@@ -1,196 +1,82 @@
 import React, { useState } from 'react';
-import { 
-  Camera, 
-  Maximize2, 
-  X, 
-  ChevronLeft, 
-  ChevronRight, 
-  Sparkles,
-  Layers
-} from 'lucide-react';
+import { Camera, ChevronLeft, ChevronRight, Info, Maximize2, X } from 'lucide-react';
 import { galleryPhotos } from '../data/galleryData';
 import { GalleryPhoto } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 export const ArenaGallery: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
+  const { isDark } = useTheme();
 
   const filters = [
-    { id: 'all', label: 'Todas as Fotos' },
-    { id: 'arenas', label: 'Arenas em Ação' },
-    { id: 'robots', label: 'Construção & Robôs' },
-    { id: 'pits', label: 'Bastidores & Pits' },
-    { id: 'teams', label: 'Torcida & Equipes' },
-    { id: 'awards', label: 'Premiações' }
+    { id: 'all', label: 'Todos' },
+    { id: 'fll', label: 'FLL' },
+    { id: 'ftc', label: 'FTC' },
+    { id: 'frc', label: 'FRC' }
   ];
 
-  const filteredPhotos = activeFilter === 'all' 
-    ? galleryPhotos 
-    : galleryPhotos.filter(p => p.category === activeFilter);
+  const filteredPhotos = activeFilter === 'all' ? galleryPhotos : galleryPhotos.filter(photo => photo.category === activeFilter);
 
-  const handleNext = () => {
+  const move = (direction: 1 | -1) => {
     if (!selectedPhoto) return;
-    const currentIndex = galleryPhotos.findIndex(p => p.id === selectedPhoto.id);
-    const nextIndex = (currentIndex + 1) % galleryPhotos.length;
-    setSelectedPhoto(galleryPhotos[nextIndex]);
-  };
-
-  const handlePrev = () => {
-    if (!selectedPhoto) return;
-    const currentIndex = galleryPhotos.findIndex(p => p.id === selectedPhoto.id);
-    const prevIndex = (currentIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
-    setSelectedPhoto(galleryPhotos[prevIndex]);
+    const index = galleryPhotos.findIndex(photo => photo.id === selectedPhoto.id);
+    setSelectedPhoto(galleryPhotos[(index + direction + galleryPhotos.length) % galleryPhotos.length]);
   };
 
   return (
-    <section id="galeria" className="py-24 bg-slate-950 text-white relative overflow-hidden border-t border-slate-800">
-      {/* Subtle Lighting */}
-      <div className="absolute inset-0 tech-grid-dark opacity-30 pointer-events-none"></div>
-
+    <section id="galeria" className={`py-16 sm:py-24 border-t relative overflow-hidden transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200'}`}>
+      <div className="absolute inset-0 tech-grid-dark opacity-20 pointer-events-none" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-sky-400 mb-4">
-            <Camera className="w-3.5 h-3.5" />
-            <span>EXPERIÊNCIA IMERSIVA</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4 font-mono-tech">
-            SINTA A ENERGIA DA ARENA.
-          </h2>
-
-          <p className="text-base sm:text-lg text-slate-300">
-            A vibração contagiante, a adrenalina dos segundos finais no cronômetro e a união nos bastidores que tornam a robótica inesquecível.
-          </p>
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold mb-4 ${isDark ? 'bg-slate-900 border-slate-800 text-sky-400' : 'bg-blue-50 border-blue-200 text-blue-700'}`}><Camera className="w-3.5 h-3.5" /> EXPERIÊNCIA VISUAL</div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">FLL, FTC e FRC em perspectiva</h2>
+          <p className={`text-base sm:text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Uma galeria ilustrativa para representar construção, programação, engenharia e colaboração nas três modalidades.</p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-          {filters.map((f) => (
-            <button
-              key={f.id}
-              onClick={() => setActiveFilter(f.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                activeFilter === f.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40'
-                  : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
-              }`}
-            >
-              {f.label}
+        <div className={`max-w-3xl mx-auto mb-8 rounded-2xl border p-4 flex items-start gap-3 ${isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-amber-50 border-amber-200 text-amber-900'}`}>
+          <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-sm leading-relaxed">As imagens desta seção são ilustrativas e não representam necessariamente equipes, eventos ou instalações do SENAI-DF ou da FIRST®.</p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {filters.map(filter => (
+            <button key={filter.id} onClick={() => setActiveFilter(filter.id)} className={`px-4 py-2 rounded-xl text-sm font-bold border transition-colors ${activeFilter === filter.id ? 'bg-blue-600 border-blue-600 text-white' : isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'}`}>{filter.label}</button>
+          ))}
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredPhotos.map(photo => (
+            <button key={photo.id} type="button" onClick={() => setSelectedPhoto(photo)} className={`text-left rounded-2xl overflow-hidden border group transition-all hover:-translate-y-1 ${isDark ? 'bg-slate-900 border-slate-800 hover:border-blue-600' : 'bg-white border-slate-200 shadow-md hover:shadow-xl hover:border-blue-300'}`}>
+              <div className="relative h-56 overflow-hidden bg-slate-100">
+                <img src={photo.image} alt={photo.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-xs font-black bg-white/95 text-slate-900">{photo.program}</span>
+                <span className="absolute bottom-3 right-3 p-2 rounded-lg bg-blue-600 text-white opacity-0 group-hover:opacity-100 transition-opacity"><Maximize2 className="w-4 h-4" /></span>
+              </div>
+              <div className="p-5">
+                <p className={`text-xs font-black uppercase tracking-widest mb-1 ${photo.program === 'FLL' ? 'text-amber-600' : photo.program === 'FTC' ? 'text-orange-600' : 'text-blue-600'}`}>{photo.categoryLabel}</p>
+                <h3 className="font-black text-lg mb-2">{photo.title}</h3>
+                <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{photo.caption}</p>
+              </div>
             </button>
           ))}
         </div>
-
-        {/* Dynamic Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPhotos.map((photo) => (
-            <div
-              key={photo.id}
-              onClick={() => setSelectedPhoto(photo)}
-              className="relative group rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 cursor-pointer shadow-xl hover:border-blue-500/60 transition-all hover:-translate-y-1"
-            >
-              <div className="h-64 sm:h-72 overflow-hidden relative">
-                <img 
-                  src={photo.image} 
-                  alt={photo.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
-                
-                {/* Floating Program Tag */}
-                <div className="absolute top-3 right-3">
-                  <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-900/90 text-slate-200 border border-slate-700 backdrop-blur-sm">
-                    {photo.program}
-                  </span>
-                </div>
-
-                {/* Hover Maximize Icon */}
-                <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity bg-blue-600/90 p-1.5 rounded-lg text-white">
-                  <Maximize2 className="w-4 h-4" />
-                </div>
-              </div>
-
-              <div className="p-5">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-blue-400 font-bold block mb-1">
-                  {photo.categoryLabel}
-                </span>
-                <h3 className="text-base font-bold text-white mb-1 group-hover:text-blue-300 transition-colors">
-                  {photo.title}
-                </h3>
-                <p className="text-xs text-slate-400 line-clamp-2">
-                  {photo.caption}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
       </div>
 
-      {/* Lightbox Modal */}
       {selectedPhoto && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md animate-in fade-in duration-200"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="relative max-w-5xl w-full bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-            
-            {/* Top Bar */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-blue-600 text-white">
-                  {selectedPhoto.program}
-                </span>
-                <h4 className="text-sm sm:text-base font-bold text-white">
-                  {selectedPhoto.title}
-                </h4>
-              </div>
-
-              <button
-                onClick={() => setSelectedPhoto(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-                aria-label="Fechar visualizador de foto"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Visualização: ${selectedPhoto.title}`}>
+          <div className={`relative max-w-5xl w-full rounded-3xl overflow-hidden border shadow-2xl ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+            <div className={`flex items-center justify-between gap-4 p-4 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+              <div><span className="text-xs font-black text-blue-600">{selectedPhoto.program}</span><h4 className="font-black">{selectedPhoto.title}</h4></div>
+              <button onClick={() => setSelectedPhoto(null)} className={`p-2 rounded-xl ${isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`} aria-label="Fechar imagem"><X className="w-5 h-5" /></button>
             </div>
-
-            {/* Large Image Preview */}
-            <div className="relative h-[55vh] sm:h-[65vh] bg-black flex items-center justify-center">
-              <img 
-                src={selectedPhoto.image} 
-                alt={selectedPhoto.title}
-                className="max-h-full max-w-full object-contain"
-              />
-
-              {/* Prev / Next Arrows */}
-              <button
-                onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/80 hover:bg-blue-600 text-white transition-colors cursor-pointer"
-                aria-label="Foto anterior"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-
-              <button
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/80 hover:bg-blue-600 text-white transition-colors cursor-pointer"
-                aria-label="Próxima foto"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+            <div className="relative h-[55vh] sm:h-[65vh] bg-slate-950 flex items-center justify-center">
+              <img src={selectedPhoto.image} alt={selectedPhoto.title} className="max-w-full max-h-full object-contain" />
+              <button onClick={() => move(-1)} className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-950/80 text-white hover:bg-blue-600" aria-label="Imagem anterior"><ChevronLeft className="w-6 h-6" /></button>
+              <button onClick={() => move(1)} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-950/80 text-white hover:bg-blue-600" aria-label="Próxima imagem"><ChevronRight className="w-6 h-6" /></button>
             </div>
-
-            {/* Caption Footer */}
-            <div className="p-4 bg-slate-950 border-t border-slate-800">
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                {selectedPhoto.caption}
-              </p>
-            </div>
-
+            <div className={`p-4 text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{selectedPhoto.caption}</div>
           </div>
         </div>
       )}
