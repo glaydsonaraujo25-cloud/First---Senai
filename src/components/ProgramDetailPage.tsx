@@ -7,9 +7,7 @@ type ProgramKey = 'fll' | 'ftc' | 'frc';
 interface ProgramDetailPageProps {
   program: ProgramKey;
   onNavigateHome: () => void;
-  onOpenParticipation: (program: string) => void;
-  onOpenQuiz: () => void;
-}
+  onOpenParticipation: (program: string) => void;}
 
 const programContent = {
   fll: {
@@ -85,7 +83,7 @@ const accentClasses = {
 
 const order: ProgramKey[] = ['fll', 'ftc', 'frc'];
 
-export const ProgramDetailPage: React.FC<ProgramDetailPageProps> = ({ program, onNavigateHome, onOpenParticipation, onOpenQuiz }) => {
+export const ProgramDetailPage: React.FC<ProgramDetailPageProps> = ({ program, onNavigateHome, onOpenParticipation }) => {
   const { isDark } = useTheme();
   const item = programContent[program];
   const colors = accentClasses[item.accent];
@@ -196,7 +194,6 @@ export const ProgramDetailPage: React.FC<ProgramDetailPageProps> = ({ program, o
               <a href={item.officialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-blue-600 hover:text-blue-500">Página oficial do programa <ExternalLink className="w-3.5 h-3.5" /></a>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
-              <button onClick={onOpenQuiz} className={`px-5 py-3 rounded-xl border font-bold text-sm ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-white' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-900'}`}>Comparar programas</button>
               <button onClick={() => onOpenParticipation(item.code)} className="px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm flex items-center justify-center gap-2">Tenho interesse <ArrowRight className="w-4 h-4" /></button>
             </div>
           </div>
