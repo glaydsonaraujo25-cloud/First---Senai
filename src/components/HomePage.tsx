@@ -3,6 +3,7 @@ import { Hero } from './Hero';
 import { Partnership } from './Partnership';
 import { Journey } from './Journey';
 import { SeasonTimeline } from './SeasonTimeline';
+import { SeasonHeaderBadge } from './SeasonHeaderBadge';
 import { ProgramFLL } from './ProgramFLL';
 import { ProgramFTC } from './ProgramFTC';
 import { ProgramFRC } from './ProgramFRC';
@@ -35,8 +36,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
     const hash = window.location.hash;
     if (!hash || hash.startsWith('#/program/')) return;
 
-    // O conteúdo é renderizado pelo React. Aguarda um frame para garantir que
-    // links compartilhados como /#fll, /#ftc e /#frc encontrem a seção.
     const frame = window.requestAnimationFrame(() => {
       document.querySelector(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' });
     });
@@ -44,30 +43,33 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
   }, []);
 
   return (
-    <main id="conteudo-principal">
-      <Hero onOpenParticipation={() => onOpenParticipation()} />
-      <Partnership />
-      <Journey />
-      <SeasonTimeline />
+    <>
+      <SeasonHeaderBadge />
+      <main id="conteudo-principal">
+        <Hero onOpenParticipation={() => onOpenParticipation()} />
+        <Partnership />
+        <Journey />
+        <SeasonTimeline />
 
-      <div id="programas" className="scroll-mt-24">
-        <ProgramFLL onOpenParticipation={() => onOpenParticipation('FLL')} />
-        <ProgramFTC onOpenParticipation={() => onOpenParticipation('FTC')} />
-        <ProgramFRC onOpenParticipation={() => onOpenParticipation('FRC')} />
-        <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
-      </div>
+        <div id="programas" className="scroll-mt-24">
+          <ProgramFLL onOpenParticipation={() => onOpenParticipation('FLL')} />
+          <ProgramFTC onOpenParticipation={() => onOpenParticipation('FTC')} />
+          <ProgramFRC onOpenParticipation={() => onOpenParticipation('FRC')} />
+          <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+        </div>
 
-      <Suspense fallback={<LoadingBlock />}>
-        <BeyondRobots />
-        <ArenaGallery />
-        <ImpactStats />
-        <DfUnitsSection onOpenParticipation={onOpenParticipation} />
-        <EventsSection onOpenParticipation={onOpenParticipation} />
-        <TestimonialsSection />
-        <NewsSection />
-        <FaqSection />
-        <FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} />
-      </Suspense>
-    </main>
+        <Suspense fallback={<LoadingBlock />}>
+          <BeyondRobots />
+          <ArenaGallery />
+          <ImpactStats />
+          <DfUnitsSection onOpenParticipation={onOpenParticipation} />
+          <EventsSection onOpenParticipation={onOpenParticipation} />
+          <TestimonialsSection />
+          <NewsSection />
+          <FaqSection />
+          <FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} />
+        </Suspense>
+      </main>
+    </>
   );
 };
