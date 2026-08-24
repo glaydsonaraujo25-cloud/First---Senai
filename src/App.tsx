@@ -31,7 +31,6 @@ const ParticipationModal = lazy(() => import('./components/ParticipationModal').
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
-
 const SITE_URL = 'https://first-senai.vercel.app';
 
 const getProgramFromLocation = (): ProgramRoute => {
@@ -43,24 +42,13 @@ const getProgramFromLocation = (): ProgramRoute => {
 };
 
 const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string }> = {
-  fll: {
-    title: 'FIRST® LEGO® League | FIRST + SENAI',
-    description: 'Conheça a FIRST LEGO League, programa de robótica e STEM com desafios práticos, inovação e trabalho em equipe.'
-  },
-  ftc: {
-    title: 'FIRST® Tech Challenge | FIRST + SENAI',
-    description: 'Conheça a FIRST Tech Challenge: engenharia aplicada, programação e robôs competitivos para estudantes.'
-  },
-  frc: {
-    title: 'FIRST® Robotics Competition | FIRST + SENAI',
-    description: 'Conheça a FIRST Robotics Competition: engenharia em grande escala, software, estratégia e colaboração.'
-  }
+  fll: { title: 'FIRST® LEGO® League | SENAI-DF', description: 'Conheça a FIRST LEGO League com foco no contexto educacional do SENAI-DF e nas oportunidades de robótica no Distrito Federal.' },
+  ftc: { title: 'FIRST® Tech Challenge | SENAI-DF', description: 'Conheça a FIRST Tech Challenge com foco em engenharia, programação e formação tecnológica no contexto do SENAI-DF.' },
+  frc: { title: 'FIRST® Robotics Competition | SENAI-DF', description: 'Conheça a FIRST Robotics Competition e sua conexão com engenharia, software, estratégia e formação tecnológica no Distrito Federal.' }
 };
 
 const LoadingBlock = () => (
-  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite">
-    <span className="text-sm font-semibold">Carregando conteúdo…</span>
-  </div>
+  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite"><span className="text-sm font-semibold">Carregando conteúdo…</span></div>
 );
 
 export function AppContent() {
@@ -72,24 +60,12 @@ export function AppContent() {
   const isAnyModalOpen = isQuizOpen || isParticipationOpen || isTeamFinderOpen;
 
   useEffect(() => {
-    const syncRoute = () => {
-      setActiveProgramPage(getProgramFromLocation());
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
+    const syncRoute = () => { setActiveProgramPage(getProgramFromLocation()); window.scrollTo({ top: 0, behavior: 'smooth' }); };
     window.addEventListener('popstate', syncRoute);
     window.addEventListener('hashchange', syncRoute);
-
     const initialRoute = getProgramFromLocation();
-    if (initialRoute && window.location.hash.startsWith('#/program/')) {
-      window.history.replaceState({}, '', `/program/${initialRoute}`);
-      setActiveProgramPage(initialRoute);
-    }
-
-    return () => {
-      window.removeEventListener('popstate', syncRoute);
-      window.removeEventListener('hashchange', syncRoute);
-    };
+    if (initialRoute && window.location.hash.startsWith('#/program/')) { window.history.replaceState({}, '', `/program/${initialRoute}`); setActiveProgramPage(initialRoute); }
+    return () => { window.removeEventListener('popstate', syncRoute); window.removeEventListener('hashchange', syncRoute); };
   }, []);
 
   useEffect(() => {
@@ -100,13 +76,11 @@ export function AppContent() {
     const twitterTitle = document.querySelector('meta[name="twitter:title"]');
     const twitterDescription = document.querySelector('meta[name="twitter:description"]');
     const canonical = document.querySelector('link[rel="canonical"]');
-
-    const defaultTitle = 'FIRST® + SENAI | Robótica, Educação STEM e Inovação';
-    const defaultDescription = 'Conheça FLL, FTC e FRC e explore uma experiência educacional sobre robótica, STEM, engenharia e inovação.';
+    const defaultTitle = 'Robótica FIRST® | SENAI-DF | Distrito Federal';
+    const defaultDescription = 'Conheça FLL, FTC e FRC em um projeto educacional voltado ao contexto do SENAI-DF, à robótica e à formação tecnológica no Distrito Federal.';
     const meta = activeProgramPage ? pageMeta[activeProgramPage] : { title: defaultTitle, description: defaultDescription };
     const path = activeProgramPage ? `/program/${activeProgramPage}` : '/';
     const currentUrl = `${SITE_URL}${path}`;
-
     document.title = meta.title;
     metaDescription?.setAttribute('content', meta.description);
     ogTitle?.setAttribute('content', meta.title);
@@ -119,67 +93,29 @@ export function AppContent() {
 
   useEffect(() => {
     if (!isAnyModalOpen) return;
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
-      if (isParticipationOpen) setIsParticipationOpen(false);
-      else if (isTeamFinderOpen) setIsTeamFinderOpen(false);
-      else if (isQuizOpen) setIsQuizOpen(false);
+      if (isParticipationOpen) setIsParticipationOpen(false); else if (isTeamFinderOpen) setIsTeamFinderOpen(false); else if (isQuizOpen) setIsQuizOpen(false);
     };
-
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', handleKeyDown); };
   }, [isAnyModalOpen, isParticipationOpen, isQuizOpen, isTeamFinderOpen]);
 
-  const navigateTo = (path: string) => {
-    window.history.pushState({}, '', path);
-    setActiveProgramPage(getProgramFromLocation());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleOpenParticipation = (tabOrProgram?: string) => {
-    setParticipationInitialTab(tabOrProgram);
-    setIsParticipationOpen(true);
-  };
-
+  const navigateTo = (path: string) => { window.history.pushState({}, '', path); setActiveProgramPage(getProgramFromLocation()); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const handleOpenParticipation = (tabOrProgram?: string) => { setParticipationInitialTab(tabOrProgram); setIsParticipationOpen(true); };
   const handleSelectProgramFromQuiz = (programId: string) => {
     const normalized = programId.toLowerCase();
-    if (normalized === 'fll' || normalized === 'ftc' || normalized === 'frc') {
-      setIsQuizOpen(false);
-      navigateTo(`/program/${normalized}`);
-      return;
-    }
-
-    const element = document.getElementById(programId);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
+    if (normalized === 'fll' || normalized === 'ftc' || normalized === 'frc') { setIsQuizOpen(false); navigateTo(`/program/${normalized}`); return; }
+    document.getElementById(programId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
-      <Header
-        isProgramPage={Boolean(activeProgramPage)}
-        onNavigateHome={() => navigateTo('/')}
-        onOpenProgram={(program) => navigateTo(`/program/${program}`)}
-        onOpenParticipation={() => handleOpenParticipation()}
-        onOpenQuiz={() => setIsQuizOpen(true)}
-        onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
-      />
-
+      <Header isProgramPage={Boolean(activeProgramPage)} onNavigateHome={() => navigateTo('/')} onOpenProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={() => handleOpenParticipation()} onOpenQuiz={() => setIsQuizOpen(true)} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
       {activeProgramPage ? (
-        <Suspense fallback={<LoadingBlock />}>
-          <ProgramDetailPage
-            program={activeProgramPage}
-            onNavigateHome={() => navigateTo('/')}
-            onOpenParticipation={(program) => handleOpenParticipation(program)}
-            onOpenQuiz={() => setIsQuizOpen(true)}
-          />
-        </Suspense>
+        <Suspense fallback={<LoadingBlock />}><ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} onOpenQuiz={() => setIsQuizOpen(true)} /></Suspense>
       ) : (
         <main id="conteudo-principal">
           <Hero onOpenQuiz={() => setIsQuizOpen(true)} onOpenParticipation={() => handleOpenParticipation()} />
@@ -189,62 +125,20 @@ export function AppContent() {
           <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
           <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
           <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
-          <ProgramComparator
-            onOpenQuiz={() => setIsQuizOpen(true)}
-            onSelectProgram={(program) => navigateTo(`/program/${program}`)}
-            onOpenParticipation={(program) => handleOpenParticipation(program)}
-          />
+          <ProgramComparator onOpenQuiz={() => setIsQuizOpen(true)} onSelectProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={(program) => handleOpenParticipation(program)} />
           <Suspense fallback={<LoadingBlock />}>
-            <BeyondRobots />
-            <ArenaGallery />
-            <ImpactStats />
-            <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-            <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-            <TestimonialsSection />
-            <NewsSection />
-            <FaqSection />
-            <FinalCta
-              onOpenParticipation={(tab) => handleOpenParticipation(tab)}
-              onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
-            />
+            <BeyondRobots /><ArenaGallery /><ImpactStats /><BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} /><EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} /><TestimonialsSection /><NewsSection /><FaqSection /><FinalCta onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
           </Suspense>
         </main>
       )}
-
       <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenQuiz={() => setIsQuizOpen(true)} />
-
       <Suspense fallback={null}>
-        {isQuizOpen && (
-          <ProgramQuizModal
-            isOpen={isQuizOpen}
-            onClose={() => setIsQuizOpen(false)}
-            onSelectProgram={handleSelectProgramFromQuiz}
-            onOpenParticipation={(program) => handleOpenParticipation(program)}
-          />
-        )}
-        {isParticipationOpen && (
-          <ParticipationModal
-            isOpen={isParticipationOpen}
-            onClose={() => setIsParticipationOpen(false)}
-            initialTab={participationInitialTab}
-          />
-        )}
-        {isTeamFinderOpen && (
-          <TeamFinderModal
-            isOpen={isTeamFinderOpen}
-            onClose={() => setIsTeamFinderOpen(false)}
-            onOpenParticipation={(program) => handleOpenParticipation(program)}
-          />
-        )}
+        {isQuizOpen && <ProgramQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} onSelectProgram={handleSelectProgramFromQuiz} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
+        {isParticipationOpen && <ParticipationModal isOpen={isParticipationOpen} onClose={() => setIsParticipationOpen(false)} initialTab={participationInitialTab} />}
+        {isTeamFinderOpen && <TeamFinderModal isOpen={isTeamFinderOpen} onClose={() => setIsTeamFinderOpen(false)} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
       </Suspense>
     </div>
   );
 }
 
-export default function App() {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
-  );
-}
+export default function App() { return <ThemeProvider><AppContent /></ThemeProvider>; }
