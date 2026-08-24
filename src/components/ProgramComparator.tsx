@@ -2,9 +2,7 @@ import React from 'react';
 import { ArrowRight, Bot, Cpu, HelpCircle, Sparkles, Wrench } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-interface ProgramComparatorProps {
-  onOpenQuiz: () => void;
-  onSelectProgram: (programId: 'fll' | 'ftc' | 'frc') => void;
+interface ProgramComparatorProps {  onSelectProgram: (programId: 'fll' | 'ftc' | 'frc') => void;
   onOpenParticipation: (program?: string) => void;
 }
 
@@ -37,9 +35,6 @@ export const ProgramComparator: React.FC<ProgramComparatorProps> = ({ onOpenQuiz
           </div>
           <h2 className={`text-3xl sm:text-5xl font-black uppercase tracking-tight mb-4 font-mono-tech ${isDark ? 'text-white' : 'text-slate-950'}`}>QUAL DESAFIO COMBINA COM VOCÊ?</h2>
           <p className={`text-base sm:text-lg mb-8 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Compare rapidamente FLL, FTC e FRC. Para uma recomendação personalizada, use o quiz.</p>
-          <button onClick={onOpenQuiz} className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg transition-all">
-            <Sparkles className="w-5 h-5 text-amber-300" /> Descobrir meu programa
-          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
