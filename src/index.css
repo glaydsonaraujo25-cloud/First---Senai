@@ -1,0 +1,302 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Archivo', 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .font-display {
+    font-family: 'Archivo', 'Syne', 'Outfit', sans-serif;
+  }
+
+  .font-heading {
+    font-family: 'Outfit', 'Archivo', sans-serif;
+  }
+
+  .font-mono-tech {
+    font-family: 'Space Grotesk', monospace;
+  }
+}
+
+/* Bold Typography & Tech Accents */
+.text-stroke-1 {
+  -webkit-text-stroke: 1px currentColor;
+}
+
+.text-stroke-2 {
+  -webkit-text-stroke: 2px currentColor;
+}
+
+.tracking-ultra-wide {
+  letter-spacing: 0.2em;
+}
+
+/* ========================================================
+   THEME ADAPTATION ARCHITECTURE
+   ======================================================== */
+
+html.light {
+  color-scheme: light;
+  background-color: #f8fafc;
+}
+
+html.dark {
+  color-scheme: dark;
+  background-color: #020617;
+}
+
+/* Light Mode Background Overrides */
+.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.light .bg-slate-950 {
+  background-color: #f8fafc;
+}
+
+.light .bg-slate-900 {
+  background-color: #ffffff;
+}
+
+.light .bg-slate-850,
+.light .bg-slate-800 {
+  background-color: #f1f5f9;
+}
+
+.light .bg-slate-700 {
+  background-color: #e2e8f0;
+}
+
+.light .bg-slate-950\/90,
+.light .bg-slate-950\/80,
+.light .bg-slate-950\/70,
+.light .bg-slate-950\/60,
+.light .bg-slate-950\/50 {
+  background-color: rgba(248, 250, 252, 0.9);
+}
+
+.light .bg-slate-900\/95,
+.light .bg-slate-900\/90,
+.light .bg-slate-900\/80,
+.light .bg-slate-900\/70,
+.light .bg-slate-900\/60,
+.light .bg-slate-900\/50,
+.light .bg-slate-900\/40,
+.light .bg-slate-900\/30 {
+  background-color: #ffffff;
+}
+
+.light .bg-slate-800\/90,
+.light .bg-slate-800\/80,
+.light .bg-slate-800\/60,
+.light .bg-slate-800\/50,
+.light .bg-slate-800\/40 {
+  background-color: #f1f5f9;
+}
+
+/* Light Mode Borders */
+.light .border-slate-800,
+.light .border-slate-800\/80,
+.light .border-slate-800\/60,
+.light .border-slate-800\/50 {
+  border-color: #e2e8f0;
+}
+
+.light .border-slate-700,
+.light .border-slate-700\/80,
+.light .border-slate-700\/90 {
+  border-color: #cbd5e1;
+}
+
+.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0;
+}
+
+.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #cbd5e1;
+}
+
+/* Light Mode Text Hierarchy */
+.light .text-slate-100 {
+  color: #0f172a;
+}
+
+.light .text-slate-200 {
+  color: #1e293b;
+}
+
+.light .text-slate-300 {
+  color: #334155;
+}
+
+.light .text-slate-400 {
+  color: #64748b;
+}
+
+.light .text-slate-500 {
+  color: #64748b;
+}
+
+.light .text-slate-600 {
+  color: #94a3b8;
+}
+
+/* Headings in light mode */
+.light h1.text-white,
+.light h2.text-white,
+.light h3.text-white,
+.light h4.text-white,
+.light h5.text-white,
+.light h6.text-white {
+  color: #0f172a;
+}
+
+.light p.text-white,
+.light span.text-white:not([class*="bg-"]):not([class*="badge"]),
+.light strong.text-white {
+  color: #0f172a;
+}
+
+/* CRITICAL: Text clipping with transparent fill must always remain transparent */
+.light .text-transparent,
+.light [class*="text-transparent"],
+.light .bg-clip-text {
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}
+
+/* Colored buttons & tags maintain white text */
+.light button.bg-red-600,
+.light button.bg-red-500,
+.light button.bg-blue-600,
+.light button.bg-blue-500,
+.light button.bg-emerald-600,
+.light button.bg-amber-600,
+.light .badge-solid {
+  color: #ffffff;
+}
+
+/* Light Mode Form Elements */
+.light input,
+.light select,
+.light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light input:focus,
+.light select:focus,
+.light textarea:focus {
+  background-color: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Light Mode Modal Backdrop MUST stay dim / translucent for high contrast */
+.light .fixed.inset-0.bg-slate-950\/80,
+.light .fixed.inset-0.bg-slate-950\/70,
+.light [class*="fixed inset-0 bg-slate-950"] {
+  background-color: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Light Mode Hover States */
+.light .hover\:bg-slate-800:hover {
+  background-color: #e2e8f0;
+}
+
+.light .hover\:bg-slate-700:hover {
+  background-color: #cbd5e1;
+}
+
+/* Card Elevation in Light Mode */
+.light .bg-slate-900,
+.light .bg-slate-800 {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+.light .shadow-2xl {
+  box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.04) !important;
+}
+
+.light .shadow-xl {
+  box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.07), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+.light .shadow-lg {
+  box-shadow: 0 8px 16px -4px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Tech Grid & Dots */
+.tech-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(14, 116, 144, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 116, 144, 0.05) 1px, transparent 1px);
+}
+
+.tech-grid-dark {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+.light .tech-grid-dark {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
+
+.tech-dots {
+  background-image: radial-gradient(rgba(2, 132, 199, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.tech-dots-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.light .tech-dots-dark {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Custom glow effects */
+.first-blue-glow {
+  box-shadow: 0 0 40px -10px rgba(0, 102, 204, 0.35);
+}
+
+.senai-red-glow {
+  box-shadow: 0 0 40px -10px rgba(227, 6, 19, 0.35);
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 4s ease-in-out infinite;
+}
+

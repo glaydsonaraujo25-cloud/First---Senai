@@ -1,0 +1,6 @@
+{
+  "name": "FIRST® + SENAI — Robótica e Inovação STEM",
+  "description": "Plataforma oficial da parceria FIRST® e SENAI no Brasil. Descubra os programas FIRST® LEGO® League, FIRST® Tech Challenge e FIRST® Robotics Competition.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
