@@ -1,0 +1,60 @@
+/* Rendering and interaction enhancements layered on top of index.css. */
+
+/* Skip expensive off-screen rendering for long landing-page sections. */
+#conteudo-principal > section:nth-of-type(n + 6) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 760px;
+}
+
+/* Prevent oversized media from creating horizontal overflow on small screens. */
+img,
+video,
+svg {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Consistent keyboard focus across custom buttons and links. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.55);
+  outline-offset: 3px;
+}
+
+/* Comfortable touch targets for primary interactive controls on phones. */
+@media (max-width: 640px) {
+  button:not([aria-label]),
+  a[class*="rounded"] {
+    min-height: 44px;
+  }
+
+  [role="dialog"] {
+    align-items: flex-end;
+    padding: 0.75rem;
+  }
+
+  [role="dialog"] > div {
+    max-height: 92dvh;
+    border-bottom-left-radius: 1.25rem;
+    border-bottom-right-radius: 1.25rem;
+  }
+
+  h1 {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-data: reduce) {
+  .tech-grid-dark,
+  .tech-grid-pattern,
+  .tech-dots,
+  .tech-dots-dark {
+    background-image: none !important;
+  }
+}
