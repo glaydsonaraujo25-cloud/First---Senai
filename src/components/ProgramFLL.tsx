@@ -11,7 +11,7 @@ export const ProgramFLL: React.FC<ProgramFLLProps> = ({ onOpenParticipation }) =
   const highlights = ['Construção e programação com LEGO® Education', 'Pesquisa e resolução de problemas', 'Trabalho em equipe e comunicação', 'Experiências práticas de STEM'];
 
   return (
-    <section id="fll" className={`py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-950 border-slate-200'}`}>
+    <section id="fll" className={`scroll-mt-24 py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-950 border-slate-200'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-7">
