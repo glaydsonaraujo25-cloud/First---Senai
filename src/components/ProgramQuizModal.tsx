@@ -1,19 +1,6 @@
-import React, { useState } from 'react';
-import { 
-  X, 
-  Sparkles, 
-  ChevronRight, 
-  RotateCcw, 
-  CheckCircle, 
-  Cpu, 
-  Wrench, 
-  Bot, 
-  ArrowRight,
-  School,
-  BrainCircuit,
-  GraduationCap
-} from 'lucide-react';
-import confetti from 'canvas-confetti';
+import React, { useMemo, useState } from 'react';
+import { ArrowRight, Bot, CheckCircle2, Cpu, RotateCcw, Sparkles, Wrench, X } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface ProgramQuizModalProps {
   isOpen: boolean;
@@ -22,356 +9,208 @@ interface ProgramQuizModalProps {
   onOpenParticipation: (program?: string) => void;
 }
 
-export const ProgramQuizModal: React.FC<ProgramQuizModalProps> = ({
-  isOpen,
-  onClose,
-  onSelectProgram,
-  onOpenParticipation
-}) => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
-  const [answers, setAnswers] = useState<{
-    age?: string;
-    school?: string;
-    interest?: string;
-    experience?: string;
-  }>({});
+type ProgramId = 'fll' | 'ftc' | 'frc';
+type AnswerKey = 'age' | 'interest' | 'style' | 'experience';
+type Scores = Record<ProgramId, number>;
+
+const programInfo = {
+  fll: { code: 'FLL', name: 'FIRST® LEGO® League', Icon: Cpu, accent: 'text-amber-600', badge: 'bg-amber-500 text-slate-950', bar: 'bg-amber-500' },
+  ftc: { code: 'FTC', name: 'FIRST® Tech Challenge', Icon: Wrench, accent: 'text-orange-600', badge: 'bg-orange-600 text-white', bar: 'bg-orange-600' },
+  frc: { code: 'FRC', name: 'FIRST® Robotics Competition', Icon: Bot, accent: 'text-blue-600', badge: 'bg-blue-600 text-white', bar: 'bg-blue-600' },
+} as const;
+
+const questions: Array<{
+  key: AnswerKey;
+  title: string;
+  help: string;
+  options: Array<{ label: string; description: string; score: Scores }>;
+}> = [
+  {
+    key: 'age',
+    title: 'Qual faixa etária mais se aproxima de você ou da sua turma?',
+    help: 'A idade é apenas um dos fatores; a elegibilidade oficial pode variar por região.',
+    options: [
+      { label: '5 a 11 anos', description: 'Primeiros contatos com STEM e robótica.', score: { fll: 6, ftc: 0, frc: 0 } },
+      { label: '12 a 13 anos', description: 'Faixa de transição entre fundamentos e engenharia aplicada.', score: { fll: 4, ftc: 5, frc: 0 } },
+      { label: '14 a 16 anos', description: 'Compatível com experiências de engenharia mais avançadas.', score: { fll: 2, ftc: 5, frc: 5 } },
+      { label: '17 a 18 anos', description: 'Foco maior em FTC/FRC, conforme regras locais.', score: { fll: 0, ftc: 4, frc: 6 } },
+    ],
+  },
+  {
+    key: 'interest',
+    title: 'O que mais chama sua atenção?',
+    help: 'Escolha o tipo de desafio que você mais gostaria de explorar.',
+    options: [
+      { label: 'LEGO®, criatividade e resolução de problemas', description: 'Construir, programar e investigar desafios de forma guiada.', score: { fll: 6, ftc: 1, frc: 0 } },
+      { label: 'Programação, sensores e mecanismos', description: 'Integrar software e hardware em um robô competitivo.', score: { fll: 2, ftc: 6, frc: 3 } },
+      { label: 'Engenharia, fabricação e sistemas complexos', description: 'Trabalhar com uma equipe multidisciplinar em escala maior.', score: { fll: 0, ftc: 3, frc: 6 } },
+    ],
+  },
+  {
+    key: 'style',
+    title: 'Que tipo de experiência parece mais interessante?',
+    help: 'Não existe resposta melhor: os programas têm objetivos e escalas diferentes.',
+    options: [
+      { label: 'Aprender experimentando e apresentando ideias', description: 'Quero uma entrada acessível e criativa em STEM.', score: { fll: 6, ftc: 2, frc: 1 } },
+      { label: 'Construir e competir com um robô de escala educacional', description: 'Quero mais autonomia técnica e estratégia de jogo.', score: { fll: 2, ftc: 6, frc: 3 } },
+      { label: 'Participar de um grande projeto de engenharia', description: 'Quero atuar em software, mecânica, elétrica, gestão ou comunicação.', score: { fll: 0, ftc: 3, frc: 6 } },
+    ],
+  },
+  {
+    key: 'experience',
+    title: 'Qual é sua experiência atual com tecnologia?',
+    help: 'Todos os programas envolvem aprendizado; experiência anterior não é uma exigência universal.',
+    options: [
+      { label: 'Estou começando agora', description: 'Ainda estou conhecendo lógica, robótica e ferramentas STEM.', score: { fll: 5, ftc: 3, frc: 1 } },
+      { label: 'Já tenho alguma experiência', description: 'Já programei, montei projetos ou participei de atividades técnicas.', score: { fll: 3, ftc: 5, frc: 4 } },
+      { label: 'Gosto de desafios técnicos avançados', description: 'Quero aprofundar engenharia e trabalhar em um projeto multidisciplinar.', score: { fll: 1, ftc: 4, frc: 6 } },
+    ],
+  },
+];
+
+export const ProgramQuizModal: React.FC<ProgramQuizModalProps> = ({ isOpen, onClose, onSelectProgram, onOpenParticipation }) => {
+  const { isDark } = useTheme();
+  const [step, setStep] = useState(0);
+  const [scores, setScores] = useState<Scores>({ fll: 0, ftc: 0, frc: 0 });
+  const [answered, setAnswered] = useState<Partial<Record<AnswerKey, string>>>({});
+
+  const result = useMemo(() => {
+    const entries = (Object.entries(scores) as Array<[ProgramId, number]>).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((sum, [, value]) => sum + value, 0) || 1;
+    return entries.map(([id, value]) => ({ id, value, percent: Math.round((value / total) * 100) }));
+  }, [scores]);
 
   if (!isOpen) return null;
 
-  const handleSelectAnswer = (key: 'age' | 'school' | 'interest' | 'experience', value: string) => {
-    const updated = { ...answers, [key]: value };
-    setAnswers(updated);
+  const isResult = step >= questions.length;
+  const current = questions[step];
 
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setCurrentStep(4); // Result step
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      } catch (e) {
-        // Fallback gracefully
-      }
-    }
+  const choose = (label: string, score: Scores) => {
+    setScores(prev => ({ fll: prev.fll + score.fll, ftc: prev.ftc + score.ftc, frc: prev.frc + score.frc }));
+    setAnswered(prev => ({ ...prev, [current.key]: label }));
+    setStep(prev => prev + 1);
   };
 
-  const handleReset = () => {
-    setAnswers({});
-    setCurrentStep(1);
+  const reset = () => {
+    setStep(0);
+    setScores({ fll: 0, ftc: 0, frc: 0 });
+    setAnswered({});
   };
 
-  // Determine recommendation algorithm
-  const getRecommendation = () => {
-    const { age, interest, experience } = answers;
-
-    if (age === '9-14' || interest === 'lego_iniciacao') {
-      return {
-        id: 'fll',
-        code: 'FLL',
-        name: 'FIRST® LEGO® League',
-        tagline: 'O ponto de partida perfeito para a sua jornada STEM',
-        badgeColor: 'bg-amber-500',
-        textColor: 'text-amber-400',
-        borderColor: 'border-amber-500/50',
-        icon: Cpu,
-        reasons: [
-          'Ideal para a sua faixa etária e estágio escolar (Ensino Fundamental).',
-          'Aprenda lógica de programação e mecânica de forma lúdica com LEGO® SPIKE Prime.',
-          'Desenvolva projetos de pesquisa científica sobre problemas reais do nosso planeta.'
-        ],
-        nextStep: 'Encontre uma equipe FLL em sua escola ou unidade SESI/SENAI.'
-      };
-    }
-
-    if (age === '12-18' && (interest === 'robot_medio' || experience === 'iniciante_intermed')) {
-      return {
-        id: 'ftc',
-        code: 'FTC',
-        name: 'FIRST® Tech Challenge',
-        tagline: 'Engenharia aplicada com robôs compactos e velozes',
-        badgeColor: 'bg-orange-600',
-        textColor: 'text-orange-400',
-        borderColor: 'border-orange-500/50',
-        icon: Wrench,
-        reasons: [
-          'Perfeito para estudantes do Fundamental II e Ensino Médio/Técnico.',
-          'Aprenda modelagem CAD 3D, usinagem e programação em Java no Android Studio.',
-          'Pilote e dispute estratégias de alianças táticas em arena competitiva de 3,6 metros.'
-        ],
-        nextStep: 'Conecte-se aos laboratórios do SENAI para formação de equipes FTC.'
-      };
-    }
-
-    // Default to FRC for advanced / older youth / high engineering
-    return {
-      id: 'frc',
-      code: 'FRC',
-      name: 'FIRST® Robotics Competition',
-      tagline: 'O desafio máximo de engenharia e tecnologia em escala industrial',
-      badgeColor: 'bg-blue-600',
-      textColor: 'text-blue-400',
-      borderColor: 'border-blue-500/50',
-      icon: Bot,
-      reasons: [
-        'Indicado para estudantes de 14 a 19 anos (Ensino Médio e Técnico SENAI).',
-        'Construa robôs industriais de 56kg com usinagem CNC, pneumática e Swerve Drive.',
-        'Atue em equipes que operam como empresas de tecnologia com mentoria da indústria.'
-      ],
-      nextStep: 'Inscreva-se nos polos de treinamento FRC da rede SENAI Brasil.'
-    };
-  };
-
-  const result = currentStep === 4 ? getRecommendation() : null;
+  const top = result[0];
+  const topProgram = programInfo[top.id];
+  const TopIcon = topProgram.Icon;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       aria-labelledby="quiz-modal-title"
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}
     >
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden text-white relative">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/50">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-sky-400" />
-            <h3 id="quiz-modal-title" className="text-base font-bold text-white">
-              Descubra seu Programa Ideal (FIRST® + SENAI)
-            </h3>
+      <div className={`w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl border shadow-2xl ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+        <div className={`sticky top-0 z-10 flex items-center justify-between gap-3 p-5 border-b backdrop-blur-md ${isDark ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-slate-200'}`}>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600 shrink-0" />
+              <h3 id="quiz-modal-title" className="text-base sm:text-lg font-black truncate">Qual programa combina mais com você?</h3>
+            </div>
+            <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Comparador orientativo — não define elegibilidade oficial.</p>
           </div>
-
-          <button
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-            aria-label="Fechar modal de quiz"
-          >
+          <button onClick={onClose} className={`p-2 rounded-xl shrink-0 ${isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} aria-label="Fechar quiz">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Quiz Body */}
-        <div className="p-6">
-          
-          {/* Step 1: Age & School */}
-          {currentStep === 1 && (
-            <div className="space-y-4">
-              <div className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">
-                Pergunta 1 de 3 • Faixa Etária e Escolaridade
+        <div className="p-5 sm:p-7">
+          {!isResult ? (
+            <>
+              <div className="flex items-center justify-between gap-4 mb-5">
+                <span className="text-xs font-black uppercase tracking-widest text-blue-600">Pergunta {step + 1} de {questions.length}</span>
+                <span className={`text-xs font-semibold ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{Math.round(((step + 1) / questions.length) * 100)}%</span>
               </div>
-              <h4 className="text-xl font-bold text-white">
-                Qual é a sua idade ou o nível dos seus estudantes?
-              </h4>
-
-              <div className="grid grid-cols-1 gap-3 pt-2">
-                <button
-                  onClick={() => handleSelectAnswer('age', '9-14')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-amber-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-amber-400">9 a 14 anos</strong>
-                    <span className="text-xs text-slate-400">Ensino Fundamental I e II</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('age', '12-18')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-orange-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-orange-400">12 a 18 anos</strong>
-                    <span className="text-xs text-slate-400">Fundamental II ou Ensino Médio</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('age', '14-19')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-blue-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-blue-400">14 a 19 anos</strong>
-                    <span className="text-xs text-slate-400">Ensino Médio, Técnico SENAI ou Integrado</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
+              <div className={`h-2 rounded-full overflow-hidden mb-7 ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: `${((step + 1) / questions.length) * 100}%` }} />
               </div>
-            </div>
-          )}
 
-          {/* Step 2: Main Area of Interest */}
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <div className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">
-                Pergunta 2 de 3 • Área de Interesse
+              <h4 className="text-xl sm:text-2xl font-black mb-2">{current.title}</h4>
+              <p className={`text-sm mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{current.help}</p>
+
+              <div className="space-y-3">
+                {current.options.map(option => (
+                  <button
+                    key={option.label}
+                    type="button"
+                    onClick={() => choose(option.label, option.score)}
+                    className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between gap-4 group transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-800 hover:border-blue-500' : 'bg-slate-50 border-slate-200 hover:bg-blue-50 hover:border-blue-300'}`}
+                  >
+                    <div>
+                      <strong className={`block text-sm sm:text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>{option.label}</strong>
+                      <span className={`block text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{option.description}</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-blue-600 shrink-0 transition-transform group-hover:translate-x-1" />
+                  </button>
+                ))}
               </div>
-              <h4 className="text-xl font-bold text-white">
-                O que você mais gostaria de aprender e construir?
-              </h4>
-
-              <div className="grid grid-cols-1 gap-3 pt-2">
-                <button
-                  onClick={() => handleSelectAnswer('interest', 'lego_iniciacao')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-amber-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-amber-400">Lógica, Desafios Criativos & LEGO®</strong>
-                    <span className="text-xs text-slate-400">Construção com kits educativos, sensores e projetos de pesquisa.</span>
+            </>
+          ) : (
+            <div>
+              <div className={`rounded-3xl border p-5 sm:p-7 mb-5 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center">
+                    <TopIcon className={`w-7 h-7 ${topProgram.accent}`} />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('interest', 'robot_medio')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-orange-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
                   <div>
-                    <strong className="block text-sm text-white group-hover:text-orange-400">Modelagem 3D, Metal & Java no Android</strong>
-                    <span className="text-xs text-slate-400">Robôs de alumínio usinado de 19kg e arenas estratégicas de alianças.</span>
+                    <p className="text-xs font-black uppercase tracking-widest text-blue-600">Maior afinidade neste quiz</p>
+                    <h4 className="text-2xl font-black mt-1">{topProgram.name}</h4>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('interest', 'industrial_eng')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-blue-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-blue-400">Alta Engenharia, Máquinas CNC & Escala Real (56kg)</strong>
-                    <span className="text-xs text-slate-400">Pneumática pesada, módulos Swerve 360°, arenas de basquete e gestão empresarial.</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Prior Experience */}
-          {currentStep === 3 && (
-            <div className="space-y-4">
-              <div className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">
-                Pergunta 3 de 3 • Experiência Prévia
-              </div>
-              <h4 className="text-xl font-bold text-white">
-                Qual é a sua familiaridade atual com robótica ou programação?
-              </h4>
-
-              <div className="grid grid-cols-1 gap-3 pt-2">
-                <button
-                  onClick={() => handleSelectAnswer('experience', 'iniciante')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-emerald-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-emerald-400">Iniciante Total</strong>
-                    <span className="text-xs text-slate-400">Nunca montei ou programei um robô antes.</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('experience', 'iniciante_intermed')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-sky-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-sky-400">Intermediário</strong>
-                    <span className="text-xs text-slate-400">Conheço um pouco de lógica, Arduino ou blocos de código.</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button
-                  onClick={() => handleSelectAnswer('experience', 'avancado')}
-                  className="p-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:border-indigo-500 hover:bg-slate-800 text-left transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <div>
-                    <strong className="block text-sm text-white group-hover:text-indigo-400">Avançado / Curso Técnico</strong>
-                    <span className="text-xs text-slate-400">Já curso Mecânica, Eletroeletrônica, Informática ou participei de torneios.</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Result & Match */}
-          {currentStep === 4 && result && (
-            <div className="space-y-5 animate-in zoom-in-95 duration-200">
-              
-              <div className={`p-5 rounded-2xl border ${result.borderColor} bg-slate-950 text-center relative overflow-hidden`}>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-3 border border-emerald-500/30">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  <span>MATCH 100% COMPATÍVEL</span>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className={`px-3 py-1 rounded text-xs font-black text-white ${result.badgeColor}`}>
-                    {result.code}
-                  </span>
-                  <h4 className="text-2xl font-black text-white">
-                    {result.name}
-                  </h4>
-                </div>
-
-                <p className="text-xs text-slate-300 italic mb-4">
-                  "{result.tagline}"
+                <p className={`text-sm leading-relaxed mb-5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  O resultado combina suas respostas sobre faixa etária, interesses, estilo de aprendizagem e experiência. Ele serve para orientar a comparação entre os programas, não como avaliação oficial.
                 </p>
 
-                {/* Match Reasons */}
-                <div className="text-left space-y-2 border-t border-slate-800 pt-3">
-                  {result.reasons.map((r, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs text-slate-200">
-                      <CheckCircle className={`w-3.5 h-3.5 ${result.textColor} shrink-0 mt-0.5`} />
-                      <span>{r}</span>
-                    </div>
+                <div className="space-y-4">
+                  {result.map(entry => {
+                    const info = programInfo[entry.id];
+                    return (
+                      <div key={entry.id}>
+                        <div className="flex items-center justify-between gap-3 text-sm mb-1.5">
+                          <span className="font-bold">{info.code}</span>
+                          <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>{entry.percent}% da pontuação distribuída</span>
+                        </div>
+                        <div className={`h-2.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
+                          <div className={`h-full rounded-full ${info.bar}`} style={{ width: `${entry.percent}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className={`rounded-2xl border p-4 mb-5 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <div className="flex items-center gap-2 mb-3"><CheckCircle2 className="w-4 h-4 text-emerald-600" /><strong className="text-sm">Suas respostas</strong></div>
+                <div className="grid sm:grid-cols-2 gap-2 text-xs">
+                  {Object.entries(answered).map(([key, value]) => (
+                    <div key={key} className={`rounded-xl p-3 ${isDark ? 'bg-slate-900 text-slate-300' : 'bg-slate-50 text-slate-700'}`}>{value}</div>
                   ))}
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenParticipation(result.code);
-                  }}
-                  className={`w-full py-3.5 font-bold text-sm text-white rounded-xl ${result.badgeColor} shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer`}
-                >
-                  <span>QUERO ME INSCREVER EM {result.code}</span>
-                  <ArrowRight className="w-4 h-4" />
+              <div className="grid sm:grid-cols-2 gap-3">
+                <button type="button" onClick={() => onSelectProgram(top.id)} className="min-h-12 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2">
+                  Ver {topProgram.code} <ArrowRight className="w-4 h-4" />
                 </button>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onSelectProgram(result.id);
-                      const el = document.getElementById(result.id);
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors"
-                  >
-                    Ver Página do {result.code}
-                  </button>
-
-                  <button
-                    onClick={handleReset}
-                    className="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-semibold rounded-xl border border-slate-700 transition-colors flex items-center justify-center gap-1.5"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Refazer Quiz</span>
-                  </button>
-                </div>
+                <button type="button" onClick={() => onOpenParticipation(topProgram.code)} className="min-h-12 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold">Tenho interesse</button>
               </div>
 
+              <button type="button" onClick={reset} className={`mt-4 w-full min-h-11 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 ${isDark ? 'border-slate-700 text-slate-300 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                <RotateCcw className="w-4 h-4" /> Refazer quiz
+              </button>
             </div>
           )}
-
         </div>
-
       </div>
     </div>
   );
