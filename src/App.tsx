@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -14,6 +14,7 @@ import { ProgramFLL } from './components/ProgramFLL';
 import { ProgramFTC } from './components/ProgramFTC';
 import { ProgramFRC } from './components/ProgramFRC';
 import { ProgramComparator } from './components/ProgramComparator';
+import { ProgramDetailPage } from './components/ProgramDetailPage';
 import { BeyondRobots } from './components/BeyondRobots';
 import { ArenaGallery } from './components/ArenaGallery';
 import { ImpactStats } from './components/ImpactStats';
@@ -28,11 +29,30 @@ import { ProgramQuizModal } from './components/ProgramQuizModal';
 import { ParticipationModal } from './components/ParticipationModal';
 import { TeamFinderModal } from './components/TeamFinderModal';
 
+type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
+
+const getProgramFromHash = (): ProgramRoute => {
+  if (typeof window === 'undefined') return null;
+  const match = window.location.hash.match(/^#\/program\/(fll|ftc|frc)$/i);
+  return match ? (match[1].toLowerCase() as ProgramRoute) : null;
+};
+
 export function AppContent() {
   const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
   const [isParticipationOpen, setIsParticipationOpen] = useState<boolean>(false);
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState<boolean>(false);
   const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
+  const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromHash());
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setActiveProgramPage(getProgramFromHash());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const handleOpenParticipation = (tabOrProgram?: string) => {
     setParticipationInitialTab(tabOrProgram);
@@ -40,6 +60,13 @@ export function AppContent() {
   };
 
   const handleSelectProgramFromQuiz = (programId: string) => {
+    const normalized = programId.toLowerCase();
+    if (normalized === 'fll' || normalized === 'ftc' || normalized === 'frc') {
+      setIsQuizOpen(false);
+      window.location.hash = `/program/${normalized}`;
+      return;
+    }
+
     const element = document.getElementById(programId);
     if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
@@ -52,34 +79,42 @@ export function AppContent() {
         onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
       />
 
-      <main id="conteudo-principal">
-        <Hero
-          onOpenQuiz={() => setIsQuizOpen(true)}
-          onOpenParticipation={() => handleOpenParticipation()}
-        />
-        <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
-        <Journey onOpenQuiz={() => setIsQuizOpen(true)} />
-        <SeasonTimeline />
-        <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
-        <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
-        <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
-        <ProgramComparator
-          onOpenQuiz={() => setIsQuizOpen(true)}
+      {activeProgramPage ? (
+        <ProgramDetailPage
+          program={activeProgramPage}
           onOpenParticipation={(program) => handleOpenParticipation(program)}
+          onOpenQuiz={() => setIsQuizOpen(true)}
         />
-        <BeyondRobots />
-        <ArenaGallery />
-        <ImpactStats />
-        <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-        <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-        <TestimonialsSection />
-        <NewsSection />
-        <FaqSection />
-        <FinalCta
-          onOpenParticipation={(tab) => handleOpenParticipation(tab)}
-          onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
-        />
-      </main>
+      ) : (
+        <main id="conteudo-principal">
+          <Hero
+            onOpenQuiz={() => setIsQuizOpen(true)}
+            onOpenParticipation={() => handleOpenParticipation()}
+          />
+          <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
+          <Journey onOpenQuiz={() => setIsQuizOpen(true)} />
+          <SeasonTimeline />
+          <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
+          <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
+          <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
+          <ProgramComparator
+            onOpenQuiz={() => setIsQuizOpen(true)}
+            onOpenParticipation={(program) => handleOpenParticipation(program)}
+          />
+          <BeyondRobots />
+          <ArenaGallery />
+          <ImpactStats />
+          <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
+          <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
+          <TestimonialsSection />
+          <NewsSection />
+          <FaqSection />
+          <FinalCta
+            onOpenParticipation={(tab) => handleOpenParticipation(tab)}
+            onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
+          />
+        </main>
+      )}
 
       <Footer
         onOpenParticipation={(tab) => handleOpenParticipation(tab)}
