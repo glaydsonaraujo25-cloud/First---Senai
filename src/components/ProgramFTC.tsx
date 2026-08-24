@@ -11,7 +11,7 @@ export const ProgramFTC: React.FC<ProgramFTCProps> = ({ onOpenParticipation }) =
   const highlights = ['Projeto e construção de mecanismos', 'Programação, sensores e testes', 'Estratégia de competição', 'Documentação e comunicação de engenharia'];
 
   return (
-    <section id="ftc" className={`py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-950 border-slate-200'}`}>
+    <section id="ftc" className={`scroll-mt-24 py-16 sm:py-20 border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-950 border-slate-200'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-5 lg:order-2">
