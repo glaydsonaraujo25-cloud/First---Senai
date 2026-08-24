@@ -158,6 +158,69 @@ html.light .hero-program-frc .hero-program-icon svg {
   stroke: currentColor !important;
 }
 
+/* SENAI brand treatment: current identity uses blue with an orange accent. */
+:root {
+  --senai-blue: #075985;
+  --senai-blue-dark: #0c4a6e;
+  --senai-orange: #f97316;
+  --senai-blue-soft: #e0f2fe;
+}
+
+/* Header and footer SENAI-DF name badges. */
+#main-header .bg-red-600,
+footer .bg-red-600 {
+  background: linear-gradient(90deg, var(--senai-blue) 0%, var(--senai-blue) 86%, var(--senai-orange) 86%, var(--senai-orange) 100%) !important;
+  color: #fff !important;
+}
+
+/* SENAI-DF location badge in the Hero and mobile header. */
+#inicio .bg-red-50,
+#main-header .bg-red-50 {
+  background-color: var(--senai-blue-soft) !important;
+  border-color: #7dd3fc !important;
+  color: var(--senai-blue-dark) !important;
+}
+
+.dark #inicio .bg-red-950\/40,
+.dark #main-header .bg-slate-800.text-red-200 {
+  background-color: rgba(7, 89, 133, 0.28) !important;
+  border-color: rgba(249, 115, 22, 0.65) !important;
+  color: #bae6fd !important;
+}
+
+#inicio .bg-red-50 svg,
+#main-header .bg-red-50 svg,
+.dark #inicio .bg-red-950\/40 svg,
+.dark #main-header .bg-slate-800.text-red-200 svg {
+  color: var(--senai-orange) !important;
+  stroke: currentColor !important;
+}
+
+/* Colored SENAI-DF text in the Hero uses the SENAI blue. */
+#inicio p.text-red-600 {
+  color: var(--senai-blue) !important;
+}
+
+/* Official SENAI-DF actions use blue with an orange detail instead of red. */
+a[href="https://www.sistemafibra.org.br/senai/"],
+a[href="https://sistemafibra.org.br/senai/educacao"] {
+  border-color: rgba(249, 115, 22, 0.55) !important;
+}
+
+#parceria a[href="https://www.sistemafibra.org.br/senai/"] {
+  background: linear-gradient(90deg, var(--senai-blue) 0%, var(--senai-blue) 90%, var(--senai-orange) 90%, var(--senai-orange) 100%) !important;
+  color: #fff !important;
+}
+
+#mapa-brasil a[href="https://www.sistemafibra.org.br/senai/"],
+#mapa-brasil a[href="https://sistemafibra.org.br/senai/educacao"] {
+  color: var(--senai-blue) !important;
+}
+
+#mapa-brasil > div > div:first-child > div:first-child {
+  border-color: #7dd3fc !important;
+}
+
 /* Gradient headline text must stay transparent for background clipping. */
 .light .text-transparent,
 .light [class*="text-transparent"],
