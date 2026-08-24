@@ -38,10 +38,13 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
   ];
 
   const handleHomeAnchor = (href: string) => {
-    if (isProgramPage && onNavigateHome) {
-      onNavigateHome();
-      window.setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' }), 50);
+    if (isProgramPage) {
+      // Navega para a Home já com a âncora. Assim o navegador preserva o
+      // destino durante a troca de rota e não depende de um timeout curto.
+      window.location.assign(`/${href}`);
+      return;
     }
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const renderDesktopLink = (link: { label: string; href: string }) => (
@@ -49,10 +52,8 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
       key={link.href}
       href={isProgramPage ? `/${link.href}` : link.href}
       onClick={(e) => {
-        if (isProgramPage) {
-          e.preventDefault();
-          handleHomeAnchor(link.href);
-        }
+        e.preventDefault();
+        handleHomeAnchor(link.href);
       }}
       className={`px-2.5 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100'}`}
     >
@@ -64,7 +65,11 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
     <a
       key={link.href}
       href={link.href}
-      onClick={() => setMobileMenuOpen(false)}
+      onClick={(e) => {
+        e.preventDefault();
+        setMobileMenuOpen(false);
+        handleHomeAnchor(link.href);
+      }}
       className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}
     >
       {link.label}
