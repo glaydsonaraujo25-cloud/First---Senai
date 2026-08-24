@@ -1,15 +1,15 @@
 import React from 'react';
-import { ArrowUp, ChevronRight, ExternalLink, Info, Phone, Search, School, Sparkles } from 'lucide-react';
+import { ArrowUp, ChevronRight, ExternalLink, Info, Phone, Search, School } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
-interface FooterProps { onOpenParticipation: (tab?: string) => void; onOpenQuiz: () => void; }
+interface FooterProps { onOpenParticipation: (tab?: string) => void; }
 
 const FIRST_URL = 'https://www.firstinspires.org/';
 const FIRST_SEARCH_URL = 'https://www.firstinspires.org/team-event-search';
 const SENAI_DF_URL = 'https://www.sistemafibra.org.br/senai/';
 
-export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
   const { isDark } = useTheme();
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   const surface = isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200';
@@ -34,7 +34,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz 
             <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest">Programas</h4>
             <ul className={`space-y-2.5 text-sm ${muted}`}>
               {([['FIRST® LEGO® League', '/program/fll', 'text-amber-500'], ['FIRST® Tech Challenge', '/program/ftc', 'text-orange-500'], ['FIRST® Robotics Competition', '/program/frc', 'text-blue-500']] as const).map(([label, href, color]) => <li key={href}><a href={href} className="hover:text-blue-600 transition-colors flex items-start gap-1.5"><ChevronRight className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${color}`} />{label}</a></li>)}
-              <li><button onClick={onOpenQuiz} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 text-left"><Sparkles className="w-3.5 h-3.5 text-blue-500" /> Descobrir meu programa</button></li>
             </ul>
           </div>
 
