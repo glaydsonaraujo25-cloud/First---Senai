@@ -8,6 +8,7 @@ import { ProgramFLL } from './ProgramFLL';
 import { ProgramFTC } from './ProgramFTC';
 import { ProgramFRC } from './ProgramFRC';
 import { ProgramComparator } from './ProgramComparator';
+import { faqData } from '../data/faqData';
 
 const BeyondRobots = lazy(() => import('./BeyondRobots').then(m => ({ default: m.BeyondRobots })));
 const ArenaGallery = lazy(() => import('./ArenaGallery').then(m => ({ default: m.ArenaGallery })));
@@ -40,6 +41,28 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
       document.querySelector(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' });
     });
     return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    const id = 'faq-structured-data';
+    document.getElementById(id)?.remove();
+    const script = document.createElement('script');
+    script.id = id;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqData.map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    });
+    document.head.appendChild(script);
+    return () => script.remove();
   }, []);
 
   return (
