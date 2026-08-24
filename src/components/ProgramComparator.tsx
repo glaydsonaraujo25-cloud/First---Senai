@@ -1,70 +1,92 @@
 import React from 'react';
-import { ArrowRight, Bot, Cpu, HelpCircle, Sparkles, Wrench } from 'lucide-react';
+import { ArrowRight, Bot, Cpu, Scale, Wrench } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-interface ProgramComparatorProps {  onSelectProgram: (programId: 'fll' | 'ftc' | 'frc') => void;
+interface ProgramComparatorProps {
+  onSelectProgram: (programId: 'fll' | 'ftc' | 'frc') => void;
   onOpenParticipation: (program?: string) => void;
 }
 
 const programs = [
   {
-    id: 'fll' as const, code: 'FLL', name: 'FIRST® LEGO® League', tag: 'INICIAÇÃO STEM', age: '5 a 16 anos*', level: 'Iniciante', platform: 'LEGO® Education', language: 'Conforme edição', Icon: Cpu,
-    border: 'border-amber-500/40', icon: 'text-amber-500', badge: 'bg-amber-500 text-slate-950', button: 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+    id: 'fll' as const,
+    code: 'FLL',
+    name: 'FIRST® LEGO® League',
+    age: '5–16 anos*',
+    focus: 'Descoberta, LEGO® e projeto de inovação',
+    experience: 'Entrada na robótica e no pensamento computacional',
+    Icon: Cpu,
+    accent: 'amber',
   },
   {
-    id: 'ftc' as const, code: 'FTC', name: 'FIRST® Tech Challenge', tag: 'ENGENHARIA APLICADA', age: '12 a 18 anos', level: 'Intermediário', platform: 'Robôs de escala educacional', language: 'Ecossistema FTC', Icon: Wrench,
-    border: 'border-orange-500/40', icon: 'text-orange-500', badge: 'bg-orange-600 text-white', button: 'bg-orange-600 hover:bg-orange-500 text-white'
+    id: 'ftc' as const,
+    code: 'FTC',
+    name: 'FIRST® Tech Challenge',
+    age: '12–18 anos',
+    focus: 'Mecânica, programação e estratégia de arena',
+    experience: 'Engenharia aplicada em equipes menores',
+    Icon: Wrench,
+    accent: 'orange',
   },
   {
-    id: 'frc' as const, code: 'FRC', name: 'FIRST® Robotics Competition', tag: 'ENGENHARIA AVANÇADA', age: '14 a 18 anos', level: 'Avançado', platform: 'Robô de porte industrial', language: 'Ecossistema FRC', Icon: Bot,
-    border: 'border-blue-500/40', icon: 'text-blue-500', badge: 'bg-blue-600 text-white', button: 'bg-blue-600 hover:bg-blue-500 text-white'
-  }
+    id: 'frc' as const,
+    code: 'FRC',
+    name: 'FIRST® Robotics Competition',
+    age: '14–18 anos',
+    focus: 'Engenharia, software, fabricação e gestão',
+    experience: 'Projeto multidisciplinar de grande escala',
+    Icon: Bot,
+    accent: 'blue',
+  },
 ];
 
-export const ProgramComparator: React.FC<ProgramComparatorProps> = ({ onOpenQuiz, onSelectProgram, onOpenParticipation }) => {
+const styles = {
+  amber: { icon: 'text-amber-600', border: 'border-amber-300 dark:border-amber-500/40', button: 'bg-amber-500 hover:bg-amber-400 text-slate-950' },
+  orange: { icon: 'text-orange-600', border: 'border-orange-300 dark:border-orange-500/40', button: 'bg-orange-600 hover:bg-orange-500 text-white' },
+  blue: { icon: 'text-blue-600', border: 'border-blue-300 dark:border-blue-500/40', button: 'bg-blue-600 hover:bg-blue-500 text-white' },
+} as const;
+
+export const ProgramComparator: React.FC<ProgramComparatorProps> = ({ onSelectProgram, onOpenParticipation }) => {
   const { isDark } = useTheme();
 
   return (
-    <section id="programas" className={`py-16 sm:py-24 relative overflow-hidden border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-200'}`}>
-      <div className="absolute inset-0 tech-grid-dark opacity-30 pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
-          <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-semibold mb-4 ${isDark ? 'bg-slate-800 border-slate-700 text-sky-400' : 'bg-white border-slate-200 text-blue-700 shadow-sm'}`}>
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>COMPARE AS MODALIDADES</span>
+    <section id="programas" className={`py-16 sm:py-24 border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-200'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold mb-4 ${isDark ? 'bg-slate-800 border-slate-700 text-sky-300' : 'bg-white border-slate-200 text-blue-700 shadow-sm'}`}>
+            <Scale className="w-3.5 h-3.5" /> COMPARAÇÃO RÁPIDA
           </div>
-          <h2 className={`text-3xl sm:text-5xl font-black uppercase tracking-tight mb-4 font-mono-tech ${isDark ? 'text-white' : 'text-slate-950'}`}>QUAL DESAFIO COMBINA COM VOCÊ?</h2>
-          <p className={`text-base sm:text-lg mb-8 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Compare rapidamente FLL, FTC e FRC. Para uma recomendação personalizada, use o quiz.</p>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4">FLL, FTC OU FRC?</h2>
+          <p className={isDark ? 'text-slate-300' : 'text-slate-600'}>Veja as diferenças principais e abra a página de cada modalidade para entender a experiência com mais detalhes.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid lg:grid-cols-3 gap-5 sm:gap-6">
           {programs.map(program => {
             const Icon = program.Icon;
+            const style = styles[program.accent];
             return (
-              <article key={program.id} className={`rounded-2xl border-2 p-5 sm:p-7 flex flex-col justify-between transition-all hover:-translate-y-1 ${program.border} ${isDark ? 'bg-slate-950/90 shadow-2xl' : 'bg-white shadow-lg'}`}>
-                <div>
-                  <div className="flex items-center justify-between gap-3 mb-5">
-                    <div className={`w-12 h-12 rounded-xl border flex items-center justify-center ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}><Icon className={`w-6 h-6 ${program.icon}`} /></div>
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-wider ${program.badge}`}>{program.tag}</span>
-                  </div>
-                  <h3 className={`text-xl sm:text-2xl font-black mb-2 ${isDark ? 'text-white' : 'text-slate-950'}`}>{program.name}</h3>
-                  <div className={`space-y-3 border-t pt-5 mt-5 text-sm ${isDark ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-700'}`}>
-                    {[
-                      ['Faixa etária', program.age], ['Nível', program.level], ['Plataforma', program.platform], ['Programação', program.language]
-                    ].map(([label, value]) => (
-                      <div key={label} className="flex items-start justify-between gap-4"><span className={isDark ? 'text-slate-400' : 'text-slate-500'}>{label}</span><strong className="text-right">{value}</strong></div>
-                    ))}
-                  </div>
+              <article key={program.id} className={`rounded-3xl border-2 p-6 sm:p-7 flex flex-col ${style.border} ${isDark ? 'bg-slate-950' : 'bg-white shadow-md'}`}>
+                <div className="flex items-center justify-between gap-3 mb-6">
+                  <div className={`w-12 h-12 rounded-xl border flex items-center justify-center ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}><Icon className={`w-6 h-6 ${style.icon}`} /></div>
+                  <span className={`text-xs font-black ${style.icon}`}>{program.code}</span>
                 </div>
-                <div className={`space-y-2 pt-5 mt-6 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                  <button type="button" onClick={() => onSelectProgram(program.id)} className={`w-full py-3 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2 ${program.button}`}>Ver página do programa <ArrowRight className="w-4 h-4" /></button>
-                  <button onClick={() => onOpenParticipation(program.code)} className={`w-full py-2.5 font-semibold text-xs rounded-xl border transition-colors ${isDark ? 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'}`}>Tenho interesse</button>
+
+                <h3 className="text-xl font-black mb-5">{program.name}</h3>
+                <dl className={`space-y-4 text-sm flex-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  <div><dt className="text-xs uppercase tracking-wider text-slate-500 mb-1">Faixa etária</dt><dd className="font-bold">{program.age}</dd></div>
+                  <div><dt className="text-xs uppercase tracking-wider text-slate-500 mb-1">Foco</dt><dd className="font-semibold leading-relaxed">{program.focus}</dd></div>
+                  <div><dt className="text-xs uppercase tracking-wider text-slate-500 mb-1">Experiência</dt><dd className="leading-relaxed">{program.experience}</dd></div>
+                </dl>
+
+                <div className={`mt-6 pt-5 border-t space-y-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <button type="button" onClick={() => onSelectProgram(program.id)} className={`w-full min-h-12 rounded-xl font-bold text-sm inline-flex items-center justify-center gap-2 ${style.button}`}>Ver modalidade <ArrowRight className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => onOpenParticipation(program.code)} className={`w-full min-h-11 rounded-xl border text-sm font-semibold ${isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100'}`}>Tenho interesse</button>
                 </div>
               </article>
             );
           })}
         </div>
-        <p className={`mt-5 text-center text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>*A faixa etária da FIRST LEGO League varia conforme edição e região.</p>
+        <p className="text-xs text-slate-500 text-center mt-5">*A faixa etária da FIRST LEGO League varia conforme edição e região.</p>
       </div>
     </section>
   );
