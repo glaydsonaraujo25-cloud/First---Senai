@@ -11,10 +11,12 @@ import { Footer } from './components/Footer';
 import { NotFoundPage } from './components/NotFoundPage';
 
 const ProgramDetailPage = lazy(() => import('./components/ProgramDetailPage').then(m => ({ default: m.ProgramDetailPage })));
+const ParticipationPage = lazy(() => import('./components/ParticipationPage').then(m => ({ default: m.ParticipationPage })));
 const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
+type StaticRoute = 'participar' | null;
 const SITE_URL = 'https://first-senai.vercel.app';
 
 const getProgramFromLocation = (): ProgramRoute => {
@@ -25,10 +27,16 @@ const getProgramFromLocation = (): ProgramRoute => {
   return hashMatch ? (hashMatch[1].toLowerCase() as ProgramRoute) : null;
 };
 
+const getStaticPageFromLocation = (): StaticRoute => {
+  if (typeof window === 'undefined') return null;
+  const path = window.location.pathname.replace(/\/$/, '') || '/';
+  return path === '/participar' ? 'participar' : null;
+};
+
 const isUnknownPath = () => {
   if (typeof window === 'undefined') return false;
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  return path !== '/' && !/^\/program\/(fll|ftc|frc)$/i.test(path);
+  return path !== '/' && path !== '/participar' && !/^\/program\/(fll|ftc|frc)$/i.test(path);
 };
 
 const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string; name: string; audience: string }> = {
@@ -48,12 +56,14 @@ export function AppContent() {
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
   const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
   const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
+  const [activeStaticPage, setActiveStaticPage] = useState<StaticRoute>(() => getStaticPageFromLocation());
   const [notFound, setNotFound] = useState(() => isUnknownPath());
   const isAnyModalOpen = isParticipationOpen || isTeamFinderOpen;
 
   useEffect(() => {
     const syncRoute = () => {
       setActiveProgramPage(getProgramFromLocation());
+      setActiveStaticPage(getStaticPageFromLocation());
       setNotFound(isUnknownPath());
       if (!window.location.hash) window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -63,6 +73,7 @@ export function AppContent() {
     if (initialRoute && window.location.hash.startsWith('#/program/')) {
       window.history.replaceState({}, '', `/program/${initialRoute}`);
       setActiveProgramPage(initialRoute);
+      setActiveStaticPage(null);
       setNotFound(false);
     }
     return () => {
@@ -81,12 +92,15 @@ export function AppContent() {
     const canonical = document.querySelector('link[rel="canonical"]');
     const defaultTitle = 'Robótica FIRST® | SENAI-DF | Distrito Federal';
     const defaultDescription = 'Conheça FLL, FTC e FRC em um projeto educacional voltado ao contexto do SENAI-DF, à robótica e à formação tecnológica no Distrito Federal.';
+    const participationMeta = { title: 'Como participar da robótica FIRST® | SENAI-DF', description: 'Veja caminhos para estudantes, escolas, mentores e apoiadores interessados em robótica FIRST® no contexto do Distrito Federal.' };
     const meta = notFound
       ? { title: 'Página não encontrada | SENAI-DF', description: 'A página solicitada não foi encontrada no portal de robótica FIRST® voltado ao SENAI-DF.' }
       : activeProgramPage
         ? pageMeta[activeProgramPage]
-        : { title: defaultTitle, description: defaultDescription };
-    const path = notFound ? window.location.pathname : activeProgramPage ? `/program/${activeProgramPage}` : '/';
+        : activeStaticPage === 'participar'
+          ? participationMeta
+          : { title: defaultTitle, description: defaultDescription };
+    const path = notFound ? window.location.pathname : activeProgramPage ? `/program/${activeProgramPage}` : activeStaticPage === 'participar' ? '/participar' : '/';
     const currentUrl = `${SITE_URL}${path}`;
     document.title = meta.title;
     metaDescription?.setAttribute('content', meta.description);
@@ -96,7 +110,7 @@ export function AppContent() {
     twitterTitle?.setAttribute('content', meta.title);
     twitterDescription?.setAttribute('content', meta.description);
     canonical?.setAttribute('href', currentUrl);
-  }, [activeProgramPage, notFound]);
+  }, [activeProgramPage, activeStaticPage, notFound]);
 
   useEffect(() => {
     const scriptId = 'program-page-structured-data';
@@ -137,6 +151,27 @@ export function AppContent() {
   }, [activeProgramPage, notFound]);
 
   useEffect(() => {
+    const scriptId = 'participation-page-structured-data';
+    document.getElementById(scriptId)?.remove();
+    if (activeStaticPage !== 'participar' || notFound) return;
+    const url = `${SITE_URL}/participar`;
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      url,
+      name: 'Como participar da robótica FIRST® | SENAI-DF',
+      description: 'Orientações para estudantes, escolas, mentores e apoiadores interessados em robótica FIRST® no Distrito Federal.',
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': `${SITE_URL}/#website` }
+    });
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [activeStaticPage, notFound]);
+
+  useEffect(() => {
     if (!isAnyModalOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -155,6 +190,7 @@ export function AppContent() {
   const navigateTo = (path: string) => {
     window.history.pushState({}, '', path);
     setActiveProgramPage(getProgramFromLocation());
+    setActiveStaticPage(getStaticPageFromLocation());
     setNotFound(isUnknownPath());
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -164,10 +200,12 @@ export function AppContent() {
     setIsParticipationOpen(true);
   };
 
+  const onSecondaryPage = Boolean(activeProgramPage) || Boolean(activeStaticPage) || notFound;
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
       <Header
-        isProgramPage={Boolean(activeProgramPage) || notFound}
+        isProgramPage={onSecondaryPage}
         onNavigateHome={() => navigateTo('/')}
         onOpenProgram={(program) => navigateTo(`/program/${program}`)}
         onOpenParticipation={() => handleOpenParticipation()}
@@ -179,6 +217,10 @@ export function AppContent() {
       ) : activeProgramPage ? (
         <Suspense fallback={<LoadingBlock />}>
           <ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} />
+        </Suspense>
+      ) : activeStaticPage === 'participar' ? (
+        <Suspense fallback={<LoadingBlock />}>
+          <ParticipationPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
         </Suspense>
       ) : (
         <HomePage
