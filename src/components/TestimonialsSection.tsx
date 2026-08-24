@@ -1,139 +1,42 @@
-import React, { useState } from 'react';
-import { 
-  Quote, 
-  ChevronLeft, 
-  ChevronRight, 
-  Star, 
-  Sparkles, 
-  GraduationCap, 
-  Users, 
-  Building2 
-} from 'lucide-react';
-import { testimonialsData } from '../data/testimonialsData';
+import React from 'react';
+import { Building2, GraduationCap, HeartHandshake, School, Users } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+
+const profiles = [
+  { title: 'Estudantes', subtitle: 'Aprender fazendo', text: 'A jornada pode desenvolver autonomia, comunicação, lógica, criatividade e responsabilidade dentro de uma equipe.', icon: GraduationCap, accent: 'text-blue-600', soft: 'bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/30' },
+  { title: 'Escolas', subtitle: 'Projeto interdisciplinar', text: 'FLL, FTC e FRC podem conectar matemática, física, computação, design, gestão de projeto e cultura maker.', icon: School, accent: 'text-orange-600', soft: 'bg-orange-50 border-orange-200 dark:bg-orange-500/10 dark:border-orange-500/30' },
+  { title: 'Mentores', subtitle: 'Orientação e experiência', text: 'Profissionais e educadores podem contribuir com organização, segurança, método de engenharia e desenvolvimento técnico.', icon: HeartHandshake, accent: 'text-emerald-600', soft: 'bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30' },
+  { title: 'Apoiadores', subtitle: 'Fortalecer educação STEM', text: 'Empresas e instituições podem apoiar infraestrutura, conhecimento, materiais e oportunidades, conforme iniciativas oficiais disponíveis.', icon: Building2, accent: 'text-violet-600', soft: 'bg-violet-50 border-violet-200 dark:bg-violet-500/10 dark:border-violet-500/30' },
+];
 
 export const TestimonialsSection: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-  const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
-  };
-
-  const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonialsData.length) % testimonialsData.length);
-  };
-
-  const current = testimonialsData[currentIndex];
-
-  const getProgramBadge = (program: string) => {
-    switch (program) {
-      case 'FLL': return 'bg-amber-500 text-slate-950';
-      case 'FTC': return 'bg-orange-600 text-white';
-      case 'FRC': return 'bg-blue-600 text-white';
-      default: return 'bg-red-600 text-white';
-    }
-  };
-
+  const { isDark } = useTheme();
   return (
-    <section id="depoimentos" className="py-24 bg-slate-950 text-white relative overflow-hidden border-t border-slate-800">
-      {/* Background Lighting */}
-      <div className="absolute inset-0 tech-grid-dark opacity-30 pointer-events-none"></div>
-
+    <section id="depoimentos" className={`py-16 sm:py-24 relative overflow-hidden border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-200'}`}>
+      <div className={`absolute inset-0 pointer-events-none ${isDark ? 'tech-grid-dark opacity-25' : 'tech-grid-pattern opacity-40'}`} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-sky-400 mb-4">
-            <Users className="w-3.5 h-3.5" />
-            <span>VOZES DA COMUNIDADE</span>
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold mb-4 ${isDark ? 'bg-slate-900 border-slate-800 text-sky-300' : 'bg-white border-slate-200 text-blue-700 shadow-sm'}`}>
+            <Users className="w-3.5 h-3.5" /> PERFIS DA JORNADA
           </div>
-
-          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4 font-mono-tech">
-            QUEM VIVE A EXPERIÊNCIA
-          </h2>
-
-          <p className="text-base sm:text-lg text-slate-300">
-            Histórias de estudantes, professores, mentores e ex-alunos que tiveram suas vidas e trajetórias transformadas pela robótica.
-          </p>
+          <h2 className={`text-3xl sm:text-5xl font-black uppercase tracking-tight mb-4 font-mono-tech ${isDark ? 'text-white' : 'text-slate-950'}`}>QUEM FAZ A ROBÓTICA ACONTECER</h2>
+          <p className={`text-base sm:text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Em vez de depoimentos fictícios, esta seção mostra como diferentes perfis podem contribuir e aprender dentro de uma experiência FIRST® no contexto do DF.</p>
         </div>
 
-        {/* Featured Testimonial Card */}
-        <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl relative">
-          
-          <Quote className="absolute top-8 right-8 w-16 h-16 text-slate-800 pointer-events-none opacity-40" />
-
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8">
-            
-            {/* Avatar & Badges */}
-            <div className="shrink-0 text-center">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-slate-700 mx-auto shadow-xl relative group">
-                <img 
-                  src={current.avatar} 
-                  alt={current.name}
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
-              <span className={`mt-3 inline-block px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${getProgramBadge(current.program)}`}>
-                {current.program}
-              </span>
-            </div>
-
-            {/* Quote & Author Info */}
-            <div className="space-y-4 text-center sm:text-left">
-              <p className="text-base sm:text-xl text-slate-200 font-medium leading-relaxed italic">
-                "{current.quote}"
-              </p>
-
-              <div className="pt-2 border-t border-slate-800">
-                <h4 className="text-lg font-bold text-white">
-                  {current.name}
-                </h4>
-                <p className="text-xs text-sky-400 font-semibold">
-                  {current.role}
-                </p>
-                <p className="text-[11px] text-slate-400">
-                  {current.organization} • <span className="text-slate-500">{current.yearActive}</span>
-                </p>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-800/80">
-            <div className="flex gap-1.5">
-              {testimonialsData.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                    currentIndex === idx ? 'w-8 bg-blue-500' : 'bg-slate-700 hover:bg-slate-600'
-                  }`}
-                  aria-label={`Ver depoimento ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={prevTestimonial}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer"
-                aria-label="Depoimento anterior"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={nextTestimonial}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer"
-                aria-label="Próximo depoimento"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {profiles.map(({ title, subtitle, text, icon: Icon, accent, soft }) => (
+            <article key={title} className={`rounded-2xl border p-6 ${soft}`}>
+              <Icon className={`w-7 h-7 mb-4 ${accent}`} />
+              <p className={`text-xs font-black uppercase tracking-wider mb-1 ${accent}`}>{subtitle}</p>
+              <h3 className={`text-xl font-black mb-3 ${isDark ? 'text-white' : 'text-slate-950'}`}>{title}</h3>
+              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{text}</p>
+            </article>
+          ))}
         </div>
 
+        <div className={`mt-8 max-w-3xl mx-auto rounded-2xl border p-5 text-sm text-center ${isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
+          Participação, mentoria, voluntariado e apoio institucional dependem de oportunidades reais e devem ser confirmados nos canais oficiais do Sistema Fibra/SENAI-DF e da FIRST®.
+        </div>
       </div>
     </section>
   );
