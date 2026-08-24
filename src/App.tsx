@@ -14,11 +14,12 @@ const ProgramDetailPage = lazy(() => import('./components/ProgramDetailPage').th
 const ParticipationPage = lazy(() => import('./components/ParticipationPage').then(m => ({ default: m.ParticipationPage })));
 const UnitsPage = lazy(() => import('./components/UnitsPage').then(m => ({ default: m.UnitsPage })));
 const EventsPage = lazy(() => import('./components/EventsPage').then(m => ({ default: m.EventsPage })));
+const TeamsPage = lazy(() => import('./components/TeamsPage').then(m => ({ default: m.TeamsPage })));
 const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
-type StaticRoute = 'participar' | 'unidades' | 'eventos' | null;
+type StaticRoute = 'participar' | 'unidades' | 'eventos' | 'equipes' | null;
 const SITE_URL = 'https://first-senai.vercel.app';
 
 const getProgramFromLocation = (): ProgramRoute => {
@@ -35,13 +36,14 @@ const getStaticPageFromLocation = (): StaticRoute => {
   if (path === '/participar') return 'participar';
   if (path === '/unidades') return 'unidades';
   if (path === '/eventos') return 'eventos';
+  if (path === '/equipes') return 'equipes';
   return null;
 };
 
 const isUnknownPath = () => {
   if (typeof window === 'undefined') return false;
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  return path !== '/' && path !== '/participar' && path !== '/unidades' && path !== '/eventos' && !/^\/program\/(fll|ftc|frc)$/i.test(path);
+  return path !== '/' && path !== '/participar' && path !== '/unidades' && path !== '/eventos' && path !== '/equipes' && !/^\/program\/(fll|ftc|frc)$/i.test(path);
 };
 
 const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description: string; name: string; audience: string }> = {
@@ -53,7 +55,8 @@ const pageMeta: Record<Exclude<ProgramRoute, null>, { title: string; description
 const staticPageMeta: Record<Exclude<StaticRoute, null>, { title: string; description: string }> = {
   participar: { title: 'Como participar da robótica FIRST® | SENAI-DF', description: 'Veja caminhos para estudantes, escolas, mentores e apoiadores interessados em robótica FIRST® no contexto do Distrito Federal.' },
   unidades: { title: 'Unidades SENAI-DF | Distrito Federal', description: 'Consulte as unidades SENAI-DF listadas no projeto e acesse os canais oficiais para confirmar endereço, cursos, horários e atendimento.' },
-  eventos: { title: 'Eventos de robótica FIRST® | SENAI-DF', description: 'Acompanhe marcos da temporada FIRST® e os canais oficiais para consultar equipes, torneios e atividades de robótica no Distrito Federal.' }
+  eventos: { title: 'Eventos de robótica FIRST® | SENAI-DF', description: 'Acompanhe marcos da temporada FIRST® e os canais oficiais para consultar equipes, torneios e atividades de robótica no Distrito Federal.' },
+  equipes: { title: 'Encontrar equipes FIRST® | SENAI-DF', description: 'Veja como procurar equipes FIRST® no Distrito Federal usando a busca oficial, instituições locais e os canais do SENAI-DF.' }
 };
 
 const LoadingBlock = () => (
@@ -147,6 +150,13 @@ export function AppContent() {
     if (!activeStaticPage || notFound) return;
     const meta = staticPageMeta[activeStaticPage];
     const url = `${SITE_URL}/${activeStaticPage}`;
+    const staticLabel = activeStaticPage === 'participar'
+      ? 'Como participar'
+      : activeStaticPage === 'unidades'
+        ? 'Unidades SENAI-DF'
+        : activeStaticPage === 'eventos'
+          ? 'Eventos'
+          : 'Equipes';
     const script = document.createElement('script');
     script.id = scriptId;
     script.type = 'application/ld+json';
@@ -154,7 +164,7 @@ export function AppContent() {
       '@context': 'https://schema.org',
       '@graph': [
         { '@type': 'WebPage', url, name: meta.title, description: meta.description, inLanguage: 'pt-BR', isPartOf: { '@id': `${SITE_URL}/#website` } },
-        { '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Início', item: SITE_URL }, { '@type': 'ListItem', position: 2, name: activeStaticPage === 'participar' ? 'Como participar' : activeStaticPage === 'unidades' ? 'Unidades SENAI-DF' : 'Eventos', item: url } ] }
+        { '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Início', item: SITE_URL }, { '@type': 'ListItem', position: 2, name: staticLabel, item: url } ] }
       ]
     });
     document.head.appendChild(script);
@@ -219,6 +229,10 @@ export function AppContent() {
       ) : activeStaticPage === 'eventos' ? (
         <Suspense fallback={<LoadingBlock />}>
           <EventsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={() => handleOpenParticipation()} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+        </Suspense>
+      ) : activeStaticPage === 'equipes' ? (
+        <Suspense fallback={<LoadingBlock />}>
+          <TeamsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} />
         </Suspense>
       ) : (
         <HomePage
