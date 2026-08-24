@@ -23,12 +23,17 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  // Mantém a navegação na mesma ordem visual das seções da página.
+  const beforeProgramLinks = [
     { label: 'Início', href: '#inicio' },
     { label: 'Robótica DF', href: '#parceria' },
     { label: 'Jornada', href: '#jornada' },
-    { label: 'Eventos', href: '#eventos' },
+    { label: 'Temporada', href: '#temporada' },
+  ];
+
+  const afterProgramLinks = [
     { label: 'Unidades DF', href: '#mapa-brasil' },
+    { label: 'Eventos', href: '#eventos' },
     { label: 'FAQ', href: '#faq' },
   ];
 
@@ -38,6 +43,33 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
       window.setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' }), 50);
     }
   };
+
+  const renderDesktopLink = (link: { label: string; href: string }) => (
+    <a
+      key={link.href}
+      href={isProgramPage ? `/${link.href}` : link.href}
+      onClick={(e) => {
+        if (isProgramPage) {
+          e.preventDefault();
+          handleHomeAnchor(link.href);
+        }
+      }}
+      className={`px-2.5 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100'}`}
+    >
+      {link.label}
+    </a>
+  );
+
+  const renderMobileLink = (link: { label: string; href: string }) => (
+    <a
+      key={link.href}
+      href={link.href}
+      onClick={() => setMobileMenuOpen(false)}
+      className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}
+    >
+      {link.label}
+    </a>
+  );
 
   return (
     <header id="main-header" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? isDark ? 'bg-slate-950/95 backdrop-blur-md shadow-lg border-b border-slate-800 py-3' : 'bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200 py-3' : isDark ? 'bg-gradient-to-b from-slate-950/95 via-slate-950/70 to-transparent py-4' : 'bg-gradient-to-b from-white/95 via-white/85 to-transparent py-4'}`}>
@@ -60,6 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
           </button>
 
           <nav className="hidden lg:flex items-center gap-1 text-sm font-medium" aria-label="Navegação principal">
+            {beforeProgramLinks.map(renderDesktopLink)}
             <div className="relative">
               <button type="button" onClick={() => setProgramMenuOpen(!programMenuOpen)} className={`px-3 py-2 rounded-md transition-colors flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100'}`} aria-expanded={programMenuOpen}>Programas <ChevronDown className="w-3.5 h-3.5" /></button>
               {programMenuOpen && (
@@ -70,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
                 </div>
               )}
             </div>
-            {navLinks.map(link => <a key={link.href} href={isProgramPage ? `/${link.href}` : link.href} onClick={(e) => { if (isProgramPage) { e.preventDefault(); handleHomeAnchor(link.href); } }} className={`px-2.5 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100'}`}>{link.label}</a>)}
+            {afterProgramLinks.map(renderDesktopLink)}
           </nav>
 
           <div className="hidden sm:flex items-center gap-2.5">
@@ -88,11 +121,24 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
       {mobileMenuOpen && (
         <div className={`sm:hidden border-b px-4 pt-3 pb-5 space-y-3 shadow-2xl max-h-[calc(100vh-72px)] overflow-y-auto ${isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
           <div className={`rounded-xl border p-3 flex items-center gap-2 text-xs font-bold ${isDark ? 'bg-slate-800 border-slate-700 text-red-200' : 'bg-red-50 border-red-200 text-red-700'}`}><MapPin className="w-4 h-4" /> SENAI-DF • Distrito Federal</div>
+
+          {!isProgramPage && (
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {beforeProgramLinks.map(renderMobileLink)}
+            </div>
+          )}
+
           <div>
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2 text-slate-500">Programas</p>
             <div className="grid grid-cols-1 gap-2">{([['fll', 'FLL · LEGO League'], ['ftc', 'FTC · Tech Challenge'], ['frc', 'FRC · Robotics Competition']] as const).map(([id, label]) => <button key={id} type="button" onClick={() => { setMobileMenuOpen(false); onOpenProgram?.(id); }} className={`px-3 py-2.5 rounded-lg text-left font-semibold text-sm ${isDark ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-800'}`}>{label}</button>)}</div>
           </div>
-          {!isProgramPage && <div className="grid grid-cols-2 gap-2 text-sm">{navLinks.map(link => <a key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}>{link.label}</a>)}</div>}
+
+          {!isProgramPage && (
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {afterProgramLinks.map(renderMobileLink)}
+            </div>
+          )}
+
           <div className={`pt-2 border-t flex flex-col gap-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
             <button onClick={() => { setMobileMenuOpen(false); onOpenTeamFinder(); }} className={`w-full py-2.5 px-4 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 ${isDark ? 'text-slate-200 bg-slate-800 border border-slate-700' : 'text-slate-700 bg-slate-100 border border-slate-200'}`}><Users className="w-4 h-4 text-blue-500" /> Equipes e eventos no DF</button>
             <button onClick={() => { setMobileMenuOpen(false); onOpenParticipation(); }} className="w-full py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-red-600 to-rose-600 rounded-lg flex items-center justify-center gap-2">QUERO PARTICIPAR NO DF <ChevronRight className="w-4 h-4" /></button>
