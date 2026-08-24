@@ -15,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [programMenuOpen, setProgramMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('#inicio');
   const { isDark } = useTheme();
 
   useEffect(() => {
@@ -30,6 +31,28 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
     { label: 'Jornada', href: '#jornada' },
     { label: 'Temporada', href: '#temporada' },
   ];
+
+  const observedSections = ['#inicio', '#parceria', '#jornada', '#temporada', '#mapa-brasil', '#eventos', '#faq'];
+
+  useEffect(() => {
+    if (isProgramPage) return;
+    const updateActiveSection = () => {
+      const marker = window.scrollY + 140;
+      let current = '#inicio';
+      for (const href of observedSections) {
+        const element = document.querySelector(href) as HTMLElement | null;
+        if (element && element.offsetTop <= marker) current = href;
+      }
+      setActiveSection(current);
+    };
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
+  }, [isProgramPage]);
 
   const afterProgramLinks = [
     { label: 'Unidades DF', href: '#mapa-brasil' },
@@ -55,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
         e.preventDefault();
         handleHomeAnchor(link.href);
       }}
-      className={`px-2.5 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100'}`}
+      className={`relative px-2.5 py-2 rounded-md transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeSection === link.href && !isProgramPage ? (isDark ? 'bg-blue-500/15 text-blue-300 shadow-[inset_0_-2px_0_#60a5fa]' : 'bg-blue-50 text-blue-700 shadow-[inset_0_-2px_0_#2563eb]') : (isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100')}`}
     >
       {link.label}
     </a>
@@ -70,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
         setMobileMenuOpen(false);
         handleHomeAnchor(link.href);
       }}
-      className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}
+      className={`px-3 py-2 rounded-lg font-medium transition-all ${activeSection === link.href ? 'bg-blue-600 text-white shadow-md' : (isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white')}`}
     >
       {link.label}
     </a>
