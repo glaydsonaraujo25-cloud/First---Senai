@@ -10,10 +10,25 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 );
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((error) => {
-      console.warn('Service worker registration failed', error);
-    });
+// The project changes frequently during development. Remove the previous
+// application-shell service worker/cache so visitors always receive the
+// newest Vercel deployment instead of stale CSS/JS from an older build.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(registration => registration.unregister()));
+
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames
+            .filter(name => name.startsWith('first-senai-'))
+            .map(name => caches.delete(name))
+        );
+      }
+    } catch (error) {
+      console.warn('Unable to clear legacy application cache', error);
+    }
   });
 }
