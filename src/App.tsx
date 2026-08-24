@@ -112,7 +112,7 @@ export function AppContent() {
       ) : (
         <main id="conteudo-principal">
           <Hero onOpenParticipation={() => handleOpenParticipation()} />
-          <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
+          <Partnership />
           <Journey />
           <SeasonTimeline />
           <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
