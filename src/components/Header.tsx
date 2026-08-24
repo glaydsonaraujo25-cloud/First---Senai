@@ -24,7 +24,8 @@ const afterProgramLinks = [
   { label: 'FAQ', href: '#faq' },
 ];
 
-const observedSections = ['#inicio', '#parceria', '#jornada', '#temporada', '#programas', '#unidades-df', '#eventos', '#faq'];
+const observedSections = ['#inicio', '#parceria', '#jornada', '#temporada', '#fll', '#ftc', '#frc', '#unidades-df', '#eventos', '#faq'];
+const programSections = new Set(['#fll', '#ftc', '#frc']);
 
 export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigateHome, onOpenProgram, onOpenParticipation, onOpenTeamFinder }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -110,7 +111,8 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
     );
   };
 
-  const programsActive = !isProgramPage && activeSection === '#programas';
+  const programsActive = !isProgramPage && programSections.has(activeSection);
+  const activeProgram = programSections.has(activeSection) ? activeSection.slice(1) : null;
 
   return (
     <header id="main-header" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? (isDark ? 'bg-slate-950/95 backdrop-blur-md shadow-lg border-b border-slate-800 py-3' : 'bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200 py-3') : (isDark ? 'bg-gradient-to-b from-slate-950/95 via-slate-950/70 to-transparent py-4' : 'bg-gradient-to-b from-white/95 via-white/85 to-transparent py-4')}`}>
@@ -150,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
               {programMenuOpen && (
                 <div className={`absolute top-full left-0 mt-2 w-64 rounded-xl border p-2 shadow-xl ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
                   {([['fll', 'FIRST LEGO League'], ['ftc', 'FIRST Tech Challenge'], ['frc', 'FIRST Robotics Competition']] as const).map(([id, label]) => (
-                    <button key={id} type="button" onClick={() => { setProgramMenuOpen(false); onOpenProgram?.(id); }} className={`w-full text-left px-3 py-2.5 rounded-lg text-sm ${isDark ? 'text-slate-200 hover:bg-slate-800' : 'text-slate-700 hover:bg-slate-100'}`}>{label}</button>
+                    <button key={id} type="button" onClick={() => { setProgramMenuOpen(false); if (isProgramPage) onOpenProgram?.(id); else handleHomeAnchor(`#${id}`); }} className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${activeProgram === id ? (isDark ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-50 text-blue-700') : (isDark ? 'text-slate-200 hover:bg-slate-800' : 'text-slate-700 hover:bg-slate-100')}`}>{label}</button>
                   ))}
                 </div>
               )}
@@ -177,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
 
           <div className={`rounded-xl p-3 ${programsActive ? (isDark ? 'bg-blue-500/10 border border-blue-500/30' : 'bg-blue-50 border border-blue-200') : ''}`}>
             <p className={`text-[11px] font-bold uppercase tracking-wider mb-2 ${programsActive ? 'text-blue-600' : 'text-slate-500'}`}>Programas</p>
-            <div className="grid grid-cols-1 gap-2">{([['fll', 'FLL · LEGO League'], ['ftc', 'FTC · Tech Challenge'], ['frc', 'FRC · Robotics Competition']] as const).map(([id, label]) => <button key={id} type="button" onClick={() => { setMobileMenuOpen(false); onOpenProgram?.(id); }} className={`px-3 py-2.5 rounded-lg text-left font-semibold text-sm ${isDark ? 'bg-slate-800 text-slate-200' : 'bg-white border border-slate-200 text-slate-800'}`}>{label}</button>)}</div>
+            <div className="grid grid-cols-1 gap-2">{([['fll', 'FLL · LEGO League'], ['ftc', 'FTC · Tech Challenge'], ['frc', 'FRC · Robotics Competition']] as const).map(([id, label]) => <button key={id} type="button" onClick={() => { setMobileMenuOpen(false); if (isProgramPage) onOpenProgram?.(id); else handleHomeAnchor(`#${id}`); }} className={`px-3 py-2.5 rounded-lg text-left font-semibold text-sm transition-colors ${activeProgram === id ? 'bg-blue-600 text-white shadow-md' : (isDark ? 'bg-slate-800 text-slate-200' : 'bg-white border border-slate-200 text-slate-800')}`}>{label}</button>)}</div>
           </div>
 
           {!isProgramPage && <div className="grid grid-cols-2 gap-2 text-sm">{afterProgramLinks.map(mobileLink)}</div>}
