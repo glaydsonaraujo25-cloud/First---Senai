@@ -25,10 +25,10 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
 
   const navLinks = [
     { label: 'Início', href: '#inicio' },
+    { label: 'Robótica DF', href: '#parceria' },
     { label: 'Jornada', href: '#jornada' },
     { label: 'Eventos', href: '#eventos' },
     { label: 'Unidades DF', href: '#mapa-brasil' },
-    { label: 'Sobre', href: '#parceria' },
     { label: 'FAQ', href: '#faq' },
   ];
 
@@ -42,10 +42,9 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
   return (
     <header id="main-header" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? isDark ? 'bg-slate-950/95 backdrop-blur-md shadow-lg border-b border-slate-800 py-3' : 'bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200 py-3' : isDark ? 'bg-gradient-to-b from-slate-950/95 via-slate-950/70 to-transparent py-4' : 'bg-gradient-to-b from-white/95 via-white/85 to-transparent py-4'}`}>
       <a href="#conteudo-principal" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg">Pular para o conteúdo</a>
-
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
-          <button type="button" onClick={() => onNavigateHome ? onNavigateHome() : (window.location.hash = '#inicio')} id="header-brand-logo" className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left shrink-0" aria-label="FIRST e SENAI-DF - página inicial">
+          <button type="button" onClick={() => onNavigateHome ? onNavigateHome() : (window.location.hash = '#inicio')} className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left shrink-0" aria-label="FIRST e SENAI-DF - página inicial">
             <div className="flex items-center">
               <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold px-2 sm:px-2.5 py-1 rounded-md shadow-md">
                 <div className="w-2.5 h-2.5 bg-red-500 rounded-full" /><div className="w-2.5 h-2.5 bg-white rotate-45" /><div className="w-2.5 h-2.5 bg-amber-400" />
@@ -91,9 +90,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
           <div className={`rounded-xl border p-3 flex items-center gap-2 text-xs font-bold ${isDark ? 'bg-slate-800 border-slate-700 text-red-200' : 'bg-red-50 border-red-200 text-red-700'}`}><MapPin className="w-4 h-4" /> SENAI-DF • Distrito Federal</div>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2 text-slate-500">Programas</p>
-            <div className="grid grid-cols-1 gap-2">
-              {([['fll', 'FLL · LEGO League'], ['ftc', 'FTC · Tech Challenge'], ['frc', 'FRC · Robotics Competition']] as const).map(([id, label]) => <button key={id} type="button" onClick={() => { setMobileMenuOpen(false); onOpenProgram?.(id); }} className={`px-3 py-2.5 rounded-lg text-left font-semibold text-sm ${isDark ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-800'}`}>{label}</button>)}
-            </div>
+            <div className="grid grid-cols-1 gap-2">{([['fll', 'FLL · LEGO League'], ['ftc', 'FTC · Tech Challenge'], ['frc', 'FRC · Robotics Competition']] as const).map(([id, label]) => <button key={id} type="button" onClick={() => { setMobileMenuOpen(false); onOpenProgram?.(id); }} className={`px-3 py-2.5 rounded-lg text-left font-semibold text-sm ${isDark ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-800'}`}>{label}</button>)}</div>
           </div>
           {!isProgramPage && <div className="grid grid-cols-2 gap-2 text-sm">{navLinks.map(link => <a key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}>{link.label}</a>)}</div>}
           <div className={`pt-2 border-t flex flex-col gap-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
