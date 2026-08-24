@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ArrowRight, ExternalLink, Info, MapPin, School, Search, Users, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,14 +12,31 @@ const FIRST_TEAM_SEARCH_URL = 'https://www.firstinspires.org/team-event-search';
 
 export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClose, onOpenParticipation }) => {
   const { isDark } = useTheme();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const dialog = dialogRef.current;
+    window.requestAnimationFrame(() => dialog?.querySelector<HTMLElement>('[data-autofocus]')?.focus());
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') { onClose(); return; }
+      if (event.key !== 'Tab' || !dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')).filter(el => !el.hasAttribute('hidden'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     };
+
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus?.();
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -30,21 +47,15 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
       role="dialog"
       aria-modal="true"
       aria-labelledby="team-finder-title"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}
     >
-      <div className={`w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+      <div ref={dialogRef} tabIndex={-1} className={`w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
         <div className={`flex items-center justify-between gap-4 p-5 border-b ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-white'}`}>
           <div className="flex items-center gap-2 min-w-0">
             <Users className="w-5 h-5 text-blue-500 shrink-0" />
             <h3 id="team-finder-title" className="text-base sm:text-lg font-bold truncate">Encontrar equipes e eventos FIRST®</h3>
           </div>
-          <button
-            onClick={onClose}
-            className={`p-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`}
-            aria-label="Fechar busca de equipes"
-          >
+          <button data-autofocus onClick={onClose} className={`p-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} aria-label="Fechar busca de equipes">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -60,13 +71,7 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
                 </p>
               </div>
             </div>
-
-            <a
-              href={FIRST_TEAM_SEARCH_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-            >
+            <a href={FIRST_TEAM_SEARCH_URL} target="_blank" rel="noopener noreferrer" className="mt-5 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
               Abrir busca oficial <ExternalLink className="w-4 h-4" />
             </a>
           </div>
@@ -84,26 +89,14 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              onClick={() => {
-                onClose();
-                onOpenParticipation('ESTUDANTE');
-              }}
-              className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}
-            >
-              <MapPin className="w-5 h-5 text-red-500 mb-3" />
+            <button onClick={() => { onClose(); onOpenParticipation('ESTUDANTE'); }} className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}>
+              <MapPin className="w-5 h-5 text-blue-600 mb-3" />
               <strong className="block text-sm mb-1">Registrar meu interesse</strong>
               <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Use o formulário demonstrativo para indicar programa e região.</span>
             </button>
 
-            <button
-              onClick={() => {
-                onClose();
-                onOpenParticipation('ESCOLA');
-              }}
-              className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}
-            >
-              <School className="w-5 h-5 text-emerald-500 mb-3" />
+            <button onClick={() => { onClose(); onOpenParticipation('ESCOLA'); }} className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}>
+              <School className="w-5 h-5 text-orange-500 mb-3" />
               <strong className="block text-sm mb-1">Quero iniciar uma equipe</strong>
               <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Veja o fluxo de interesse para escolas e instituições.</span>
             </button>
