@@ -1,10 +1,9 @@
 import React from 'react';
-import { ArrowRight, Bot, CalendarDays, Cpu, Leaf, MapPin, Sparkles, Wrench } from 'lucide-react';
+import { ArrowRight, Bot, CalendarDays, Cpu, Leaf, MapPin, Wrench } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface HeroProps {
   onOpenParticipation: () => void;
-  onOpenQuiz: () => void;
 }
 
 const programs = [
@@ -13,7 +12,7 @@ const programs = [
   { code: 'FRC', name: 'BIOCORE™', detail: '14–18 anos', icon: Bot, accent: 'text-blue-600', soft: 'bg-blue-50 border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/30' },
 ];
 
-export const Hero: React.FC<HeroProps> = ({ onOpenParticipation, onOpenQuiz }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenParticipation }) => {
   const { isDark } = useTheme();
 
   return (
@@ -48,7 +47,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation, onOpenQuiz }) =
 
             <div className="flex flex-col sm:flex-row gap-3 mb-5">
               <a href="#programas" className="inline-flex min-h-12 items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Explorar FLL, FTC e FRC <ArrowRight className="w-4 h-4" /></a>
-              <button type="button" onClick={onOpenQuiz} className={`inline-flex min-h-12 items-center justify-center gap-2 px-6 py-3.5 rounded-xl border font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${isDark ? 'bg-slate-900 border-slate-700 text-white hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-900 hover:bg-slate-50 shadow-sm'}`}><Sparkles className="w-4 h-4 text-amber-500" /> Descobrir meu programa</button>
             </div>
 
             <button type="button" onClick={onOpenParticipation} className={`text-sm font-semibold underline underline-offset-4 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${isDark ? 'text-red-300 hover:text-red-200' : 'text-red-700 hover:text-red-800'}`}>Tenho interesse em participar no DF →</button>
