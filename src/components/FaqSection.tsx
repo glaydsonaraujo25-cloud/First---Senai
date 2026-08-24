@@ -32,12 +32,9 @@ export const FaqSection: React.FC = () => {
 
   return (
     <section id="faq" className={`py-16 sm:py-24 relative overflow-hidden border-t transition-colors ${isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200'}`}>
-      {/* Background Lighting */}
       <div className="absolute inset-0 tech-grid-dark opacity-30 pointer-events-none"></div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
         <div className="text-center mb-14">
           <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-semibold mb-4 ${isDark ? 'bg-slate-900 border-slate-800 text-blue-400' : 'bg-blue-50 border-blue-200 text-blue-700'}`}>
             <HelpCircle className="w-3.5 h-3.5" />
@@ -53,7 +50,6 @@ export const FaqSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Search Bar & Category Filters */}
         <div className="space-y-4 mb-10">
           <div className="relative">
             <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -67,7 +63,7 @@ export const FaqSection: React.FC = () => {
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                className={`absolute right-4 top-1/2 -translate-y-1/2 text-xs ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 Limpar
               </button>
@@ -91,7 +87,6 @@ export const FaqSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Accordion List */}
         <div className="space-y-3">
           {filteredFaq.length > 0 ? (
             filteredFaq.map((item) => {
@@ -103,11 +98,11 @@ export const FaqSection: React.FC = () => {
                 >
                   <button
                     onClick={() => toggleAccordion(item.id)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-slate-800/60 transition-colors cursor-pointer"
+                    className={`w-full p-5 text-left flex items-center justify-between gap-4 transition-colors cursor-pointer ${isDark ? 'hover:bg-slate-800/60' : 'hover:bg-slate-50'}`}
                     aria-expanded={isOpen}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 shrink-0">
+                      <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded border shrink-0 ${isDark ? 'text-blue-400 bg-slate-950 border-slate-800' : 'text-blue-700 bg-blue-50 border-blue-200'}`}>
                         {item.category}
                       </span>
                       <h3 className={`text-sm sm:text-base font-bold leading-snug ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -131,13 +126,12 @@ export const FaqSection: React.FC = () => {
           ) : (
             <div className={`text-center py-12 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
               <MessageCircleQuestion className="w-10 h-10 text-slate-500 mx-auto mb-2" />
-              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Nenhuma resposta encontrada para "{searchQuery}". Tente outros termos de busca.
               </p>
             </div>
           )}
         </div>
-
       </div>
     </section>
   );
