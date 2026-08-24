@@ -1,16 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  CheckCircle2, 
-  Send, 
-  Bot, 
-  School, 
-  HeartHandshake, 
-  Building2, 
-  Sparkles,
-  MapPin
-} from 'lucide-react';
-import confetti from 'canvas-confetti';
+import React, { useEffect, useState } from 'react';
+import { X, CheckCircle2, Bot, School, HeartHandshake, Building2, Sparkles, Info } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface ParticipationModalProps {
@@ -19,356 +8,248 @@ interface ParticipationModalProps {
   initialTab?: string;
 }
 
-export const ParticipationModal: React.FC<ParticipationModalProps> = ({
-  isOpen,
-  onClose,
-  initialTab
-}) => {
+type Audience = 'ESTUDANTE' | 'ESCOLA' | 'MENTOR' | 'PATROCINADOR';
+
+export const ParticipationModal: React.FC<ParticipationModalProps> = ({ isOpen, onClose, initialTab }) => {
   const { isDark } = useTheme();
-  const [activeTab, setActiveTab] = useState<'ESTUDANTE' | 'ESCOLA' | 'MENTOR' | 'PATROCINADOR'>('ESTUDANTE');
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<Audience>('ESTUDANTE');
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
-    state: 'SP',
+    state: 'DF',
     city: '',
-    program: 'FLL',
-    schoolName: '',
+    program: 'ALL',
+    institution: '',
     message: ''
   });
 
   useEffect(() => {
-    if (initialTab) {
-      if (initialTab === 'FLL' || initialTab === 'FTC' || initialTab === 'FRC') {
-        setActiveTab('ESTUDANTE');
-        setFormData(prev => ({ ...prev, program: initialTab }));
-      } else if (initialTab === 'ESCOLA' || initialTab === 'MENTOR' || initialTab === 'PATROCINADOR') {
-        setActiveTab(initialTab as any);
-      }
+    if (!initialTab) return;
+
+    if (['FLL', 'FTC', 'FRC'].includes(initialTab)) {
+      setActiveTab('ESTUDANTE');
+      setFormData(prev => ({ ...prev, program: initialTab }));
+      return;
+    }
+
+    if (['ESCOLA', 'MENTOR', 'PATROCINADOR'].includes(initialTab)) {
+      setActiveTab(initialTab as Audience);
     }
   }, [initialTab]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setSubmitted(true);
-    try {
-      confetti({
-        particleCount: 70,
-        spread: 60,
-        origin: { y: 0.5 }
-      });
-    } catch (err) {}
   };
 
-  const handleReset = () => {
-    setSubmitted(false);
-    onClose();
+  const audienceOptions: { id: Audience; label: string; icon: React.ElementType }[] = [
+    { id: 'ESTUDANTE', label: 'Estudante', icon: Bot },
+    { id: 'ESCOLA', label: 'Escola', icon: School },
+    { id: 'MENTOR', label: 'Mentor', icon: HeartHandshake },
+    { id: 'PATROCINADOR', label: 'Apoiador', icon: Building2 }
+  ];
+
+  const introText: Record<Audience, string> = {
+    ESTUDANTE: 'Explore qual programa combina com sua faixa etária e registre, de forma demonstrativa, seu interesse em participar.',
+    ESCOLA: 'Simule o cadastro de interesse de uma escola em conhecer os programas FLL, FTC e FRC.',
+    MENTOR: 'Veja como poderia funcionar um cadastro de interesse para mentoria e voluntariado técnico.',
+    PATROCINADOR: 'Simule o contato de uma empresa interessada em apoiar iniciativas de educação STEM e robótica.'
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       aria-labelledby="participation-modal-title"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
-      <div className={`border rounded-3xl w-full max-w-2xl max-h-[92vh] shadow-2xl overflow-y-auto relative transition-colors ${
-        isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-2xl'
+      <div className={`w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl border shadow-2xl ${
+        isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
-        
-        {/* Top Header */}
         <div className={`sticky top-0 z-10 flex items-center justify-between p-5 border-b backdrop-blur-md ${
           isDark ? 'border-slate-800 bg-slate-900/95' : 'border-slate-200 bg-white/95'
         }`}>
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-red-500" />
-            <h3 id="participation-modal-title" className={`text-base sm:text-lg font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Inscrição e Participação Oficial • FIRST® + SENAI
-            </h3>
+            <h3 id="participation-modal-title" className="text-base sm:text-lg font-bold">Como participar</h3>
           </div>
-
           <button
+            type="button"
             onClick={onClose}
-            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-              isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-            aria-label="Fechar modal de inscrição"
+            className="p-2 rounded-lg hover:bg-slate-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            aria-label="Fechar"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Content */}
         <div className="p-6 sm:p-8">
-          
           {!submitted ? (
-            <div>
-              
-              {/* Audience Selector Tabs */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('ESTUDANTE')}
-                  className={`p-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                    activeTab === 'ESTUDANTE'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  <Bot className="w-4 h-4" />
-                  <span>Estudante</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('ESCOLA')}
-                  className={`p-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                    activeTab === 'ESCOLA'
-                      ? 'bg-red-600 text-white shadow-md'
-                      : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  <School className="w-4 h-4" />
-                  <span>Escola / SENAI</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('MENTOR')}
-                  className={`p-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                    activeTab === 'MENTOR'
-                      ? 'bg-amber-600 text-white shadow-md'
-                      : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  <HeartHandshake className="w-4 h-4" />
-                  <span>Mentor / Juiz</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('PATROCINADOR')}
-                  className={`p-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                    activeTab === 'PATROCINADOR'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  <Building2 className="w-4 h-4" />
-                  <span>Apoiador</span>
-                </button>
-              </div>
-
-              {/* Form Intro Text */}
-              <div className={`mb-6 p-3.5 rounded-xl border text-xs leading-relaxed ${
-                isDark ? 'bg-slate-950 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
+            <>
+              <div className={`mb-6 rounded-xl border p-4 flex items-start gap-3 text-xs sm:text-sm ${
+                isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-100' : 'bg-amber-50 border-amber-200 text-amber-900'
               }`}>
-                {activeTab === 'ESTUDANTE' && 'Cadastre seu interesse para entrar em uma equipe de robótica ou receber convite para seletivas em unidades SENAI e escolas parceiras.'}
-                {activeTab === 'ESCOLA' && 'Solicite suporte técnico e pedagógico para fundar uma equipe oficial de FLL, FTC ou FRC na sua escola ou unidade técnica.'}
-                {activeTab === 'MENTOR' && 'Cadastre-se como mentor voluntário técnico (mecânica, elétrica, software) ou juiz/árbitro de torneios oficiais.'}
-                {activeTab === 'PATROCINADOR' && 'Conecte sua empresa à transformação STEM e apoie equipes com componentes, bolsas e mentoria.'}
+                <Info className="w-4 h-4 mt-0.5 shrink-0" />
+                <p>
+                  Este formulário é uma demonstração de interface. Nenhuma inscrição oficial é enviada à FIRST ou ao SENAI e os dados preenchidos não são transmitidos para uma instituição.
+                </p>
               </div>
 
-              {/* Form Fields */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6" role="tablist" aria-label="Perfil de participação">
+                {audienceOptions.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === id}
+                    onClick={() => setActiveTab(id)}
+                    className={`p-3 rounded-xl text-xs font-bold flex flex-col items-center gap-1.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                      activeTab === id
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : isDark
+                          ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              <p className={`mb-6 text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                {introText[activeTab]}
+              </p>
+
               <form onSubmit={handleSubmit} className="space-y-4">
-                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      Nome Completo *
-                    </label>
-                    <input 
-                      type="text" 
+                  <label className="text-xs font-semibold">
+                    Nome
+                    <input
                       required
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
                       placeholder="Seu nome"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
                     />
-                  </div>
+                  </label>
 
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      E-mail de Contato *
-                    </label>
-                    <input 
-                      type="email" 
+                  <label className="text-xs font-semibold">
+                    E-mail
+                    <input
+                      type="email"
                       required
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={e => setFormData({ ...formData, email: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
                       placeholder="seuemail@exemplo.com"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
                     />
-                  </div>
+                  </label>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      Telefone / WhatsApp *
-                    </label>
-                    <input 
-                      type="tel" 
-                      required
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="(11) 99999-9999"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      Estado (UF) *
-                    </label>
-                    <select 
+                  <label className="text-xs font-semibold">
+                    Estado
+                    <select
                       value={formData.state}
-                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white' 
-                          : 'bg-white border-slate-300 text-slate-900'
-                      }`}
+                      onChange={e => setFormData({ ...formData, state: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
                     >
-                      {['SP', 'RJ', 'MG', 'PR', 'SC', 'RS', 'BA', 'PE', 'CE', 'DF', 'GO', 'AM', 'PA', 'ES', 'MT', 'MS', 'RN', 'PB', 'AL', 'SE', 'PI', 'MA', 'TO', 'RO', 'AC', 'RR', 'AP'].map(uf => (
-                        <option key={uf} value={uf}>{uf}</option>
-                      ))}
+                      {['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'].map(uf => <option key={uf}>{uf}</option>)}
                     </select>
-                  </div>
+                  </label>
 
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      Cidade
-                    </label>
-                    <input 
-                      type="text" 
+                  <label className="text-xs font-semibold sm:col-span-2">
+                    Cidade
+                    <input
                       value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      onChange={e => setFormData({ ...formData, city: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
                       placeholder="Sua cidade"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
                     />
-                  </div>
+                  </label>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      Programa de Interesse
-                    </label>
-                    <select 
+                  <label className="text-xs font-semibold">
+                    Programa de interesse
+                    <select
                       value={formData.program}
-                      onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white' 
-                          : 'bg-white border-slate-300 text-slate-900'
-                      }`}
+                      onChange={e => setFormData({ ...formData, program: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
                     >
-                      <option value="FLL">FIRST® LEGO® League (9 a 15 anos)</option>
-                      <option value="FTC">FIRST® Tech Challenge (12 a 18 anos)</option>
-                      <option value="FRC">FIRST® Robotics Competition (14 a 19 anos)</option>
-                      <option value="ALL">Todos os programas / Quero orientação</option>
+                      <option value="ALL">Quero orientação</option>
+                      <option value="FLL">FIRST LEGO League</option>
+                      <option value="FTC">FIRST Tech Challenge</option>
+                      <option value="FRC">FIRST Robotics Competition</option>
                     </select>
-                  </div>
+                  </label>
 
-                  <div>
-                    <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                      {activeTab === 'ESCOLA' ? 'Nome da Escola ou Unidade SENAI' : 'Instituição de Ensino / Empresa'}
-                    </label>
-                    <input 
-                      type="text" 
-                      value={formData.schoolName}
-                      onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
-                      placeholder="Ex: SENAI Ipiranga ou Escola Estadual"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        isDark 
-                          ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                      }`}
+                  <label className="text-xs font-semibold">
+                    Instituição
+                    <input
+                      value={formData.institution}
+                      onChange={e => setFormData({ ...formData, institution: e.target.value })}
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
+                      placeholder="Escola, SENAI ou empresa"
                     />
-                  </div>
+                  </label>
                 </div>
 
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                    Mensagem ou Dúvidas Adicionais
-                  </label>
-                  <textarea 
+                <label className="block text-xs font-semibold">
+                  Mensagem
+                  <textarea
                     rows={3}
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Conte-nos um pouco sobre seu interesse em robótica e inovação..."
-                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none ${
-                      isDark 
-                        ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500' 
-                        : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
-                    }`}
-                  ></textarea>
-                </div>
+                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                    className={`mt-1 w-full px-3.5 py-2.5 rounded-xl border resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-950 border-slate-700' : 'bg-white border-slate-300'}`}
+                    placeholder="Conte brevemente seu interesse"
+                  />
+                </label>
 
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Send className="w-4 h-4 text-white" />
-                    <span className="text-white">Enviar Inscrição de Interesse</span>
-                  </button>
-                </div>
-
-              </form>
-
-            </div>
-          ) : (
-            <div className="text-center py-8 space-y-4 animate-in zoom-in-95 duration-200">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-500 border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-
-              <h4 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Inscrição Enviada com Sucesso!
-              </h4>
-
-              <p className={`text-sm max-w-md mx-auto leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                Obrigado pelo seu interesse, <strong>{formData.name}</strong>! Nossa equipe regional do SENAI entrará em contato pelo e-mail <strong>{formData.email}</strong> com as instruções e oportunidades de equipes no seu estado ({formData.state}).
-              </p>
-
-              <div className="pt-4">
                 <button
-                  onClick={handleReset}
-                  className={`px-6 py-2.5 font-semibold text-xs rounded-xl border transition-colors cursor-pointer ${
-                    isDark 
-                      ? 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700' 
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
-                  }`}
+                  type="submit"
+                  className="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 >
-                  Concluir e Fechar
+                  Simular envio do interesse
                 </button>
-              </div>
+              </form>
+            </>
+          ) : (
+            <div className="py-10 text-center">
+              <CheckCircle2 className="w-14 h-14 text-emerald-500 mx-auto mb-4" />
+              <h4 className="text-2xl font-black mb-3">Simulação concluída</h4>
+              <p className={`max-w-md mx-auto mb-6 text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                O fluxo demonstrativo foi concluído. Nenhum dado foi enviado para a FIRST, para o SENAI ou para terceiros.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmitted(false);
+                  onClose();
+                }}
+                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm"
+              >
+                Fechar
+              </button>
             </div>
           )}
-
         </div>
-
       </div>
     </div>
   );
