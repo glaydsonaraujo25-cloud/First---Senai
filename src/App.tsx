@@ -26,7 +26,6 @@ const TestimonialsSection = lazy(() => import('./components/TestimonialsSection'
 const NewsSection = lazy(() => import('./components/NewsSection').then(m => ({ default: m.NewsSection })));
 const FaqSection = lazy(() => import('./components/FaqSection').then(m => ({ default: m.FaqSection })));
 const FinalCta = lazy(() => import('./components/FinalCta').then(m => ({ default: m.FinalCta })));
-const ProgramQuizModal = lazy(() => import('./components/ProgramQuizModal').then(m => ({ default: m.ProgramQuizModal })));
 const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
@@ -52,12 +51,11 @@ const LoadingBlock = () => (
 );
 
 export function AppContent() {
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isParticipationOpen, setIsParticipationOpen] = useState(false);
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
   const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
   const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
-  const isAnyModalOpen = isQuizOpen || isParticipationOpen || isTeamFinderOpen;
+  const isAnyModalOpen = isParticipationOpen || isTeamFinderOpen;
 
   useEffect(() => {
     const syncRoute = () => { setActiveProgramPage(getProgramFromLocation()); window.scrollTo({ top: 0, behavior: 'smooth' }); };
@@ -97,43 +95,37 @@ export function AppContent() {
     document.body.style.overflow = 'hidden';
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
-      if (isParticipationOpen) setIsParticipationOpen(false); else if (isTeamFinderOpen) setIsTeamFinderOpen(false); else if (isQuizOpen) setIsQuizOpen(false);
+      if (isParticipationOpen) setIsParticipationOpen(false); else if (isTeamFinderOpen) setIsTeamFinderOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', handleKeyDown); };
-  }, [isAnyModalOpen, isParticipationOpen, isQuizOpen, isTeamFinderOpen]);
+  }, [isAnyModalOpen, isParticipationOpen, isTeamFinderOpen]);
 
   const navigateTo = (path: string) => { window.history.pushState({}, '', path); setActiveProgramPage(getProgramFromLocation()); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const handleOpenParticipation = (tabOrProgram?: string) => { setParticipationInitialTab(tabOrProgram); setIsParticipationOpen(true); };
-  const handleSelectProgramFromQuiz = (programId: string) => {
-    const normalized = programId.toLowerCase();
-    if (normalized === 'fll' || normalized === 'ftc' || normalized === 'frc') { setIsQuizOpen(false); navigateTo(`/program/${normalized}`); return; }
-    document.getElementById(programId)?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
-      <Header isProgramPage={Boolean(activeProgramPage)} onNavigateHome={() => navigateTo('/')} onOpenProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={() => handleOpenParticipation()} onOpenQuiz={() => setIsQuizOpen(true)} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+      <Header isProgramPage={Boolean(activeProgramPage)} onNavigateHome={() => navigateTo('/')} onOpenProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={() => handleOpenParticipation()} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
       {activeProgramPage ? (
-        <Suspense fallback={<LoadingBlock />}><ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} onOpenQuiz={() => setIsQuizOpen(true)} /></Suspense>
+        <Suspense fallback={<LoadingBlock />}><ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} /></Suspense>
       ) : (
         <main id="conteudo-principal">
-          <Hero onOpenQuiz={() => setIsQuizOpen(true)} onOpenParticipation={() => handleOpenParticipation()} />
+          <Hero onOpenParticipation={() => handleOpenParticipation()} />
           <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
-          <Journey onOpenQuiz={() => setIsQuizOpen(true)} />
+          <Journey />
           <SeasonTimeline />
           <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
           <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
           <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
-          <ProgramComparator onOpenQuiz={() => setIsQuizOpen(true)} onSelectProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={(program) => handleOpenParticipation(program)} />
+          <ProgramComparator onSelectProgram={(program) => navigateTo(`/program/${program}`)} onOpenParticipation={(program) => handleOpenParticipation(program)} />
           <Suspense fallback={<LoadingBlock />}>
             <BeyondRobots /><ArenaGallery /><ImpactStats /><BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} /><EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} /><TestimonialsSection /><NewsSection /><FaqSection /><FinalCta onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
           </Suspense>
         </main>
       )}
-      <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} onOpenQuiz={() => setIsQuizOpen(true)} />
+      <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} />
       <Suspense fallback={null}>
-        {isQuizOpen && <ProgramQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} onSelectProgram={handleSelectProgramFromQuiz} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
         {isParticipationOpen && <ParticipationModal isOpen={isParticipationOpen} onClose={() => setIsParticipationOpen(false)} initialTab={participationInitialTab} />}
         {isTeamFinderOpen && <TeamFinderModal isOpen={isTeamFinderOpen} onClose={() => setIsTeamFinderOpen(false)} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
       </Suspense>
