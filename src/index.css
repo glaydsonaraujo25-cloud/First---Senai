@@ -53,7 +53,7 @@ html.dark {
 .light .bg-slate-950\/70,
 .light .bg-slate-950\/60,
 .light .bg-slate-950\/50,
-.light .bg-slate-950\/40 { background-color: rgba(248, 250, 252, 0.94); }
+.light .bg-slate-950\/40 { background-color: rgba(248, 250, 252, 0.96); }
 
 .light .bg-slate-900\/95,
 .light .bg-slate-900\/90,
@@ -62,14 +62,14 @@ html.dark {
 .light .bg-slate-900\/60,
 .light .bg-slate-900\/50,
 .light .bg-slate-900\/40,
-.light .bg-slate-900\/30 { background-color: rgba(255, 255, 255, 0.96); }
+.light .bg-slate-900\/30 { background-color: rgba(255, 255, 255, 0.98); }
 
 .light .bg-slate-800\/90,
 .light .bg-slate-800\/80,
 .light .bg-slate-800\/70,
 .light .bg-slate-800\/60,
 .light .bg-slate-800\/50,
-.light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.96); }
+.light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.98); }
 
 /* Dark neutral gradients become light neutral gradients. Brand gradients stay untouched. */
 .light [class*="from-slate-950"] {
@@ -107,35 +107,81 @@ html.dark {
 .light .text-slate-500 { color: #64748b; }
 .light .text-slate-600 { color: #475569; }
 
-.light h1.text-white,
-.light h2.text-white,
-.light h3.text-white,
-.light h4.text-white,
-.light h5.text-white,
-.light h6.text-white { color: #0f172a; }
+/* In light mode, plain white text should never disappear on converted white cards. */
+.light .text-white { color: #0f172a; }
 
-.light p.text-white,
-.light strong.text-white { color: #0f172a; }
+/* Preserve white text for controls and branded surfaces that remain dark/colored. */
+.light [class*="bg-blue-"] .text-white,
+.light [class*="bg-red-"] .text-white,
+.light [class*="bg-orange-"] .text-white,
+.light [class*="bg-emerald-"] .text-white,
+.light [class*="bg-indigo-"] .text-white,
+.light [class*="bg-rose-"] .text-white,
+.light [class*="from-blue-"] .text-white,
+.light [class*="from-red-"] .text-white,
+.light [class*="from-orange-"] .text-white,
+.light [class*="from-indigo-"] .text-white,
+.light [class*="from-rose-"] .text-white { color: #ffffff; }
 
-.light span.text-white:not([class*="bg-"]):not([class*="from-"]):not([class*="badge"]) { color: #0f172a; }
-
-/* Preserve white text inside solid/gradient brand controls */
 .light button[class*="bg-blue-"],
 .light button[class*="bg-red-"],
 .light button[class*="bg-orange-"],
 .light button[class*="bg-emerald-"],
+.light button[class*="bg-indigo-"],
+.light button[class*="bg-rose-"],
 .light button[class*="from-blue-"],
 .light button[class*="from-red-"],
 .light button[class*="from-orange-"],
+.light button[class*="from-indigo-"],
+.light button[class*="from-rose-"],
 .light a[class*="bg-blue-"],
 .light a[class*="bg-red-"],
 .light a[class*="bg-orange-"],
+.light a[class*="bg-emerald-"],
+.light a[class*="bg-indigo-"],
+.light a[class*="bg-rose-"],
 .light a[class*="from-blue-"],
 .light a[class*="from-red-"],
-.light a[class*="from-orange-"] { color: #ffffff; }
+.light a[class*="from-orange-"],
+.light a[class*="from-indigo-"],
+.light a[class*="from-rose-"] { color: #ffffff; }
+
+.light button[class*="bg-blue-"] *,
+.light button[class*="bg-red-"] *,
+.light button[class*="bg-orange-"] *,
+.light button[class*="bg-emerald-"] *,
+.light button[class*="bg-indigo-"] *,
+.light button[class*="bg-rose-"] *,
+.light button[class*="from-blue-"] *,
+.light button[class*="from-red-"] *,
+.light button[class*="from-orange-"] *,
+.light button[class*="from-indigo-"] *,
+.light button[class*="from-rose-"] *,
+.light a[class*="bg-blue-"] *,
+.light a[class*="bg-red-"] *,
+.light a[class*="bg-orange-"] *,
+.light a[class*="bg-emerald-"] *,
+.light a[class*="bg-indigo-"] *,
+.light a[class*="bg-rose-"] *,
+.light a[class*="from-blue-"] *,
+.light a[class*="from-red-"] *,
+.light a[class*="from-orange-"] *,
+.light a[class*="from-indigo-"] *,
+.light a[class*="from-rose-"] * { color: inherit; }
 
 .light a.bg-amber-500,
-.light button.bg-amber-500 { color: #0f172a; }
+.light button.bg-amber-500,
+.light a.bg-amber-400,
+.light button.bg-amber-400 { color: #0f172a; }
+
+/* Extra contrast for white/light cards that inherited dark-mode white typography. */
+.light .bg-white .text-white,
+.light [class*="bg-slate-950"] .text-white,
+.light [class*="bg-slate-900"] .text-white,
+.light [class*="bg-slate-800"] .text-white { color: #0f172a; }
+
+.light .bg-white .text-slate-300,
+.light [class*="bg-slate-900"] .text-slate-300 { color: #334155; }
 
 /* Transparent gradient text must remain transparent */
 .light .text-transparent,
