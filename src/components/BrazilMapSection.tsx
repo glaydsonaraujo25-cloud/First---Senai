@@ -1,68 +1,72 @@
-import React, { useState } from 'react';
-import { Compass, Trophy, ChevronRight, Info, MapPin } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Compass, ExternalLink, Info, MapPin, School, Search, Users } from 'lucide-react';
 import { brazilStatesData } from '../data/brazilData';
+import { useTheme } from '../context/ThemeContext';
 
 interface BrazilMapSectionProps {
   onOpenParticipation: (program?: string) => void;
 }
 
+const FIRST_SEARCH_URL = 'https://www.firstinspires.org/team-event-search';
+const SENAI_URL = 'https://www.senai.br/';
+
 export const BrazilMapSection: React.FC<BrazilMapSectionProps> = ({ onOpenParticipation }) => {
-  const [selectedUf, setSelectedUf] = useState<string>('SP');
-  const [selectedRegion, setSelectedRegion] = useState<string>('TODAS');
+  const { isDark } = useTheme();
+  const [selectedUf, setSelectedUf] = useState('DF');
+  const [selectedRegion, setSelectedRegion] = useState('TODAS');
 
   const ufsList = Object.keys(brazilStatesData);
-  const currentState = brazilStatesData[selectedUf] || brazilStatesData.SP;
+  const currentState = brazilStatesData[selectedUf] || brazilStatesData.DF || brazilStatesData.SP;
   const regions = ['TODAS', 'Sudeste', 'Sul', 'Nordeste', 'Centro-Oeste', 'Norte'];
 
-  const filteredUfs = selectedRegion === 'TODAS'
-    ? ufsList
-    : ufsList.filter(uf => brazilStatesData[uf].region === selectedRegion);
+  const filteredUfs = useMemo(
+    () => selectedRegion === 'TODAS'
+      ? ufsList
+      : ufsList.filter(uf => brazilStatesData[uf].region === selectedRegion),
+    [selectedRegion, ufsList]
+  );
 
   return (
-    <section id="mapa-brasil" className="py-24 bg-slate-900 text-white relative overflow-hidden border-t border-slate-800">
-      <div className="absolute inset-0 tech-grid-dark opacity-30 pointer-events-none"></div>
+    <section id="mapa-brasil" className={`py-16 sm:py-24 relative overflow-hidden border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200'}`}>
+      <div className="absolute inset-0 tech-grid-dark opacity-25 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-semibold text-emerald-400 mb-4">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-semibold mb-4 ${isDark ? 'bg-slate-800 border-slate-700 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
             <Compass className="w-3.5 h-3.5" />
-            <span>EXPLORAÇÃO POR REGIÃO</span>
+            <span>ENCONTRE O CAMINHO NA SUA REGIÃO</span>
           </div>
-
-          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4 font-mono-tech">
-            ROBÓTICA PELO BRASIL
-          </h2>
-
-          <p className="text-base sm:text-lg text-slate-300">
-            Explore uma visualização demonstrativa da presença dos programas e veja como um localizador de equipes pode funcionar.
+          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight mb-4 font-mono-tech">ROBÓTICA PELO BRASIL</h2>
+          <p className={`text-base sm:text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+            Selecione seu estado e use fontes oficiais para procurar equipes, eventos FIRST® e unidades SENAI próximas.
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto mb-10 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs sm:text-sm text-emerald-50 flex items-start gap-3">
-          <Info className="w-4 h-4 mt-0.5 shrink-0 text-emerald-300" />
-          <p>
-            Quantidades de equipes, polos e eventos exibidas nesta seção são dados de demonstração do projeto. Para localizar equipes e unidades reais, consulte os canais oficiais da FIRST e do SENAI.
-          </p>
+        <div className={`max-w-3xl mx-auto mb-10 rounded-xl border p-4 text-xs sm:text-sm flex items-start gap-3 ${isDark ? 'border-sky-500/30 bg-sky-500/10 text-sky-100' : 'border-blue-200 bg-blue-50 text-blue-900'}`}>
+          <Info className="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
+          <p>Esta seção não inventa números de equipes ou polos. A disponibilidade real muda ao longo da temporada e deve ser confirmada nos diretórios oficiais.</p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8" aria-label="Filtrar estados por região">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-7" aria-label="Filtrar estados por região">
           {regions.map(reg => (
             <button
               key={reg}
               onClick={() => setSelectedRegion(reg)}
               aria-pressed={selectedRegion === reg}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
                 selectedRegion === reg
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700'
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
+                  : isDark
+                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 border-slate-200'
               }`}
             >
-              {reg === 'TODAS' ? 'Todas as Regiões' : `Região ${reg}`}
+              {reg === 'TODAS' ? 'Todas as regiões' : reg}
             </button>
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-4xl mx-auto">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-10 max-w-5xl mx-auto">
           {filteredUfs.map(uf => {
             const state = brazilStatesData[uf];
             const isSelected = selectedUf === uf;
@@ -71,94 +75,63 @@ export const BrazilMapSection: React.FC<BrazilMapSectionProps> = ({ onOpenPartic
                 key={uf}
                 onClick={() => setSelectedUf(uf)}
                 aria-pressed={isSelected}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                   isSelected
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 ring-2 ring-blue-400 scale-105'
-                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700'
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg'
+                    : isDark
+                      ? 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border-slate-700'
+                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200'
                 }`}
               >
                 <span className="font-mono">{uf}</span>
-                <span className="text-[11px] text-slate-300 font-normal hidden sm:inline">{state.name}</span>
+                <span className="hidden sm:inline ml-1 font-normal opacity-80">{state.name}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-700 rounded-3xl p-6 sm:p-10 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="px-3.5 py-1 text-sm font-black bg-blue-600 text-white rounded-lg font-mono">{currentState.uf}</span>
-                <span className="text-xs text-slate-400 font-semibold bg-slate-800 px-3 py-1 rounded-md border border-slate-700">
-                  Região {currentState.region}
-                </span>
-              </div>
-
+        <div className={`rounded-3xl border p-6 sm:p-10 shadow-xl ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+          <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+            <div className="lg:col-span-5 flex flex-col justify-between">
               <div>
-                <h3 className="text-2xl sm:text-4xl font-extrabold text-white mb-2">{currentState.name}</h3>
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed">{currentState.description}</p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800">
-                  <span className="text-2xl sm:text-3xl font-black text-blue-400 font-mono-tech block mb-0.5">{currentState.activeTeams}</span>
-                  <span className="text-[11px] uppercase font-bold text-slate-400">Equipes — demonstração</span>
-                </div>
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800">
-                  <span className="text-2xl sm:text-3xl font-black text-red-400 font-mono-tech block mb-0.5">{currentState.senaiHubs}</span>
-                  <span className="text-[11px] uppercase font-bold text-slate-400">Polos — demonstração</span>
-                </div>
-                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 col-span-2 sm:col-span-1">
-                  <span className="text-xs font-bold text-emerald-400 block mb-1">Programas representados</span>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {currentState.programsActive.map(p => (
-                      <span key={p} className="px-2 py-0.5 bg-slate-800 text-white font-mono text-[10px] font-bold rounded border border-slate-700">{p}</span>
-                    ))}
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-red-600 text-white flex items-center justify-center text-lg font-black font-mono">{currentState.uf}</div>
+                  <div>
+                    <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Região {currentState.region}</p>
+                    <h3 className="text-2xl sm:text-3xl font-black">{currentState.name}</h3>
                   </div>
                 </div>
-              </div>
-
-              <div className="pt-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
-                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                  Exemplos de eventos regionais
-                </h4>
-                <div className="space-y-1.5">
-                  {currentState.featuredEvents.map((evt, idx) => (
-                    <div key={idx} className="text-xs text-slate-200 bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                      <span>{evt}</span>
-                    </div>
-                  ))}
-                </div>
+                <p className={`text-sm sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Use o estado selecionado como referência ao pesquisar equipes, eventos e escolas. Os diretórios oficiais permitem conferir informações atualizadas sem depender de uma base simulada neste projeto.
+                </p>
               </div>
 
               <button
                 onClick={() => onOpenParticipation()}
-                className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-colors flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                className={`mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border text-sm font-bold transition-colors ${isDark ? 'bg-slate-900 border-slate-700 text-white hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100'}`}
               >
-                <span>Simular interesse em {currentState.uf}</span>
-                <ChevronRight className="w-4 h-4" />
+                <MapPin className="w-4 h-4 text-red-500" /> Registrar interesse no projeto
               </button>
             </div>
 
-            <div className="lg:col-span-5 flex items-center justify-center p-6 bg-slate-950 rounded-2xl border border-slate-800">
-              <div className="text-center space-y-5">
-                <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-blue-600 to-red-600 flex items-center justify-center text-white text-3xl font-black font-mono shadow-2xl mx-auto">
-                  {currentState.uf}
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-white flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-red-400" /> {currentState.name}
-                  </h4>
-                  <p className="text-xs text-slate-400 max-w-xs mx-auto mt-2">
-                    Esta área foi preparada para, futuramente, receber dados reais de equipes, unidades, torneios e contatos institucionais a partir de uma fonte oficial.
-                  </p>
-                </div>
-                <div className="p-4 bg-slate-900/80 rounded-xl border border-slate-800 text-left text-xs text-slate-300">
-                  <strong className="text-white block mb-1">Próxima evolução recomendada</strong>
-                  Integrar uma base oficial ou API para localizar equipes e eventos reais por estado e cidade.
-                </div>
+            <div className="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+              <a href={FIRST_SEARCH_URL} target="_blank" rel="noreferrer" className={`rounded-2xl border p-6 group transition-all hover:-translate-y-0.5 ${isDark ? 'bg-slate-900 border-slate-800 hover:border-blue-500' : 'bg-white border-slate-200 hover:border-blue-400 shadow-sm'}`}>
+                <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-5"><Search className="w-5 h-5" /></div>
+                <h4 className="text-lg font-black mb-2">Buscar equipes e eventos FIRST®</h4>
+                <p className={`text-sm leading-relaxed mb-5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Abra o Team & Event Search oficial e filtre por programa e localização.</p>
+                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600">Abrir busca oficial <ExternalLink className="w-4 h-4" /></span>
+              </a>
+
+              <a href={SENAI_URL} target="_blank" rel="noreferrer" className={`rounded-2xl border p-6 group transition-all hover:-translate-y-0.5 ${isDark ? 'bg-slate-900 border-slate-800 hover:border-red-500' : 'bg-white border-slate-200 hover:border-red-400 shadow-sm'}`}>
+                <div className="w-11 h-11 rounded-xl bg-red-600 text-white flex items-center justify-center mb-5"><School className="w-5 h-5" /></div>
+                <h4 className="text-lg font-black mb-2">Encontrar escolas SENAI</h4>
+                <p className={`text-sm leading-relaxed mb-5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>O portal nacional do SENAI permite localizar escolas por estado e cidade.</p>
+                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-red-600">Abrir diretório SENAI <ExternalLink className="w-4 h-4" /></span>
+              </a>
+
+              <div className={`sm:col-span-2 rounded-2xl border p-5 flex items-start gap-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <Users className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                <p className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}><strong className={isDark ? 'text-white' : 'text-slate-900'}>Dica:</strong> ao procurar uma equipe, confirme sempre programa, temporada, cidade e canal oficial de contato antes de considerar a informação atual.</p>
               </div>
             </div>
           </div>
