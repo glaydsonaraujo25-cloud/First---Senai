@@ -1,191 +1,111 @@
 import React from 'react';
-import { 
-  Bot, 
-  Building2, 
-  MapPin, 
-  Mail, 
-  Phone, 
-  Globe, 
-  ArrowUp, 
-  Heart,
-  ChevronRight,
-  ShieldAlert
-} from 'lucide-react';
+import { ArrowUp, ChevronRight, ExternalLink, Info, Search, School, Sparkles } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
 
 interface FooterProps {
   onOpenParticipation: (tab?: string) => void;
   onOpenQuiz: () => void;
 }
 
+const FIRST_URL = 'https://www.firstinspires.org/';
+const FIRST_SEARCH_URL = 'https://www.firstinspires.org/team-event-search';
+const SENAI_URL = 'https://www.senai.br/';
+
 export const Footer: React.FC<FooterProps> = ({ onOpenParticipation, onOpenQuiz }) => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const { isDark } = useTheme();
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const surface = isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200';
+  const muted = isDark ? 'text-slate-400' : 'text-slate-600';
+  const card = isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
 
   return (
-    <footer className="bg-slate-950 text-white border-t border-slate-800 relative z-20">
-      
-      {/* Top Banner with Quick Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          
-          {/* Brand & Mission Column (Col Span 2) */}
+    <footer className={`border-t relative z-20 transition-colors ${surface}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-9 lg:gap-10">
           <div className="lg:col-span-2 space-y-5">
-            
-            {/* Logos Combo */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="font-mono-tech font-black text-xl tracking-wider text-red-500">
-                  FIRST<span className="text-xs align-top">®</span>
-                </span>
-                <span className="text-slate-600 font-light text-xl">✕</span>
-                <div className="bg-blue-600 text-white font-black px-2 py-0.5 rounded text-sm tracking-wider font-mono-tech">
-                  SENAI
-                </div>
-              </div>
+            <div className="flex items-center gap-2.5">
+              <div className="bg-blue-600 text-white font-black px-3 py-1.5 rounded-lg tracking-wider">FIRST<sup className="text-[9px]">®</sup></div>
+              <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>+</span>
+              <div className="bg-red-600 text-white font-black px-3 py-1.5 rounded-lg tracking-widest">SENAI</div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
-              Uma parceria estratégica de alcance nacional dedicada a democratizar a educação STEM, robótica aplicada e inovação tecnológica para a formação dos futuros líderes da indústria brasileira.
+            <p className={`text-sm leading-relaxed max-w-md ${muted}`}>
+              Projeto educacional demonstrativo que organiza informações sobre FLL, FTC e FRC e apresenta caminhos para consultar recursos oficiais da FIRST® e do SENAI.
             </p>
 
-            {/* Institutional Pillars Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Educação STEM • Robótica • Indústria 4.0</span>
+            <div className={`rounded-xl border p-4 text-xs leading-relaxed flex items-start gap-3 max-w-md ${card}`}>
+              <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+              <p className={muted}>Este site não é um canal oficial de inscrição nem representa comunicado institucional da FIRST ou do SENAI. Regulamentos, eventos e participação devem ser confirmados nas fontes oficiais.</p>
             </div>
-
           </div>
 
-          {/* Programs Column */}
           <div className="space-y-4">
-            <h4 className="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">
-              Programas Oficiais
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-300">
+            <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest">Programas</h4>
+            <ul className={`space-y-2.5 text-sm ${muted}`}>
+              {[
+                ['FIRST® LEGO® League', '/program/fll', 'text-amber-500'],
+                ['FIRST® Tech Challenge', '/program/ftc', 'text-orange-500'],
+                ['FIRST® Robotics Competition', '/program/frc', 'text-blue-500']
+              ].map(([label, href, color]) => (
+                <li key={href}>
+                  <a href={href} className="hover:text-blue-600 transition-colors flex items-start gap-1.5">
+                    <ChevronRight className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${color}`} />{label}
+                  </a>
+                </li>
+              ))}
               <li>
-                <a href="#fll" className="hover:text-white transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3 h-3 text-amber-400" />
-                  <span>FIRST® LEGO® League</span>
-                </a>
-              </li>
-              <li>
-                <a href="#ftc" className="hover:text-white transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3 h-3 text-orange-400" />
-                  <span>FIRST® Tech Challenge</span>
-                </a>
-              </li>
-              <li>
-                <a href="#frc" className="hover:text-white transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3 h-3 text-blue-400" />
-                  <span>FIRST® Robotics Competition</span>
-                </a>
-              </li>
-              <li>
-                <button 
-                  onClick={onOpenQuiz}
-                  className="hover:text-sky-300 text-slate-400 transition-colors flex items-center gap-1.5 pt-1 text-left cursor-pointer"
-                >
-                  <ChevronRight className="w-3 h-3 text-sky-400" />
-                  <span>Quiz: Descubra seu Programa</span>
+                <button onClick={onOpenQuiz} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 text-left">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-500" /> Descobrir meu programa
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Navigation Column */}
           <div className="space-y-4">
-            <h4 className="text-xs font-mono font-bold text-red-400 uppercase tracking-widest">
-              Navegação
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-300">
-              <li>
-                <a href="#parceria" className="hover:text-white transition-colors">A Parceria FIRST® + SENAI</a>
-              </li>
-              <li>
-                <a href="#jornada" className="hover:text-white transition-colors">Jornada do Estudante</a>
-              </li>
-              <li>
-                <a href="#temporada" className="hover:text-white transition-colors">Como Funciona a Temporada</a>
-              </li>
-              <li>
-                <a href="#galeria" className="hover:text-white transition-colors">Galeria da Arena</a>
-              </li>
-              <li>
-                <a href="#eventos" className="hover:text-white transition-colors">Calendário de Eventos</a>
-              </li>
-              <li>
-                <a href="#mapa-brasil" className="hover:text-white transition-colors">Mapa Brasil de Robótica</a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-white transition-colors">Perguntas Frequentes (FAQ)</a>
-              </li>
+            <h4 className="text-xs font-black text-red-600 uppercase tracking-widest">Explorar</h4>
+            <ul className={`space-y-2.5 text-sm ${muted}`}>
+              <li><a href="/#programas" className="hover:text-red-600 transition-colors">Comparar programas</a></li>
+              <li><a href="/#temporada" className="hover:text-red-600 transition-colors">Temporada 2026–2027</a></li>
+              <li><a href="/#eventos" className="hover:text-red-600 transition-colors">Eventos e marcos</a></li>
+              <li><a href="/#mapa-brasil" className="hover:text-red-600 transition-colors">Buscar por região</a></li>
+              <li><a href="/#faq" className="hover:text-red-600 transition-colors">Perguntas frequentes</a></li>
+              <li><button onClick={() => onOpenParticipation()} className="hover:text-red-600 transition-colors text-left">Registrar interesse</button></li>
             </ul>
           </div>
 
-          {/* Institutional Contact Column */}
           <div className="space-y-4">
-            <h4 className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">
-              Canais & Apoio
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="flex items-start gap-2">
-                <Building2 className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
-                <span>SENAI — Serviço Nacional de Aprendizagem Industrial</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
-                <span>Brasília / DF — Presença em todos os 27 estados</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                <span>robotica@senai.br</span>
-              </li>
-            </ul>
-
-            <div className="pt-2">
-              <button
-                onClick={() => onOpenParticipation()}
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-white rounded-xl border border-slate-700 transition-colors"
-              >
-                Fale com a Coordenação
-              </button>
+            <h4 className="text-xs font-black text-emerald-600 uppercase tracking-widest">Fontes oficiais</h4>
+            <div className="space-y-2.5">
+              <a href={FIRST_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}>
+                <ExternalLink className="w-4 h-4 text-blue-500" /> FIRST®
+              </a>
+              <a href={FIRST_SEARCH_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-blue-400`}>
+                <Search className="w-4 h-4 text-blue-500" /> Equipes e eventos
+              </a>
+              <a href={SENAI_URL} target="_blank" rel="noreferrer" className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold transition-colors ${card} hover:border-red-400`}>
+                <School className="w-4 h-4 text-red-500" /> Escolas SENAI
+              </a>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Bottom Legal Copyright Bar */}
-      <div className="border-t border-slate-900 bg-slate-950 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          
-          <div className="space-y-1 text-center md:text-left">
-            <p>
-              © {new Date().getFullYear()} Parceria Institucional FIRST® & SENAI Brasil. Todos os direitos reservados.
-            </p>
-            <p className="text-[11px] text-slate-400">
-              FIRST®, FIRST® LEGO® League, FIRST® Tech Challenge, FIRST® Robotics Competition, Gracious Professionalism® e Coopertition® são marcas registradas da For Inspiration and Recognition of Science and Technology.
-            </p>
+      <div className={`border-t py-6 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-slate-50'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className={`text-xs leading-relaxed ${muted}`}>
+            <p>© {new Date().getFullYear()} First — SENAI · Projeto educacional demonstrativo.</p>
+            <p className="mt-1">FIRST® e os nomes de seus programas pertencem à For Inspiration and Recognition of Science and Technology.</p>
           </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <ThemeToggle showLabel={true} />
-
-            <button
-              onClick={scrollToTop}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-blue-600 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
-              aria-label="Voltar ao topo"
-            >
-              <ArrowUp className="w-4 h-4" />
-              <span className="text-[11px] font-bold">Topo</span>
+            <button onClick={scrollToTop} className={`min-h-11 px-3 rounded-xl border flex items-center gap-2 text-xs font-bold transition-colors ${card} hover:border-blue-400`} aria-label="Voltar ao topo">
+              <ArrowUp className="w-4 h-4" /> Topo
             </button>
           </div>
-
         </div>
       </div>
-
     </footer>
   );
 };
