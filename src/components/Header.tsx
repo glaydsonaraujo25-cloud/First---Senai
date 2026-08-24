@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles, ChevronRight, Users, ChevronDown, MapPin } from 'lucide-react';
+import { Menu, X, ChevronRight, Users, ChevronDown, MapPin } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
@@ -8,11 +8,10 @@ interface HeaderProps {
   onNavigateHome?: () => void;
   onOpenProgram?: (program: 'fll' | 'ftc' | 'frc') => void;
   onOpenParticipation: (initialTab?: string) => void;
-  onOpenQuiz: () => void;
   onOpenTeamFinder: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigateHome, onOpenProgram, onOpenParticipation, onOpenQuiz, onOpenTeamFinder }) => {
+export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigateHome, onOpenProgram, onOpenParticipation, onOpenTeamFinder }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [programMenuOpen, setProgramMenuOpen] = useState(false);
@@ -77,7 +76,6 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
 
           <div className="hidden sm:flex items-center gap-2.5">
             <ThemeToggle />
-            <button onClick={onOpenQuiz} className={`hidden md:flex px-3 py-2 text-xs font-semibold rounded-lg transition-all items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-sky-400 bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/80' : 'text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200'}`}><Sparkles className="w-3.5 h-3.5" /> Descobrir programa</button>
             <button onClick={() => onOpenParticipation()} className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 rounded-lg shadow-md transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400">Participe no DF <ChevronRight className="w-4 h-4" /></button>
           </div>
 
@@ -99,7 +97,6 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
           </div>
           {!isProgramPage && <div className="grid grid-cols-2 gap-2 text-sm">{navLinks.map(link => <a key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className={`px-3 py-2 rounded-lg font-medium transition-colors ${isDark ? 'bg-slate-800/80 text-slate-200 hover:bg-blue-600' : 'bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white'}`}>{link.label}</a>)}</div>}
           <div className={`pt-2 border-t flex flex-col gap-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-            <button onClick={() => { setMobileMenuOpen(false); onOpenQuiz(); }} className={`w-full py-2.5 px-4 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 ${isDark ? 'text-sky-300 bg-sky-950/80 border border-sky-800' : 'text-blue-700 bg-blue-50 border border-blue-200'}`}><Sparkles className="w-4 h-4" /> Descubra seu programa</button>
             <button onClick={() => { setMobileMenuOpen(false); onOpenTeamFinder(); }} className={`w-full py-2.5 px-4 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 ${isDark ? 'text-slate-200 bg-slate-800 border border-slate-700' : 'text-slate-700 bg-slate-100 border border-slate-200'}`}><Users className="w-4 h-4 text-blue-500" /> Equipes e eventos no DF</button>
             <button onClick={() => { setMobileMenuOpen(false); onOpenParticipation(); }} className="w-full py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-red-600 to-rose-600 rounded-lg flex items-center justify-center gap-2">QUERO PARTICIPAR NO DF <ChevronRight className="w-4 h-4" /></button>
           </div>
