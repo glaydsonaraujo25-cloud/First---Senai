@@ -24,8 +24,6 @@ import { NewsSection } from './components/NewsSection';
 import { FaqSection } from './components/FaqSection';
 import { FinalCta } from './components/FinalCta';
 import { Footer } from './components/Footer';
-
-// Interactive Modals
 import { ProgramQuizModal } from './components/ProgramQuizModal';
 import { ParticipationModal } from './components/ParticipationModal';
 import { TeamFinderModal } from './components/TeamFinderModal';
@@ -43,110 +41,69 @@ export function AppContent() {
 
   const handleSelectProgramFromQuiz = (programId: string) => {
     const element = document.getElementById(programId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
-      
-      {/* Fixed Navigation Header */}
-      <Header 
+      <Header
         onOpenParticipation={() => handleOpenParticipation()}
         onOpenQuiz={() => setIsQuizOpen(true)}
         onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
       />
 
-      {/* Main Content Sections */}
-      <main>
-        {/* 1. Hero Section */}
-        <Hero 
+      <main id="conteudo-principal">
+        <Hero
           onOpenQuiz={() => setIsQuizOpen(true)}
           onOpenParticipation={() => handleOpenParticipation()}
         />
-
-        {/* 2. Institutional Partnership (FIRST + SENAI) */}
         <Partnership onOpenParticipation={() => handleOpenParticipation('ESCOLA')} />
-
-        {/* 3. Student STEM Journey */}
         <Journey onOpenQuiz={() => setIsQuizOpen(true)} />
-
-        {/* 4. Season Timeline (7 Steps of Engineering) */}
         <SeasonTimeline />
-
-        {/* 5. FIRST LEGO League (FLL) */}
         <ProgramFLL onOpenParticipation={() => handleOpenParticipation('FLL')} />
-
-        {/* 6. FIRST Tech Challenge (FTC) */}
         <ProgramFTC onOpenParticipation={() => handleOpenParticipation('FTC')} />
-
-        {/* 7. FIRST Robotics Competition (FRC) */}
         <ProgramFRC onOpenParticipation={() => handleOpenParticipation('FRC')} />
-
-        {/* 8. Program Comparator & Quiz Invitation */}
-        <ProgramComparator 
+        <ProgramComparator
           onOpenQuiz={() => setIsQuizOpen(true)}
           onOpenParticipation={(program) => handleOpenParticipation(program)}
         />
-
-        {/* 9. Beyond Robots (Gracious Professionalism & Coopertition) */}
         <BeyondRobots />
-
-        {/* 10. Arena Photo & Media Experience */}
         <ArenaGallery />
-
-        {/* 11. Impact & Numbers */}
         <ImpactStats />
-
-        {/* 12. Interactive Brazil Map */}
         <BrazilMapSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-
-        {/* 13. Upcoming Events & Tournaments */}
         <EventsSection onOpenParticipation={(program) => handleOpenParticipation(program)} />
-
-        {/* 14. Testimonials from Students, Teachers & Mentors */}
         <TestimonialsSection />
-
-        {/* 15. News & Innovation Articles */}
         <NewsSection />
-
-        {/* 16. FAQ (Frequently Asked Questions) */}
         <FaqSection />
-
-        {/* 17. Final Impactful Call To Action */}
-        <FinalCta 
+        <FinalCta
           onOpenParticipation={(tab) => handleOpenParticipation(tab)}
           onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
         />
       </main>
 
-      {/* Institutional Footer */}
-      <Footer 
+      <Footer
         onOpenParticipation={(tab) => handleOpenParticipation(tab)}
         onOpenQuiz={() => setIsQuizOpen(true)}
       />
 
-      {/* Global Interactive Modals */}
-      <ProgramQuizModal 
+      <ProgramQuizModal
         isOpen={isQuizOpen}
         onClose={() => setIsQuizOpen(false)}
         onSelectProgram={handleSelectProgramFromQuiz}
         onOpenParticipation={(program) => handleOpenParticipation(program)}
       />
 
-      <ParticipationModal 
+      <ParticipationModal
         isOpen={isParticipationOpen}
         onClose={() => setIsParticipationOpen(false)}
         initialTab={participationInitialTab}
       />
 
-      <TeamFinderModal 
+      <TeamFinderModal
         isOpen={isTeamFinderOpen}
         onClose={() => setIsTeamFinderOpen(false)}
         onOpenParticipation={(program) => handleOpenParticipation(program)}
       />
-
     </div>
   );
 }
