@@ -1,20 +1,19 @@
 {
-  "name": "First — SENAI | Robótica e STEM",
-  "short_name": "First SENAI",
-  "description": "Projeto educacional demonstrativo sobre FIRST LEGO League, FIRST Tech Challenge e FIRST Robotics Competition.",
+  "name": "Robótica FIRST® | SENAI-DF",
+  "short_name": "FIRST SENAI-DF",
+  "description": "Portal educacional sobre FIRST LEGO League, FIRST Tech Challenge e FIRST Robotics Competition no contexto do Distrito Federal.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#f8fafc",
-  "theme_color": "#f8fafc",
+  "theme_color": "#2563eb",
   "lang": "pt-BR",
-  "categories": ["education", "technology"],
-  "icons": [
-    {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "categories": ["education", "technology", "productivity"],
+  "shortcuts": [
+    { "name": "Programas", "url": "/#programas" },
+    { "name": "Unidades SENAI-DF", "url": "/unidades" },
+    { "name": "Eventos", "url": "/eventos" }
+  ],
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }

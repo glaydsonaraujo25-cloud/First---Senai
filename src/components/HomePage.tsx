@@ -8,6 +8,7 @@ import { ProgramFLL } from './ProgramFLL';
 import { ProgramFTC } from './ProgramFTC';
 import { ProgramFRC } from './ProgramFRC';
 import { ProgramComparator } from './ProgramComparator';
+import { ProgramFitGuide } from './ProgramFitGuide';
 import { faqData } from '../data/faqData';
 
 const BeyondRobots = lazy(() => import('./BeyondRobots').then(m => ({ default: m.BeyondRobots })));
@@ -26,20 +27,13 @@ interface HomePageProps {
   onOpenTeamFinder: () => void;
 }
 
-const LoadingBlock = () => (
-  <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite">
-    <span className="text-sm font-semibold">Carregando conteúdo…</span>
-  </div>
-);
+const LoadingBlock = () => <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite"><span className="text-sm font-semibold">Carregando conteúdo…</span></div>;
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenParticipation, onOpenTeamFinder }) => {
   useEffect(() => {
     const hash = window.location.hash;
     if (!hash || hash.startsWith('#/program/')) return;
-
-    const frame = window.requestAnimationFrame(() => {
-      document.querySelector(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' });
-    });
+    const frame = window.requestAnimationFrame(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' }));
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
@@ -49,50 +43,36 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
     const script = document.createElement('script');
     script.id = id;
     script.type = 'application/ld+json';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqData.map(item => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      })),
-    });
+    script.text = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqData.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) });
     document.head.appendChild(script);
     return () => script.remove();
   }, []);
 
-  return (
-    <>
-      <SeasonHeaderBadge />
-      <main id="conteudo-principal">
-        <Hero onOpenParticipation={() => onOpenParticipation()} />
-        <Partnership />
-        <Journey />
-        <SeasonTimeline />
-
-        <div id="programas" className="scroll-mt-24">
-          <ProgramFLL onOpenParticipation={() => onOpenParticipation('FLL')} />
-          <ProgramFTC onOpenParticipation={() => onOpenParticipation('FTC')} />
-          <ProgramFRC onOpenParticipation={() => onOpenParticipation('FRC')} />
-          <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
-        </div>
-
-        <Suspense fallback={<LoadingBlock />}>
-          <BeyondRobots />
-          <ArenaGallery />
-          <ImpactStats />
-          <DfUnitsSection onOpenParticipation={onOpenParticipation} />
-          <EventsSection onOpenParticipation={onOpenParticipation} />
-          <TestimonialsSection />
-          <NewsSection />
-          <FaqSection />
-          <FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} />
-        </Suspense>
-      </main>
-    </>
-  );
+  return <>
+    <SeasonHeaderBadge />
+    <main id="conteudo-principal">
+      <Hero onOpenParticipation={() => onOpenParticipation()} />
+      <Partnership />
+      <Journey />
+      <SeasonTimeline />
+      <div id="programas" className="scroll-mt-24">
+        <ProgramFLL onOpenParticipation={() => onOpenParticipation('FLL')} />
+        <ProgramFTC onOpenParticipation={() => onOpenParticipation('FTC')} />
+        <ProgramFRC onOpenParticipation={() => onOpenParticipation('FRC')} />
+        <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+        <ProgramFitGuide onSelectProgram={onNavigateProgram} />
+      </div>
+      <Suspense fallback={<LoadingBlock />}>
+        <BeyondRobots />
+        <ArenaGallery />
+        <ImpactStats />
+        <DfUnitsSection onOpenParticipation={onOpenParticipation} />
+        <EventsSection onOpenParticipation={onOpenParticipation} />
+        <TestimonialsSection />
+        <NewsSection />
+        <FaqSection />
+        <FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} />
+      </Suspense>
+    </main>
+  </>;
 };
