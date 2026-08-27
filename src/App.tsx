@@ -16,7 +16,6 @@ const UnitsPage = lazy(() => import('./components/UnitsPage').then(m => ({ defau
 const EventsPage = lazy(() => import('./components/EventsPage').then(m => ({ default: m.EventsPage })));
 const TeamsPage = lazy(() => import('./components/TeamsPage').then(m => ({ default: m.TeamsPage })));
 const ResourcesPage = lazy(() => import('./components/ResourcesPage').then(m => ({ default: m.ResourcesPage })));
-const ParticipationModal = lazy(() => import('./components/ParticipationModal').then(m => ({ default: m.ParticipationModal })));
 const TeamFinderModal = lazy(() => import('./components/TeamFinderModal').then(m => ({ default: m.TeamFinderModal })));
 
 type ProgramRoute = 'fll' | 'ftc' | 'frc' | null;
@@ -69,13 +68,10 @@ const LoadingBlock = () => (
 );
 
 export function AppContent() {
-  const [isParticipationOpen, setIsParticipationOpen] = useState(false);
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
-  const [participationInitialTab, setParticipationInitialTab] = useState<string | undefined>(undefined);
   const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
   const [activeStaticPage, setActiveStaticPage] = useState<StaticRoute>(() => getStaticPageFromLocation());
   const [notFound, setNotFound] = useState(() => isUnknownPath());
-  const isAnyModalOpen = isParticipationOpen || isTeamFinderOpen;
 
   useEffect(() => {
     const syncRoute = () => {
@@ -177,20 +173,18 @@ export function AppContent() {
   }, [activeStaticPage, notFound]);
 
   useEffect(() => {
-    if (!isAnyModalOpen) return;
+    if (!isTeamFinderOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      if (isParticipationOpen) setIsParticipationOpen(false);
-      else if (isTeamFinderOpen) setIsTeamFinderOpen(false);
+      if (event.key === 'Escape') setIsTeamFinderOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isAnyModalOpen, isParticipationOpen, isTeamFinderOpen]);
+  }, [isTeamFinderOpen]);
 
   const navigateTo = (path: string) => {
     window.history.pushState({}, '', path);
@@ -200,10 +194,7 @@ export function AppContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenParticipation = (tabOrProgram?: string) => {
-    setParticipationInitialTab(tabOrProgram);
-    setIsParticipationOpen(true);
-  };
+  const handleOpenParticipation = () => navigateTo('/participar');
 
   const onSecondaryPage = Boolean(activeProgramPage) || Boolean(activeStaticPage) || notFound;
 
@@ -213,7 +204,7 @@ export function AppContent() {
         isProgramPage={onSecondaryPage}
         onNavigateHome={() => navigateTo('/')}
         onOpenProgram={(program) => navigateTo(`/program/${program}`)}
-        onOpenParticipation={() => handleOpenParticipation()}
+        onOpenParticipation={handleOpenParticipation}
         onOpenTeamFinder={() => setIsTeamFinderOpen(true)}
       />
 
@@ -221,19 +212,19 @@ export function AppContent() {
         <NotFoundPage onNavigateHome={() => navigateTo('/')} />
       ) : activeProgramPage ? (
         <Suspense fallback={<LoadingBlock />}>
-          <ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={(program) => handleOpenParticipation(program)} />
+          <ProgramDetailPage program={activeProgramPage} onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} />
         </Suspense>
       ) : activeStaticPage === 'participar' ? (
         <Suspense fallback={<LoadingBlock />}>
-          <ParticipationPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+          <ParticipationPage onNavigateHome={() => navigateTo('/')} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
         </Suspense>
       ) : activeStaticPage === 'unidades' ? (
         <Suspense fallback={<LoadingBlock />}>
-          <UnitsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={() => handleOpenParticipation()} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+          <UnitsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
         </Suspense>
       ) : activeStaticPage === 'eventos' ? (
         <Suspense fallback={<LoadingBlock />}>
-          <EventsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={() => handleOpenParticipation()} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+          <EventsPage onNavigateHome={() => navigateTo('/')} onOpenParticipation={handleOpenParticipation} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
         </Suspense>
       ) : activeStaticPage === 'equipes' ? (
         <Suspense fallback={<LoadingBlock />}>
@@ -251,11 +242,10 @@ export function AppContent() {
         />
       )}
 
-      <Footer onOpenParticipation={(tab) => handleOpenParticipation(tab)} />
+      <Footer onOpenParticipation={handleOpenParticipation} />
 
       <Suspense fallback={null}>
-        {isParticipationOpen && <ParticipationModal isOpen={isParticipationOpen} onClose={() => setIsParticipationOpen(false)} initialTab={participationInitialTab} />}
-        {isTeamFinderOpen && <TeamFinderModal isOpen={isTeamFinderOpen} onClose={() => setIsTeamFinderOpen(false)} onOpenParticipation={(program) => handleOpenParticipation(program)} />}
+        {isTeamFinderOpen && <TeamFinderModal isOpen={isTeamFinderOpen} onClose={() => setIsTeamFinderOpen(false)} onOpenParticipation={handleOpenParticipation} />}
       </Suspense>
     </div>
   );
