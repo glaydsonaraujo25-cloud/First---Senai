@@ -15,6 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
   const surface = isDark ? 'bg-slate-950 text-white border-slate-800' : 'bg-white text-slate-900 border-slate-200';
   const muted = isDark ? 'text-slate-400' : 'text-slate-600';
   const card = isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200';
+  const dfLink = isDark ? 'text-blue-300 hover:text-blue-200' : 'text-blue-700 hover:text-blue-600';
 
   return (
     <footer className={`border-t relative z-20 transition-colors ${surface}`}>
@@ -42,17 +43,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-xs font-black text-orange-600 uppercase tracking-widest">Distrito Federal</h4>
-            <ul className={`space-y-2.5 text-sm ${muted}`}>
-              <li><a href="/unidades" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Unidades SENAI-DF</a></li>
-              <li><a href="/eventos" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Eventos e marcos</a></li>
-              <li><a href="/equipes" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Encontrar equipes</a></li>
-              <li><a href="/recursos" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Recursos oficiais</a></li>
-              <li><a href="/#programas" className="hover:text-blue-600 transition-colors">Comparar programas</a></li>
-              <li><a href="/#temporada" className="hover:text-blue-600 transition-colors">Temporada 2026–2027</a></li>
-              <li><a href="/#faq" className="hover:text-blue-600 transition-colors">Perguntas frequentes</a></li>
-              <li><a href="/participar" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Como participar</a></li>
-              <li><button onClick={() => onOpenParticipation()} className="hover:text-blue-600 transition-colors text-left">Orientações para participar</button></li>
+            <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest">Distrito Federal</h4>
+            <ul className="space-y-2.5 text-sm">
+              <li><a href="/unidades" className={`font-semibold transition-colors ${dfLink}`}>Unidades SENAI-DF</a></li>
+              <li><a href="/eventos" className={`font-semibold transition-colors ${dfLink}`}>Eventos e marcos</a></li>
+              <li><a href="/equipes" className={`font-semibold transition-colors ${dfLink}`}>Encontrar equipes</a></li>
+              <li><a href="/recursos" className={`font-semibold transition-colors ${dfLink}`}>Recursos oficiais</a></li>
+              <li><a href="/#programas" className={`font-semibold transition-colors ${dfLink}`}>Comparar programas</a></li>
+              <li><a href="/#temporada" className={`font-semibold transition-colors ${dfLink}`}>Temporada 2026–2027</a></li>
+              <li><a href="/#faq" className={`font-semibold transition-colors ${dfLink}`}>Perguntas frequentes</a></li>
+              <li><a href="/participar" className={`font-semibold transition-colors ${dfLink}`}>Como participar</a></li>
+              <li><button onClick={() => onOpenParticipation()} className={`font-semibold transition-colors text-left ${dfLink}`}>Orientações para participar</button></li>
             </ul>
           </div>
 
