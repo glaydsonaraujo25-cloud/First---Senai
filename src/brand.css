@@ -1,0 +1,58 @@
+/* FIRST® brand mark
+   Uses the official FIRST-hosted artwork and crops the vertical lockup to the
+   standalone icon, matching the original mark supplied for this project. */
+
+:root {
+  --first-official-logo: url("https://www.firstinspires.org/hs-fs/hubfs/web/brand/brand-logos-cards/first-logo-vertical_1280x850.webp?height=418&name=first-logo-vertical_1280x850.webp&width=630");
+}
+
+/* Header: replace the former CSS-drawn FIRST badge with the official mark. */
+#main-header button[aria-label="FIRST e SENAI-DF - página inicial"] > div.flex.items-center > div:first-child {
+  width: 3.75rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  background-image: var(--first-official-logo);
+  background-repeat: no-repeat;
+  background-size: 220% auto;
+  background-position: center 18%;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 0.12);
+}
+
+#main-header button[aria-label="FIRST e SENAI-DF - página inicial"] > div.flex.items-center > div:first-child > * {
+  visibility: hidden;
+}
+
+/* Footer: replace the text badge with the same official FIRST mark. */
+footer div[class*="bg-blue-600"][class*="tracking-wider"] {
+  width: 3.75rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  color: transparent !important;
+  font-size: 0;
+  background-color: #fff !important;
+  background-image: var(--first-official-logo) !important;
+  background-repeat: no-repeat !important;
+  background-size: 220% auto !important;
+  background-position: center 18% !important;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 0.10);
+}
+
+footer div[class*="bg-blue-600"][class*="tracking-wider"] * {
+  visibility: hidden;
+}
+
+@media (max-width: 420px) {
+  #main-header button[aria-label="FIRST e SENAI-DF - página inicial"] > div.flex.items-center > div:first-child,
+  footer div[class*="bg-blue-600"][class*="tracking-wider"] {
+    width: 3.25rem;
+    height: 2.25rem;
+  }
+}
