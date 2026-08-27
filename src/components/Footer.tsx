@@ -43,7 +43,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest">Distrito Federal</h4>
+            <h4 className="text-xs font-black text-orange-500 uppercase tracking-widest">Distrito Federal</h4>
             <ul className="space-y-2.5 text-sm">
               <li><a href="/unidades" className={`font-semibold transition-colors ${dfLink}`}>Unidades SENAI-DF</a></li>
               <li><a href="/eventos" className={`font-semibold transition-colors ${dfLink}`}>Eventos e marcos</a></li>
