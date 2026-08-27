@@ -26,7 +26,7 @@ export const galleryPhotos: GalleryPhoto[] = [
     categoryLabel: 'FTC',
     program: 'FTC',
     caption: 'Imagem ilustrativa para representar prototipagem, mecanismos, sensores e integração de sistemas na FTC.',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1200&q=80'
+    image: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1200&q=80'
   },
   {
     id: 'gal-4',
