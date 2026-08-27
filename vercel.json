@@ -1,5 +1,10 @@
 {
   "rewrites": [
-    { "source": "/program/:path*", "destination": "/index.html" }
+    { "source": "/program/:path*", "destination": "/index.html" },
+    { "source": "/participar", "destination": "/index.html" },
+    { "source": "/unidades", "destination": "/index.html" },
+    { "source": "/eventos", "destination": "/index.html" },
+    { "source": "/equipes", "destination": "/index.html" },
+    { "source": "/recursos", "destination": "/index.html" }
   ]
 }
