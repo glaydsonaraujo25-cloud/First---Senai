@@ -125,13 +125,14 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <button type="button" onClick={() => onNavigateHome ? onNavigateHome() : (window.location.hash = '#inicio')} className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg p-1 text-left shrink-0" aria-label="FIRST e SENAI-DF - página inicial">
-            <div className="flex items-center">
-              <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold px-2 sm:px-2.5 py-1 rounded-md shadow-md">
-                <div className="w-2.5 h-2.5 bg-red-500 rounded-full" /><div className="w-2.5 h-2.5 bg-white rotate-45" /><div className="w-2.5 h-2.5 bg-amber-400" />
-                <span className="ml-1 tracking-wider text-xs sm:text-sm font-black">FIRST<sup className="text-[9px]">®</sup></span>
-              </div>
-              <span className={`mx-1.5 sm:mx-2 font-light text-lg ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>+</span>
-              <div className="bg-blue-700 text-white font-black tracking-widest text-xs sm:text-sm px-2 sm:px-2.5 py-1 rounded-md shadow-md border-b-2 border-orange-500">SENAI-DF</div>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className={`flex h-9 w-16 sm:h-10 sm:w-20 items-center justify-center overflow-hidden rounded-md border bg-white p-1 ${isDark ? 'border-slate-700' : 'border-slate-200'} shadow-sm`}>
+                <img src="/firstlogo.jpg" alt="FIRST" className="block h-full w-full object-contain object-center" />
+              </span>
+              <span className={`font-light text-lg ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>+</span>
+              <span className={`flex h-9 w-28 sm:h-10 sm:w-32 items-center justify-center overflow-hidden rounded-md border bg-white px-1.5 py-1 ${isDark ? 'border-slate-700' : 'border-slate-200'} shadow-sm`}>
+                <img src="/senai-_1280x330-e1753189068659-1024x293.png" alt="SENAI-DF" className="block h-full w-full object-contain object-center" />
+              </span>
             </div>
             <div className={`hidden 2xl:block border-l pl-3 ${isDark ? 'border-slate-700' : 'border-slate-300'}`}>
               <p className={`text-[11px] font-semibold tracking-wide leading-tight ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>ROBÓTICA & EDUCAÇÃO STEM</p>
@@ -163,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
 
           <div className="hidden xl:flex items-center gap-2.5">
             <ThemeToggle />
-            <button onClick={() => onOpenParticipation()} className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-blue-700 to-orange-500 hover:from-blue-600 hover:to-orange-400 rounded-lg shadow-md transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Participe no DF <ChevronRight className="w-4 h-4" /></button>
+            <button onClick={() => onOpenParticipation()} className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-blue-700 to-orange-500 hover:from-blue-600 hover:to-orange-400 rounded-lg shadow-md transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Como participar <ChevronRight className="w-4 h-4" /></button>
           </div>
 
           <div className="flex xl:hidden items-center gap-1 sm:gap-2">
@@ -188,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigat
 
             <div className={`pt-2 border-t flex flex-col sm:flex-row gap-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <button onClick={() => { setMobileMenuOpen(false); onOpenTeamFinder(); }} className={`flex-1 py-2.5 px-4 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'text-slate-200 bg-slate-800 border border-slate-700' : 'text-slate-700 bg-slate-100 border border-slate-200'}`}><Users className="w-4 h-4 text-blue-500" /> Equipes e eventos no DF</button>
-              <button onClick={() => { setMobileMenuOpen(false); onOpenParticipation(); }} className="flex-1 py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-orange-500 rounded-lg flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">QUERO PARTICIPAR NO DF <ChevronRight className="w-4 h-4" /></button>
+              <button onClick={() => { setMobileMenuOpen(false); onOpenParticipation(); }} className="flex-1 py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-blue-700 to-orange-500 rounded-lg flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">COMO PARTICIPAR <ChevronRight className="w-4 h-4" /></button>
             </div>
           </div>
         </div>
