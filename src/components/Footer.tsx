@@ -22,9 +22,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-9 lg:gap-10">
           <div className="lg:col-span-2 space-y-5">
             <div className="flex items-center gap-2.5">
-              <div className="bg-blue-600 text-white font-black px-3 py-1.5 rounded-lg tracking-wider">FIRST<sup className="text-[9px]">®</sup></div>
+              <span className={`flex h-12 w-24 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5 ${isDark ? 'border-slate-700' : 'border-slate-200'} shadow-sm`}>
+                <img src="/firstlogo.jpg" alt="FIRST" className="block h-full w-full object-contain object-center" />
+              </span>
               <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>+</span>
-              <div className="bg-blue-700 text-white font-black px-3 py-1.5 rounded-lg tracking-widest border-b-2 border-orange-500">SENAI-DF</div>
+              <span className={`flex h-12 w-40 items-center justify-center overflow-hidden rounded-lg border bg-white px-2 py-1.5 ${isDark ? 'border-slate-700' : 'border-slate-200'} shadow-sm`}>
+                <img src="/senai-_1280x330-e1753189068659-1024x293.png" alt="SENAI-DF" className="block h-full w-full object-contain object-center" />
+              </span>
             </div>
             <p className={`text-sm leading-relaxed max-w-md ${muted}`}>Projeto educacional voltado ao Distrito Federal, organizando informações sobre FLL, FTC e FRC e conectando a experiência às referências e aos canais do SENAI-DF.</p>
             <div className={`rounded-xl border p-4 text-xs leading-relaxed flex items-start gap-3 max-w-md ${card}`}><Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" /><p className={muted}>Este site não substitui canais oficiais de inscrição ou atendimento. Confirme regulamentos, equipes, eventos e oportunidades diretamente com o Sistema Fibra/SENAI-DF e com a FIRST®.</p></div>
@@ -48,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
               <li><a href="/#temporada" className="hover:text-blue-600 transition-colors">Temporada 2026–2027</a></li>
               <li><a href="/#faq" className="hover:text-blue-600 transition-colors">Perguntas frequentes</a></li>
               <li><a href="/participar" className="font-semibold text-blue-700 hover:text-blue-600 transition-colors">Como participar</a></li>
-              <li><button onClick={() => onOpenParticipation()} className="hover:text-blue-600 transition-colors text-left">Registrar interesse</button></li>
+              <li><button onClick={() => onOpenParticipation()} className="hover:text-blue-600 transition-colors text-left">Orientações para participar</button></li>
             </ul>
           </div>
 
