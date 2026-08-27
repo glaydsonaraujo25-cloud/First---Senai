@@ -18,11 +18,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation }) => {
   };
 
   const resetRobotGaze = () => setGaze({ x: 0, y: 0 });
-  const eyeX = gaze.x * 8;
-  const eyeY = gaze.y * 6;
+
+  // A íris fica parada. Somente a pupila e seus reflexos acompanham o ponteiro.
+  const pupilX = gaze.x * 12;
+  const pupilY = gaze.y * 11;
+  const highlightX = gaze.x * 2;
+  const highlightY = gaze.y * 2;
+
+  // Pequenos movimentos da cabeça reforçam a direção do olhar sem mover os olhos inteiros.
   const headX = gaze.x * 5;
-  const headY = gaze.y * 3;
-  const headRotate = gaze.x * 2.5;
+  const headY = gaze.y * 5;
+  const headRotate = gaze.x * 3;
+  const antennaTilt = gaze.x * 2;
 
   return (
     <section id="inicio" className={`relative overflow-hidden pt-28 pb-14 sm:pt-32 sm:pb-20 lg:min-h-[92vh] lg:flex lg:items-center transition-colors ${isDark ? 'bg-slate-950 text-white' : 'bg-white text-slate-950'}`}>
@@ -70,7 +77,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation }) => {
               onPointerMove={handleRobotPointerMove}
               onPointerLeave={resetRobotGaze}
               className={`relative min-h-[430px] sm:min-h-[500px] overflow-hidden rounded-[2rem] border shadow-xl select-none ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-gradient-to-br from-white via-blue-50/70 to-slate-50 border-slate-200'}`}
-              aria-label="Mascote robô interativo que acompanha o ponteiro com os olhos"
+              aria-label="Mascote robô interativo cujas pupilas acompanham o ponteiro"
             >
               <div className="absolute inset-0 tech-grid-pattern opacity-35 pointer-events-none" />
               <div className="absolute -top-20 -right-16 h-56 w-56 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
@@ -104,11 +111,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation }) => {
                   <filter id="robotShadow" x="-30%" y="-30%" width="160%" height="160%">
                     <feDropShadow dx="0" dy="10" stdDeviation="10" floodColor="#0f172a" floodOpacity="0.22" />
                   </filter>
+                  <clipPath id="leftEyeClip"><circle cx="215" cy="219" r="22" /></clipPath>
+                  <clipPath id="rightEyeClip"><circle cx="285" cy="219" r="22" /></clipPath>
                 </defs>
 
                 <ellipse cx="250" cy="493" rx="130" ry="17" fill={isDark ? '#020617' : '#cbd5e1'} opacity="0.35" />
 
-                <g transform={`translate(${-gaze.x * 2} ${gaze.y * 1.5})`} style={{ transition: 'transform 90ms linear' }}>
+                <g transform={`translate(${-gaze.x * 2} ${gaze.y * 1.5})`} style={{ transition: 'transform 100ms ease-out' }}>
                   <rect x="171" y="340" width="158" height="132" rx="52" fill="url(#robotBody)" stroke="#94a3b8" strokeWidth="4" filter="url(#robotShadow)" />
                   <path d="M190 370 Q250 338 310 370 L300 438 Q250 463 200 438 Z" fill="url(#robotBlue)" opacity="0.95" />
                   <rect x="213" y="375" width="74" height="48" rx="12" fill="#fff" stroke="#cbd5e1" strokeWidth="2" />
@@ -128,25 +137,44 @@ export const Hero: React.FC<HeroProps> = ({ onOpenParticipation }) => {
                   </g>
                 </g>
 
-                <g transform={`translate(${headX} ${headY}) rotate(${headRotate} 250 235)`} style={{ transition: 'transform 90ms linear' }}>
+                <g transform={`translate(${headX} ${headY}) rotate(${headRotate} 250 235)`} style={{ transition: 'transform 100ms ease-out' }}>
                   <rect x="151" y="135" width="198" height="177" rx="76" fill="url(#robotBody)" stroke="#94a3b8" strokeWidth="5" filter="url(#robotShadow)" />
                   <rect x="168" y="160" width="164" height="124" rx="52" fill="#07111f" stroke="#1e3a8a" strokeWidth="4" />
 
                   <rect x="129" y="190" width="29" height="70" rx="14" fill="#2563eb" stroke="#1e3a8a" strokeWidth="4" />
                   <rect x="342" y="190" width="29" height="70" rx="14" fill="#2563eb" stroke="#1e3a8a" strokeWidth="4" />
 
-                  <line x1="250" y1="135" x2="250" y2="100" stroke="#1e3a8a" strokeWidth="7" strokeLinecap="round" />
-                  <circle cx="250" cy="88" r="15" fill="#2563eb" stroke="#1e3a8a" strokeWidth="4" />
-                  <circle cx="245" cy="83" r="4" fill="#bfdbfe" />
-
-                  <g transform={`translate(${eyeX} ${eyeY})`} style={{ transition: 'transform 70ms linear' }}>
-                    <circle cx="215" cy="219" r="27" fill="url(#eyeBlue)" stroke="#dbeafe" strokeWidth="5" />
-                    <circle cx="285" cy="219" r="27" fill="url(#eyeBlue)" stroke="#dbeafe" strokeWidth="5" />
-                    <circle cx="218" cy="221" r="11" fill="#07111f" />
-                    <circle cx="288" cy="221" r="11" fill="#07111f" />
-                    <circle cx="212" cy="212" r="5" fill="#fff" />
-                    <circle cx="282" cy="212" r="5" fill="#fff" />
+                  <g transform={`rotate(${antennaTilt} 250 135)`}>
+                    <line x1="250" y1="135" x2="250" y2="100" stroke="#1e3a8a" strokeWidth="7" strokeLinecap="round" />
+                    <circle cx="250" cy="88" r="15" fill="#2563eb" stroke="#1e3a8a" strokeWidth="4" />
+                    <circle cx="245" cy="83" r="4" fill="#bfdbfe" />
                   </g>
+
+                  {/* Olhos fixos */}
+                  <circle cx="215" cy="219" r="27" fill="url(#eyeBlue)" stroke="#dbeafe" strokeWidth="5" />
+                  <circle cx="285" cy="219" r="27" fill="url(#eyeBlue)" stroke="#dbeafe" strokeWidth="5" />
+
+                  {/* Pupila esquerda: acompanha o cursor sem deslocar o olho */}
+                  <g clipPath="url(#leftEyeClip)">
+                    <g transform={`translate(${pupilX} ${pupilY})`} style={{ transition: 'transform 55ms linear' }}>
+                      <circle cx="215" cy="219" r="12" fill="#06101f" />
+                      <circle cx={210 + highlightX} cy={213 + highlightY} r="4.8" fill="#fff" />
+                      <circle cx={219 + highlightX * 0.5} cy={222 + highlightY * 0.5} r="2.3" fill="#bae6fd" opacity="0.9" />
+                    </g>
+                  </g>
+
+                  {/* Pupila direita */}
+                  <g clipPath="url(#rightEyeClip)">
+                    <g transform={`translate(${pupilX} ${pupilY})`} style={{ transition: 'transform 55ms linear' }}>
+                      <circle cx="285" cy="219" r="12" fill="#06101f" />
+                      <circle cx={280 + highlightX} cy={213 + highlightY} r="4.8" fill="#fff" />
+                      <circle cx={289 + highlightX * 0.5} cy={222 + highlightY * 0.5} r="2.3" fill="#bae6fd" opacity="0.9" />
+                    </g>
+                  </g>
+
+                  {/* Sobrancelhas ajudam a leitura do olhar vertical */}
+                  <path d="M191 187 Q215 177 237 188" fill="none" stroke="#60a5fa" strokeWidth="4" strokeLinecap="round" opacity={0.55 + Math.max(0, -gaze.y) * 0.35} />
+                  <path d="M263 188 Q285 177 309 187" fill="none" stroke="#60a5fa" strokeWidth="4" strokeLinecap="round" opacity={0.55 + Math.max(0, -gaze.y) * 0.35} />
 
                   <path d="M224 255 Q250 274 276 255" fill="none" stroke="#bfdbfe" strokeWidth="7" strokeLinecap="round" />
                 </g>
