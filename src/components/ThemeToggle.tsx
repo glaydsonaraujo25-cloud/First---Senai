@@ -12,7 +12,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLa
 
   return (
     <button
-      id="theme-toggle-btn"
       type="button"
       onClick={toggleTheme}
       className={`relative inline-flex items-center gap-2 p-2 rounded-xl border transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 ${

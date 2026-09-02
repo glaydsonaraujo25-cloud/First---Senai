@@ -1,5 +1,8 @@
 import React from 'react';
 import { ArrowLeft, BookOpen, Bot, ExternalLink, School, Search, ShieldCheck } from 'lucide-react';
+import { Partnership } from './Partnership';
+import { Journey } from './Journey';
+import { ProgramFitGuide } from './ProgramFitGuide';
 import { useTheme } from '../context/ThemeContext';
 
 interface ResourcesPageProps {
@@ -82,6 +85,9 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({ onNavigateHome }) 
           ))}
         </section>
       </div>
+      <Partnership />
+      <Journey />
+      <ProgramFitGuide onSelectProgram={program => window.location.assign(`/program/${program}`)} />
     </main>
   );
 };

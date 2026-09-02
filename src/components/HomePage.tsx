@@ -1,23 +1,11 @@
 import React, { Suspense, lazy, useEffect } from 'react';
+import { ProgramOverview } from './ProgramOverview';
 import { Hero } from './Hero';
-import { Partnership } from './Partnership';
-import { Journey } from './Journey';
-import { SeasonTimeline } from './SeasonTimeline';
-import { SeasonHeaderBadge } from './SeasonHeaderBadge';
-import { ProgramFLL } from './ProgramFLL';
-import { ProgramFTC } from './ProgramFTC';
-import { ProgramFRC } from './ProgramFRC';
 import { ProgramComparator } from './ProgramComparator';
-import { ProgramFitGuide } from './ProgramFitGuide';
 import { faqData } from '../data/faqData';
 
-const BeyondRobots = lazy(() => import('./BeyondRobots').then(m => ({ default: m.BeyondRobots })));
-const ArenaGallery = lazy(() => import('./ArenaGallery').then(m => ({ default: m.ArenaGallery })));
-const ImpactStats = lazy(() => import('./ImpactStats').then(m => ({ default: m.ImpactStats })));
 const DfUnitsSection = lazy(() => import('./DfUnitsSection').then(m => ({ default: m.DfUnitsSection })));
 const EventsSection = lazy(() => import('./EventsSection').then(m => ({ default: m.EventsSection })));
-const TestimonialsSection = lazy(() => import('./TestimonialsSection').then(m => ({ default: m.TestimonialsSection })));
-const NewsSection = lazy(() => import('./NewsSection').then(m => ({ default: m.NewsSection })));
 const FaqSection = lazy(() => import('./FaqSection').then(m => ({ default: m.FaqSection })));
 const FinalCta = lazy(() => import('./FinalCta').then(m => ({ default: m.FinalCta })));
 
@@ -30,12 +18,6 @@ interface HomePageProps {
 const LoadingBlock = () => <div className="min-h-40 flex items-center justify-center bg-slate-50 text-slate-500 dark:bg-slate-950 dark:text-slate-400" role="status" aria-live="polite"><span className="text-sm font-semibold">Carregando conteúdo…</span></div>;
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenParticipation, onOpenTeamFinder }) => {
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash || hash.startsWith('#/program/')) return;
-    const frame = window.requestAnimationFrame(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' }));
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     const id = 'faq-structured-data';
@@ -48,31 +30,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
     return () => script.remove();
   }, []);
 
-  return <>
-    <SeasonHeaderBadge />
-    <main id="conteudo-principal">
-      <Hero onOpenParticipation={() => onOpenParticipation()} />
-      <Partnership />
-      <Journey />
-      <SeasonTimeline />
-      <div id="programas" className="scroll-mt-24">
-        <ProgramFLL onOpenParticipation={() => onOpenParticipation('FLL')} />
-        <ProgramFTC onOpenParticipation={() => onOpenParticipation('FTC')} />
-        <ProgramFRC onOpenParticipation={() => onOpenParticipation('FRC')} />
-        <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
-        <ProgramFitGuide onSelectProgram={onNavigateProgram} />
-      </div>
-      <Suspense fallback={<LoadingBlock />}>
-        <BeyondRobots />
-        <ArenaGallery />
-        <ImpactStats />
-        <DfUnitsSection onOpenParticipation={onOpenParticipation} />
-        <EventsSection onOpenParticipation={onOpenParticipation} />
-        <TestimonialsSection />
-        <NewsSection />
-        <FaqSection />
-        <FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} />
-      </Suspense>
-    </main>
-  </>;
+  return <main id="conteudo-principal">
+    <Hero onOpenParticipation={() => onOpenParticipation()} />
+    <ProgramOverview onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+    <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+    <Suspense fallback={<LoadingBlock />}><DfUnitsSection onOpenParticipation={onOpenParticipation} /></Suspense>
+    <Suspense fallback={<LoadingBlock />}><EventsSection onOpenParticipation={onOpenParticipation} /></Suspense>
+    <Suspense fallback={<LoadingBlock />}><FaqSection /></Suspense>
+    <Suspense fallback={<LoadingBlock />}><FinalCta onOpenParticipation={onOpenParticipation} onOpenTeamFinder={onOpenTeamFinder} /></Suspense>
+  </main>;
 };

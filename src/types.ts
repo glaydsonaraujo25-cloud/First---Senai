@@ -74,7 +74,7 @@ export interface FaqItem {
 export interface GalleryPhoto {
   id: string;
   title: string;
-  category: 'arenas' | 'robots' | 'teams' | 'awards' | 'pits';
+  category: 'fll' | 'ftc' | 'frc';
   categoryLabel: string;
   program: 'FLL' | 'FTC' | 'FRC' | 'TODOS';
   caption: string;

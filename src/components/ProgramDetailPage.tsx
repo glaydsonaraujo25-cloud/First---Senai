@@ -190,7 +190,7 @@ export const ProgramDetailPage: React.FC<ProgramDetailPageProps> = ({ program, o
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <h2 className="text-xl sm:text-2xl font-black mb-2">Próximo passo</h2>
-              <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>Compare as modalidades, consulte as informações oficiais ou registre seu interesse para continuar explorando a jornada.</p>
+              <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>Compare as modalidades e veja os próximos passos para participar pelos canais oficiais.</p>
               <a href={item.officialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-blue-600 hover:text-blue-500">Página oficial do programa <ExternalLink className="w-3.5 h-3.5" /></a>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
@@ -21,232 +22,34 @@
 .text-stroke-2 { -webkit-text-stroke: 2px currentColor; }
 .tracking-ultra-wide { letter-spacing: 0.2em; }
 
-html.light {
+/* Theme tokens are shared by both themes; component utilities remain explicit. */
+:root, html.light {
   color-scheme: light;
-  background-color: #f8fafc;
+  --page-bg: #f8fafc;
+  --surface-bg: #ffffff;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --surface-border: #cbd5e1;
+  --action-bg: #1d4ed8;
+  --action-hover: #1e40af;
+  --action-text: #ffffff;
 }
-
 html.dark {
   color-scheme: dark;
-  background-color: #020617;
+  --page-bg: #020617;
+  --surface-bg: #0f172a;
+  --text-primary: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --surface-border: #334155;
+  --action-bg: #1d4ed8;
+  --action-hover: #2563eb;
 }
-
-.light body {
-  background-color: #f8fafc;
-  color: #0f172a;
-}
-
-.light .bg-slate-950 { background-color: #f8fafc; }
-.light .bg-slate-900 { background-color: #ffffff; }
-.light .bg-slate-850,
-.light .bg-slate-800 { background-color: #f1f5f9; }
-.light .bg-slate-700 { background-color: #e2e8f0; }
-
-.light .bg-slate-950\/95,
-.light .bg-slate-950\/90,
-.light .bg-slate-950\/80,
-.light .bg-slate-950\/70,
-.light .bg-slate-950\/60,
-.light .bg-slate-950\/50,
-.light .bg-slate-950\/40 { background-color: rgba(248, 250, 252, 0.96); }
-
-.light .bg-slate-900\/95,
-.light .bg-slate-900\/90,
-.light .bg-slate-900\/80,
-.light .bg-slate-900\/70,
-.light .bg-slate-900\/60,
-.light .bg-slate-900\/50,
-.light .bg-slate-900\/40,
-.light .bg-slate-900\/30 { background-color: rgba(255, 255, 255, 0.98); }
-
-.light .bg-slate-800\/90,
-.light .bg-slate-800\/80,
-.light .bg-slate-800\/70,
-.light .bg-slate-800\/60,
-.light .bg-slate-800\/50,
-.light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.98); }
-
-.light [class*="from-slate-950"] {
-  --tw-gradient-from: #f8fafc var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgb(248 250 252 / 0) var(--tw-gradient-to-position) !important;
-}
-.light [class*="via-slate-950"] { --tw-gradient-via: #f8fafc var(--tw-gradient-via-position) !important; }
-.light [class*="to-slate-950"] { --tw-gradient-to: #f8fafc var(--tw-gradient-to-position) !important; }
-.light [class*="from-slate-900"] {
-  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
-}
-.light [class*="via-slate-900"] { --tw-gradient-via: #ffffff var(--tw-gradient-via-position) !important; }
-.light [class*="to-slate-900"] { --tw-gradient-to: #ffffff var(--tw-gradient-to-position) !important; }
-
-.light .border-slate-900,
-.light .border-slate-800,
-.light .border-slate-800\/80,
-.light .border-slate-800\/60,
-.light .border-slate-800\/50 { border-color: #e2e8f0; }
-
-.light .border-slate-700,
-.light .border-slate-700\/80,
-.light .border-slate-700\/90 { border-color: #cbd5e1; }
-
-.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]) { border-color: #e2e8f0; }
-.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) { border-color: #cbd5e1; }
-
-.light .text-slate-50,
-.light .text-slate-100 { color: #0f172a; }
-.light .text-slate-200 { color: #1e293b; }
-.light .text-slate-300 { color: #334155; }
-.light .text-slate-400 { color: #64748b; }
-.light .text-slate-500 { color: #64748b; }
-.light .text-slate-600 { color: #475569; }
-.light .text-sky-100 { color: #0c4a6e; }
-.light .text-blue-100 { color: #1e3a8a; }
-.light .text-indigo-100 { color: #312e81; }
-.light .text-emerald-100 { color: #064e3b; }
-.light .text-amber-100 { color: #78350f; }
-.light .text-orange-100 { color: #7c2d12; }
-.light .text-red-100 { color: #7f1d1d; }
-.light .text-rose-100 { color: #881337; }
-
-.light .text-white { color: #0f172a; }
-
-/* Keep white text only on strong branded surfaces. */
-.light .bg-blue-500,
-.light .bg-blue-600,
-.light .bg-blue-700,
-.light .bg-red-500,
-.light .bg-red-600,
-.light .bg-red-700,
-.light .bg-orange-500,
-.light .bg-orange-600,
-.light .bg-orange-700,
-.light .bg-emerald-500,
-.light .bg-emerald-600,
-.light .bg-emerald-700,
-.light .bg-indigo-500,
-.light .bg-indigo-600,
-.light .bg-indigo-700,
-.light .bg-rose-500,
-.light .bg-rose-600,
-.light .bg-rose-700 { color: #ffffff; }
-
-.light .bg-blue-500 *,
-.light .bg-blue-600 *,
-.light .bg-blue-700 *,
-.light .bg-red-500 *,
-.light .bg-red-600 *,
-.light .bg-red-700 *,
-.light .bg-orange-500 *,
-.light .bg-orange-600 *,
-.light .bg-orange-700 *,
-.light .bg-emerald-500 *,
-.light .bg-emerald-600 *,
-.light .bg-emerald-700 *,
-.light .bg-indigo-500 *,
-.light .bg-indigo-600 *,
-.light .bg-indigo-700 *,
-.light .bg-rose-500 *,
-.light .bg-rose-600 *,
-.light .bg-rose-700 * { color: inherit; }
-
-.light [class*="from-blue-600"][class*="to-"],
-.light [class*="from-red-600"][class*="to-"],
-.light [class*="from-orange-600"][class*="to-"],
-.light [class*="from-indigo-600"][class*="to-"],
-.light [class*="from-rose-600"][class*="to-"] { color: #ffffff; }
-
-.light [class*="from-blue-600"][class*="to-"] *,
-.light [class*="from-red-600"][class*="to-"] *,
-.light [class*="from-orange-600"][class*="to-"] *,
-.light [class*="from-indigo-600"][class*="to-"] *,
-.light [class*="from-rose-600"][class*="to-"] * { color: inherit; }
-
-.light a.bg-amber-500,
-.light button.bg-amber-500,
-.light a.bg-amber-400,
-.light button.bg-amber-400 { color: #0f172a; }
-
-.light .bg-white .text-white,
-.light [class*="bg-slate-950"] .text-white,
-.light [class*="bg-slate-900"] .text-white,
-.light [class*="bg-slate-800"] .text-white { color: #0f172a; }
-
-.light .bg-white .text-slate-50,
-.light .bg-white .text-slate-100,
-.light .bg-white .text-slate-200,
-.light [class*="bg-slate-900"] .text-slate-50,
-.light [class*="bg-slate-900"] .text-slate-100,
-.light [class*="bg-slate-900"] .text-slate-200 { color: #1e293b; }
-
-.light .bg-white .text-slate-300,
-.light [class*="bg-slate-900"] .text-slate-300 { color: #334155; }
-
-/* Explicitly protect pale program cards from inherited white text. */
-.light .bg-amber-50,
-.light .bg-orange-50,
-.light .bg-blue-50,
-.light .bg-emerald-50,
-.light .bg-red-50,
-.light .bg-indigo-50,
-.light .bg-rose-50 { color: #0f172a; }
-
-.light .bg-amber-50 *,
-.light .bg-orange-50 *,
-.light .bg-blue-50 *,
-.light .bg-emerald-50 *,
-.light .bg-red-50 *,
-.light .bg-indigo-50 *,
-.light .bg-rose-50 * { color: inherit; }
-
-.light .text-transparent,
-.light [class*="text-transparent"],
-.light .bg-clip-text {
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-}
-
-.light input,
-.light select,
-.light textarea {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
-}
-
-.light input:focus,
-.light select:focus,
-.light textarea:focus {
-  background-color: #ffffff !important;
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
-}
-
-.light input::placeholder,
-.light textarea::placeholder { color: #94a3b8 !important; }
-.light select option { background-color: #ffffff !important; color: #0f172a !important; }
-
-.light .fixed.inset-0.bg-slate-950\/80,
-.light .fixed.inset-0.bg-slate-950\/70,
-.light [class*="fixed inset-0 bg-slate-950"] {
-  background-color: rgba(15, 23, 42, 0.7) !important;
-}
-
-.light .hover\:bg-slate-900:hover { background-color: #f8fafc; }
-.light .hover\:bg-slate-800:hover { background-color: #e2e8f0; }
-.light .hover\:bg-slate-700:hover { background-color: #cbd5e1; }
-
-.light .bg-slate-900,
-.light .bg-slate-800 {
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-}
-
-.light .shadow-2xl { box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.10), 0 10px 10px -5px rgba(15, 23, 42, 0.05) !important; }
-.light .shadow-xl { box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.09), 0 4px 6px -2px rgba(15, 23, 42, 0.04) !important; }
-.light .shadow-lg { box-shadow: 0 8px 16px -4px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.03) !important; }
-
-.light section.border-t { border-top-color: #e2e8f0; }
-.light article[class*="bg-slate-950"],
-.light div[class*="bg-slate-950"][class*="border"] { background-color: #ffffff; }
+html, body, .site-shell { background: var(--page-bg); color: var(--text-primary); }
+.surface { background: var(--surface-bg); color: var(--text-primary); border-color: var(--surface-border); }
+.muted { color: var(--text-muted); }
+.action-primary { background: var(--action-bg); color: var(--action-text); }
+.action-primary:hover { background: var(--action-hover); }
+section[id], article[id], [id="programas"] { scroll-margin-top: 7rem; }
 
 .tech-grid-pattern {
   background-size: 32px 32px;

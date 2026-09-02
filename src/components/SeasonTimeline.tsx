@@ -1,3 +1,4 @@
+import { seasonMilestones, seasonSource, formatSeasonDate, milestoneStatus } from '../data/season';
 import React, { useState } from 'react';
 import { Calendar, Check, Code, ExternalLink, Flame, Gauge, Lightbulb, Trophy, Users, Wrench } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -14,11 +15,6 @@ const seasonSteps = [
   { num: '07', title: 'EVENTO', subtitle: 'A equipe compartilha e compete', icon: Trophy, accent: 'text-rose-500', soft: 'bg-rose-500/10', description: 'Eventos FIRST combinam desafio técnico, colaboração, comunicação e celebração do aprendizado. Formato e calendário variam por programa e região.', practice: 'Confirmar datas e requisitos no localizador oficial de eventos antes de planejar participação.' }
 ];
 
-const milestones = [
-  { program: 'FLL · BIOGLOW™', date: '4 ago. 2026', note: 'desafio lançado' },
-  { program: 'FTC · BIOBUZZ™', date: '12 set. 2026', note: 'kickoff e game reveal' },
-  { program: 'FRC · BIOCORE™', date: '9 jan. 2027', note: 'kickoff e game reveal' }
-];
 
 export const SeasonTimeline: React.FC = () => {
   const { isDark } = useTheme();
@@ -37,7 +33,7 @@ export const SeasonTimeline: React.FC = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-3 mb-10 max-w-4xl mx-auto">
-          {milestones.map(item => <div key={item.program} className={`rounded-2xl border p-4 text-center ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}><strong className="block text-sm">{item.program}</strong><span className="block text-xl font-black text-blue-600 mt-1">{item.date}</span><span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.note}</span></div>)}
+          {seasonMilestones.map(item => <div key={item.program} className={`rounded-2xl border p-4 text-center ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}><strong className="block text-sm">{item.program}</strong><span className="block text-xl font-black text-blue-600 mt-1">{formatSeasonDate(item.isoDate)}</span><span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{milestoneStatus(item.isoDate)}</span></div>)}
         </div>
 
         <div className="max-w-5xl mx-auto mb-5" aria-label={`Progresso visual da jornada: etapa ${selectedStep + 1} de ${seasonSteps.length}`}>

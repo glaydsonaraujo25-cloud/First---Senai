@@ -1,8 +1,10 @@
 import React from 'react';
 import { ArrowLeft, Building2, ExternalLink, GraduationCap, Handshake, Search, UserRound } from 'lucide-react';
+import { participationContext } from '../data/participation';
 import { useTheme } from '../context/ThemeContext';
 
 interface ParticipationPageProps {
+  search?: string;
   onNavigateHome: () => void;
   onOpenTeamFinder: () => void;
 }
@@ -12,29 +14,32 @@ const SENAI_DF_URL = 'https://www.sistemafibra.org.br/senai/';
 
 const paths = [
   {
-    title: 'Estudante',
+    id: 'ESTUDANTE', title: 'Estudante',
     description: 'Conheça FLL, FTC e FRC, identifique a modalidade adequada e procure equipes ou oportunidades educacionais disponíveis no Distrito Federal.',
     Icon: GraduationCap,
   },
   {
-    title: 'Escola',
+    id: 'ESCOLA', title: 'Escola',
     description: 'Entenda os programas FIRST®, reúna estudantes e educadores interessados e consulte o SENAI-DF e os canais oficiais sobre oportunidades e requisitos.',
     Icon: Building2,
   },
   {
-    title: 'Mentor',
+    id: 'MENTOR', title: 'Mentor',
     description: 'Profissionais e educadores podem contribuir com engenharia, software, comunicação, gestão, estratégia e outras competências conforme as necessidades das equipes.',
     Icon: UserRound,
   },
   {
-    title: 'Empresa e apoiador',
+    id: 'EMPRESA', title: 'Empresa e apoiador',
     description: 'Organizações podem conhecer formas de apoiar educação STEM, desenvolvimento de equipes e iniciativas de robótica por meio dos canais institucionais adequados.',
     Icon: Handshake,
   },
 ];
 
-export const ParticipationPage: React.FC<ParticipationPageProps> = ({ onNavigateHome, onOpenTeamFinder }) => {
+export const ParticipationPage: React.FC<ParticipationPageProps> = ({ onNavigateHome, onOpenTeamFinder, search = '' }) => {
   const { isDark } = useTheme();
+  const context = participationContext(search);
+  const selectedProfile = paths.find(path => path.id === context.profile);
+  const visiblePaths = selectedProfile ? [selectedProfile] : paths;
   const card = isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm';
 
   return (
@@ -54,14 +59,28 @@ export const ParticipationPage: React.FC<ParticipationPageProps> = ({ onNavigate
           </div>
         </section>
 
+        {(context.program || selectedProfile) && <section className="surface rounded-2xl border p-6 mb-6" aria-label="Orientação selecionada">
+          <h2 className="text-xl font-bold mb-3">{context.program ? `Como participar da ${context.program}` : `Orientações: ${selectedProfile?.title}`}</h2>
+          <ol className="list-decimal pl-5 space-y-2 muted">
+            <li>Conheça os requisitos e materiais da modalidade nos canais oficiais.</li>
+            <li>Converse com sua escola ou com o SENAI-DF sobre oportunidades na região.</li>
+            <li>Confirme disponibilidade, calendário e próximos passos com a instituição responsável.</li>
+          </ol>
+          <div className="flex flex-wrap gap-4 mt-5">
+            {context.program && <a className="font-bold text-blue-700 dark:text-blue-300 underline" href={`/program/${context.program.toLowerCase()}`}>Conhecer {context.program}</a>}
+            <a className="font-bold text-blue-700 dark:text-blue-300 underline" href="/participar">Ver todas as orientações</a>
+          </div>
+        </section>}
+
         <section aria-labelledby="participation-paths-title" className="mb-6">
           <h2 id="participation-paths-title" className="sr-only">Formas de participação</h2>
           <div className="grid sm:grid-cols-2 gap-4">
-            {paths.map(({ title, description, Icon }) => (
+            {visiblePaths.map(({ id, title, description, Icon }) => (
               <article key={title} className={`rounded-2xl border p-6 ${card}`}>
                 <div className="w-11 h-11 rounded-xl bg-blue-700 text-white flex items-center justify-center mb-4"><Icon className="w-5 h-5" /></div>
                 <h3 className="text-xl font-black mb-2">{title}</h3>
                 <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{description}</p>
+                {!selectedProfile && <a href={`/participar?perfil=${id}`} className="inline-block mt-4 font-bold text-sm text-blue-700 dark:text-blue-300 underline">Ver orientações para {title.toLowerCase()}</a>}
               </article>
             ))}
           </div>

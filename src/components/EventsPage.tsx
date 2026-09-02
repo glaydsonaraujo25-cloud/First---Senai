@@ -1,3 +1,5 @@
+import { SeasonTimeline } from './SeasonTimeline';
+import { seasonMilestones, seasonSource, formatSeasonDate, milestoneStatus } from '../data/season';
 import React from 'react';
 import { ArrowLeft, CalendarDays, ExternalLink, Info, MapPin, Search, ShieldCheck } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -12,11 +14,6 @@ const FIRST_EVENTS = 'https://www.firstinspires.org/programs/events';
 const FIRST_SEARCH = 'https://www.firstinspires.org/team-event-search';
 const SENAI_DF = 'https://www.sistemafibra.org.br/senai/';
 
-const milestones = [
-  { program: 'FLL', name: 'BIOGLOW™', date: '4 ago 2026', detail: 'Marco global da temporada CANOPY™ para a FIRST LEGO League.', href: 'https://www.firstinspires.org/programs/fll/', accent: 'amber' },
-  { program: 'FTC', name: 'BIOBUZZ™', date: '12 set 2026', detail: 'Revelação do desafio 2026–2027 da FIRST Tech Challenge.', href: 'https://www.firstinspires.org/programs/ftc/', accent: 'orange' },
-  { program: 'FRC', name: 'BIOCORE™', date: '9 jan 2027', detail: 'Kickoff do jogo 2027 da FIRST Robotics Competition.', href: 'https://www.firstinspires.org/programs/frc/', accent: 'blue' },
-] as const;
 
 const accents = {
   amber: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200',
@@ -50,13 +47,13 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onNavigateHome, onOpenPa
         <section aria-labelledby="event-milestones-title" className="mb-6">
           <h2 id="event-milestones-title" className="text-2xl sm:text-3xl font-black mb-5">Marcos da temporada 2026–2027</h2>
           <div className="grid md:grid-cols-3 gap-4">
-            {milestones.map(item => (
+            {seasonMilestones.map(item => (
               <article key={item.program} className={`rounded-2xl border p-6 ${card}`}>
                 <div className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1 text-xs font-black mb-4 ${accents[item.accent]}`}><CalendarDays className="w-4 h-4" /> {item.program}</div>
                 <h3 className="text-xl font-black mb-2">{item.name}</h3>
-                <p className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-3">{item.date}</p>
-                <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{item.detail}</p>
-                <a href={item.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-700 hover:text-blue-600">Ver fonte oficial <ExternalLink className="w-4 h-4" /></a>
+                <p className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-3">{formatSeasonDate(item.isoDate)}</p><p className="text-xs muted mb-3">{milestoneStatus(item.isoDate)}</p>
+                <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{item.description}</p>
+                <a href={seasonSource} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-700 hover:text-blue-600">Ver fonte oficial <ExternalLink className="w-4 h-4" /></a>
               </article>
             ))}
           </div>
@@ -75,13 +72,14 @@ export const EventsPage: React.FC<EventsPageProps> = ({ onNavigateHome, onOpenPa
         </section>
 
         <section className={`rounded-2xl border p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${card}`}>
-          <div><h2 className="text-lg font-black">Quer participar de uma iniciativa no DF?</h2><p className={`text-sm mt-1 ${muted}`}>Registre seu interesse no portal e confirme disponibilidade pelos canais responsáveis.</p></div>
+          <div><h2 className="text-lg font-black">Quer participar de uma iniciativa no DF?</h2><p className={`text-sm mt-1 ${muted}`}>Veja como participar e confirme disponibilidade pelos canais responsáveis.</p></div>
           <div className="flex flex-wrap gap-3">
             <a href={FIRST_SEARCH} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 rounded-xl border border-blue-300 text-blue-700 font-bold text-sm hover:bg-blue-50 dark:border-blue-500/40 dark:text-blue-300 dark:hover:bg-blue-500/10">Busca FIRST® <ExternalLink className="w-4 h-4" /></a>
-            <button type="button" onClick={onOpenParticipation} className="min-h-11 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-orange-500 text-white font-bold text-sm">Registrar interesse</button>
+            <button type="button" onClick={onOpenParticipation} className="min-h-11 px-5 py-2.5 rounded-xl action-primary text-white font-bold text-sm">Como participar</button>
           </div>
         </section>
       </div>
+      <SeasonTimeline />
     </main>
   );
 };

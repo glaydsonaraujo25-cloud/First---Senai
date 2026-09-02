@@ -1,7 +1,15 @@
 <!doctype html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="light scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      try {
+        const theme = localStorage.getItem('first_senai_theme_v2') === 'dark' ? 'dark' : 'light';
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(theme);
+        document.documentElement.dataset.theme = theme;
+      } catch { document.documentElement.classList.add('light'); }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="color-scheme" content="light dark" />

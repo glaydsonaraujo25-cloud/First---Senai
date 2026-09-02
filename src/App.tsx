@@ -5,6 +5,7 @@
 
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { participationUrl } from './data/participation';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { Footer } from './components/Footer';
@@ -71,10 +72,12 @@ export function AppContent() {
   const [isTeamFinderOpen, setIsTeamFinderOpen] = useState(false);
   const [activeProgramPage, setActiveProgramPage] = useState<ProgramRoute>(() => getProgramFromLocation());
   const [activeStaticPage, setActiveStaticPage] = useState<StaticRoute>(() => getStaticPageFromLocation());
+  const [locationKey, setLocationKey] = useState(() => window.location.href);
   const [notFound, setNotFound] = useState(() => isUnknownPath());
 
   useEffect(() => {
     const syncRoute = () => {
+      setLocationKey(window.location.href);
       setActiveProgramPage(getProgramFromLocation());
       setActiveStaticPage(getStaticPageFromLocation());
       setNotFound(isUnknownPath());
@@ -188,18 +191,42 @@ export function AppContent() {
 
   const navigateTo = (path: string) => {
     window.history.pushState({}, '', path);
+    setLocationKey(window.location.href);
     setActiveProgramPage(getProgramFromLocation());
     setActiveStaticPage(getStaticPageFromLocation());
     setNotFound(isUnknownPath());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!window.location.hash) window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const handleOpenParticipation = () => navigateTo('/participar');
+  useEffect(() => {
+    const redirects: Record<string, string> = { '#temporada': '/eventos#temporada', '#jornada': '/recursos#jornada', '#parceria': '/recursos#parceria' };
+    if (window.location.pathname === '/' && redirects[window.location.hash]) {
+      window.history.replaceState({}, '', redirects[window.location.hash]);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      return;
+    }
+    let id: string;
+    try { id = decodeURIComponent(window.location.hash.slice(1)); } catch { return; }
+    if (!id) return;
+    const scrollToTarget = () => {
+      const target = document.getElementById(id);
+      if (!target) return false;
+      target.scrollIntoView({ block: 'start', behavior: 'instant' });
+      return true;
+    };
+    if (scrollToTarget()) return;
+    const observer = new MutationObserver(() => { if (scrollToTarget()) observer.disconnect(); });
+    observer.observe(document.getElementById('root')!, { childList: true, subtree: true });
+    const timeout = window.setTimeout(() => observer.disconnect(), 10000);
+    return () => { observer.disconnect(); window.clearTimeout(timeout); };
+  }, [locationKey]);
+
+  const handleOpenParticipation = (selection?: string) => navigateTo(participationUrl(selection));
 
   const onSecondaryPage = Boolean(activeProgramPage) || Boolean(activeStaticPage) || notFound;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
+    <div className="site-shell min-h-screen selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
       <Header
         isProgramPage={onSecondaryPage}
         onNavigateHome={() => navigateTo('/')}
@@ -216,7 +243,7 @@ export function AppContent() {
         </Suspense>
       ) : activeStaticPage === 'participar' ? (
         <Suspense fallback={<LoadingBlock />}>
-          <ParticipationPage onNavigateHome={() => navigateTo('/')} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
+          <ParticipationPage search={new URL(locationKey).search} onNavigateHome={() => navigateTo('/')} onOpenTeamFinder={() => setIsTeamFinderOpen(true)} />
         </Suspense>
       ) : activeStaticPage === 'unidades' ? (
         <Suspense fallback={<LoadingBlock />}>

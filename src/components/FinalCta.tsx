@@ -93,9 +93,9 @@ export const FinalCta: React.FC<FinalCtaProps> = ({
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-4 text-left pt-8 border-t ${
           isDark ? 'border-slate-800/80' : 'border-slate-200'
         }`}>
-          <div 
+          <button type="button"
             onClick={() => onOpenParticipation('ESTUDANTE')}
-            className={`p-4 rounded-xl border transition-all cursor-pointer group ${
+            className={`p-4 rounded-xl border text-left transition-all cursor-pointer group ${
               isDark ? 'bg-slate-900/60 border-slate-800 hover:border-blue-500' : 'bg-white border-slate-200 hover:border-blue-500 shadow-sm'
             }`}
           >
@@ -105,11 +105,11 @@ export const FinalCta: React.FC<FinalCtaProps> = ({
             <p className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Aprenda a programar robôs e dispute arenas nacionais.
             </p>
-          </div>
+          </button>
 
-          <div 
+          <button type="button"
             onClick={() => onOpenParticipation('ESCOLA')}
-            className={`p-4 rounded-xl border transition-all cursor-pointer group ${
+            className={`p-4 rounded-xl border text-left transition-all cursor-pointer group ${
               isDark ? 'bg-slate-900/60 border-slate-800 hover:border-red-500' : 'bg-white border-slate-200 hover:border-red-500 shadow-sm'
             }`}
           >
@@ -119,11 +119,11 @@ export const FinalCta: React.FC<FinalCtaProps> = ({
             <p className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Monte equipes oficiais com apoio pedagógico e técnico.
             </p>
-          </div>
+          </button>
 
-          <div 
+          <button type="button"
             onClick={() => onOpenParticipation('MENTOR')}
-            className={`p-4 rounded-xl border transition-all cursor-pointer group ${
+            className={`p-4 rounded-xl border text-left transition-all cursor-pointer group ${
               isDark ? 'bg-slate-900/60 border-slate-800 hover:border-amber-500' : 'bg-white border-slate-200 hover:border-amber-500 shadow-sm'
             }`}
           >
@@ -133,7 +133,7 @@ export const FinalCta: React.FC<FinalCtaProps> = ({
             <p className={`text-xs font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
               Compartilhe conhecimento e inspire a próxima geração.
             </p>
-          </div>
+          </button>
         </div>
 
       </div>

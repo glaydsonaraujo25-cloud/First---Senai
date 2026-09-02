@@ -49,8 +49,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenParticipation }) => {
               <li><a href="/eventos" className={`font-semibold transition-colors ${dfLink}`}>Eventos e marcos</a></li>
               <li><a href="/equipes" className={`font-semibold transition-colors ${dfLink}`}>Encontrar equipes</a></li>
               <li><a href="/recursos" className={`font-semibold transition-colors ${dfLink}`}>Recursos oficiais</a></li>
-              <li><a href="/#programas" className={`font-semibold transition-colors ${dfLink}`}>Comparar programas</a></li>
-              <li><a href="/#temporada" className={`font-semibold transition-colors ${dfLink}`}>Temporada 2026–2027</a></li>
+              <li><a href="/#comparar" className={`font-semibold transition-colors ${dfLink}`}>Comparar programas</a></li>
+              <li><a href="/eventos#temporada" className={`font-semibold transition-colors ${dfLink}`}>Temporada 2026–2027</a></li>
               <li><a href="/#faq" className={`font-semibold transition-colors ${dfLink}`}>Perguntas frequentes</a></li>
               <li><a href="/participar" className={`font-semibold transition-colors ${dfLink}`}>Como participar</a></li>
               <li><button onClick={() => onOpenParticipation()} className={`font-semibold transition-colors text-left ${dfLink}`}>Orientações para participar</button></li>

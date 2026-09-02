@@ -79,8 +79,8 @@ export const UnitsPage: React.FC<UnitsPageProps> = ({ onNavigateHome, onOpenPart
           </button>
         </section>
 
-        <div className="mt-6 rounded-2xl bg-gradient-to-r from-blue-700 to-orange-500 p-5 sm:p-6 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div><p className="text-xs font-black uppercase tracking-widest text-white/80">Robótica no DF</p><strong className="text-lg">Quer registrar seu interesse?</strong></div>
+        <div className="mt-6 rounded-2xl action-primary p-5 sm:p-6 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div><p className="text-xs font-black uppercase tracking-widest text-white/80">Robótica no DF</p><strong className="text-lg">Quer saber como participar?</strong></div>
           <button type="button" onClick={onOpenParticipation} className="min-h-11 px-4 py-2.5 rounded-lg bg-white text-blue-800 font-bold">Continuar</button>
         </div>
       </div>

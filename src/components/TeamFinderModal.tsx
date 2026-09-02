@@ -19,7 +19,7 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
     if (!isOpen) return;
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     const dialog = dialogRef.current;
-    window.requestAnimationFrame(() => dialog?.querySelector<HTMLElement>('[data-autofocus]')?.focus());
+    const frame = window.requestAnimationFrame(() => dialog?.querySelector<HTMLElement>('[data-autofocus]')?.focus());
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { onClose(); return; }
@@ -34,6 +34,7 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
 
     document.addEventListener('keydown', handleKeyDown);
     return () => {
+      window.cancelAnimationFrame(frame);
       document.removeEventListener('keydown', handleKeyDown);
       previousFocusRef.current?.focus?.();
     };
@@ -43,14 +44,14 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       aria-labelledby="team-finder-title"
       onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}
     >
-      <div ref={dialogRef} tabIndex={-1} className={`w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-        <div className={`flex items-center justify-between gap-4 p-5 border-b ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+      <div ref={dialogRef} tabIndex={-1} className={`w-full max-w-2xl rounded-3xl border shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+        <div className={`sticky top-0 z-10 flex items-center justify-between gap-4 p-5 border-b ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-white'}`}>
           <div className="flex items-center gap-2 min-w-0">
             <Users className="w-5 h-5 text-blue-500 shrink-0" />
             <h3 id="team-finder-title" className="text-base sm:text-lg font-bold truncate">Encontrar equipes e eventos FIRST®</h3>
@@ -91,14 +92,14 @@ export const TeamFinderModal: React.FC<TeamFinderModalProps> = ({ isOpen, onClos
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button onClick={() => { onClose(); onOpenParticipation('ESTUDANTE'); }} className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}>
               <MapPin className="w-5 h-5 text-blue-600 mb-3" />
-              <strong className="block text-sm mb-1">Registrar meu interesse</strong>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Use o formulário demonstrativo para indicar programa e região.</span>
+              <strong className="block text-sm mb-1">Orientações para estudantes</strong>
+              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Veja orientações para estudantes e consulte os canais oficiais.</span>
             </button>
 
             <button onClick={() => { onClose(); onOpenParticipation('ESCOLA'); }} className={`p-4 rounded-2xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isDark ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}>
               <School className="w-5 h-5 text-orange-500 mb-3" />
               <strong className="block text-sm mb-1">Quero iniciar uma equipe</strong>
-              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Veja o fluxo de interesse para escolas e instituições.</span>
+              <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Veja os próximos passos para escolas e instituições.</span>
             </button>
           </div>
 

@@ -95,8 +95,8 @@ export const TeamsPage: React.FC<TeamsPageProps> = ({ onNavigateHome, onOpenPart
           <div className={`rounded-2xl border p-6 ${card}`}>
             <Info className="w-6 h-6 text-orange-500 mb-4" />
             <h2 className="text-lg font-black mb-2">Não encontrou uma equipe?</h2>
-            <p className={`text-sm leading-relaxed mb-5 ${muted}`}>Registre seu interesse no portal para organizar seu perfil. O formulário é demonstrativo e não substitui inscrição ou contato oficial.</p>
-            <button type="button" onClick={() => onOpenParticipation('ESTUDANTE')} className="inline-flex min-h-11 items-center justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-orange-500 text-white text-sm font-bold">Registrar interesse</button>
+            <p className={`text-sm leading-relaxed mb-5 ${muted}`}>Conheça os passos para participar como estudante e encontrar orientações nos canais oficiais.</p>
+            <button type="button" onClick={() => onOpenParticipation('ESTUDANTE')} className="inline-flex min-h-11 items-center justify-center px-4 py-2.5 rounded-xl action-primary text-white text-sm font-bold">Como participar</button>
           </div>
 
           <div className={`rounded-2xl border p-6 ${card}`}>
@@ -104,7 +104,7 @@ export const TeamsPage: React.FC<TeamsPageProps> = ({ onNavigateHome, onOpenPart
             <h2 className="text-lg font-black mb-2">Quer iniciar uma equipe?</h2>
             <p className={`text-sm leading-relaxed mb-5 ${muted}`}>Escolas e instituições podem consultar requisitos oficiais da FIRST® e verificar oportunidades locais diretamente com o SENAI-DF.</p>
             <div className="flex flex-wrap gap-3">
-              <button type="button" onClick={() => onOpenParticipation('ESCOLA')} className="inline-flex min-h-11 items-center justify-center px-4 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-bold">Interesse da escola</button>
+              <button type="button" onClick={() => onOpenParticipation('ESCOLA')} className="inline-flex min-h-11 items-center justify-center px-4 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-bold">Orientações para escolas</button>
               <a href={SENAI_DF_URL} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-orange-300 text-orange-700 dark:text-orange-300 text-sm font-bold">SENAI-DF <ExternalLink className="w-4 h-4" /></a>
             </div>
           </div>

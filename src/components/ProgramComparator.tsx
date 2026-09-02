@@ -27,7 +27,7 @@ export const ProgramComparator: React.FC<ProgramComparatorProps> = ({ onSelectPr
   const { isDark } = useTheme();
 
   return (
-    <section className={`py-16 sm:py-24 border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-200'}`} aria-labelledby="program-comparison-title">
+    <section id="comparar" className={`py-16 sm:py-24 border-t transition-colors ${isDark ? 'bg-slate-900 text-white border-slate-800' : 'bg-slate-50 text-slate-900 border-slate-200'}`} aria-labelledby="program-comparison-title">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold mb-4 ${isDark ? 'bg-slate-800 border-slate-700 text-sky-300' : 'bg-white border-slate-200 text-blue-700 shadow-sm'}`}><Scale className="w-3.5 h-3.5" /> COMPARAÇÃO COMPLETA</div>
