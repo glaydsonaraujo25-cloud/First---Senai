@@ -32,7 +32,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ onOpenParticipatio
           <p className={isDark ? 'text-slate-300' : 'text-slate-600'}>Use os marcos globais da temporada como referência e confirme torneios, seletivas e atividades no Distrito Federal pelos canais oficiais.</p>
         </div>
 
-        <div id="temporada" className="grid md:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
           {seasonMilestones.map(item => {
             const style = accentStyles[item.accent];
             return (

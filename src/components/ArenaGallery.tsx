@@ -65,8 +65,8 @@ export const ArenaGallery: React.FC = () => {
       </div>
 
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Visualização: ${selectedPhoto.title}`}>
-          <div className={`relative max-w-5xl w-full rounded-3xl overflow-hidden border shadow-2xl ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`Visualização: ${selectedPhoto.title}`}>
+          <div className={`relative max-w-5xl w-full rounded-3xl max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain border shadow-2xl ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
             <div className={`flex items-center justify-between gap-4 p-4 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <div><span className="text-xs font-black text-blue-600">{selectedPhoto.program}</span><h4 className="font-black">{selectedPhoto.title}</h4></div>
               <button onClick={() => setSelectedPhoto(null)} className={`p-2 rounded-xl ${isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-100 text-slate-700'}`} aria-label="Fechar imagem"><X className="w-5 h-5" /></button>

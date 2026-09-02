@@ -4,6 +4,11 @@ import { Hero } from './Hero';
 import { ProgramComparator } from './ProgramComparator';
 import { faqData } from '../data/faqData';
 
+const Journey = lazy(() => import('./Journey').then(m => ({ default: m.Journey })));
+const SeasonTimeline = lazy(() => import('./SeasonTimeline').then(m => ({ default: m.SeasonTimeline })));
+const ProgramFitGuide = lazy(() => import('./ProgramFitGuide').then(m => ({ default: m.ProgramFitGuide })));
+const ArenaGallery = lazy(() => import('./ArenaGallery').then(m => ({ default: m.ArenaGallery })));
+
 const DfUnitsSection = lazy(() => import('./DfUnitsSection').then(m => ({ default: m.DfUnitsSection })));
 const EventsSection = lazy(() => import('./EventsSection').then(m => ({ default: m.EventsSection })));
 const FaqSection = lazy(() => import('./FaqSection').then(m => ({ default: m.FaqSection })));
@@ -33,7 +38,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateProgram, onOpenPar
   return <main id="conteudo-principal">
     <Hero onOpenParticipation={() => onOpenParticipation()} />
     <ProgramOverview onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+    <Suspense fallback={<LoadingBlock />}><Journey /></Suspense>
+    <Suspense fallback={<LoadingBlock />}><ProgramFitGuide onSelectProgram={onNavigateProgram} /></Suspense>
     <ProgramComparator onSelectProgram={onNavigateProgram} onOpenParticipation={onOpenParticipation} />
+    <Suspense fallback={<LoadingBlock />}><SeasonTimeline /></Suspense>
+    <Suspense fallback={<LoadingBlock />}><ArenaGallery /></Suspense>
     <Suspense fallback={<LoadingBlock />}><DfUnitsSection onOpenParticipation={onOpenParticipation} /></Suspense>
     <Suspense fallback={<LoadingBlock />}><EventsSection onOpenParticipation={onOpenParticipation} /></Suspense>
     <Suspense fallback={<LoadingBlock />}><FaqSection /></Suspense>

@@ -199,7 +199,7 @@ export function AppContent() {
   };
 
   useEffect(() => {
-    const redirects: Record<string, string> = { '#temporada': '/eventos#temporada', '#jornada': '/recursos#jornada', '#parceria': '/recursos#parceria' };
+    const redirects: Record<string, string> = { '#parceria': '/recursos#parceria' };
     if (window.location.pathname === '/' && redirects[window.location.hash]) {
       window.history.replaceState({}, '', redirects[window.location.hash]);
       window.dispatchEvent(new PopStateEvent('popstate'));

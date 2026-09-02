@@ -107,7 +107,7 @@ export const Journey: React.FC = () => {
               <Layers3 className={`w-7 h-7 mb-4 ${currentStyle.text}`} />
               <h4 className="font-black mb-2">Como usar esta jornada</h4>
               <p className={`text-sm leading-relaxed mb-5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Ela serve como orientação visual. A disponibilidade de modalidades, equipes e atividades no Distrito Federal deve ser confirmada com os canais oficiais.</p>
-              <a href={`#${current.id}`} className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-500">Ver seção da modalidade <ArrowRight className="w-4 h-4" /></a>
+              <a href={`/#${current.id}`} className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-500">Ver seção da modalidade <ArrowRight className="w-4 h-4" /></a>
             </div>
           </div>
         </div>

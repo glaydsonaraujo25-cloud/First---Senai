@@ -27,8 +27,9 @@ export function ProgramOverview({ onSelectProgram, onOpenParticipation }: {
         </article>)}
       </div>
       <nav aria-label="Continue explorando" className="flex flex-wrap gap-5 mt-6 text-sm font-semibold text-blue-700 dark:text-blue-300">
-        <a href="/recursos#jornada" className="underline">Conhecer a jornada de aprendizagem</a>
+        <a href="/#jornada" className="underline">Conhecer a jornada de aprendizagem</a>
         <a href="/recursos#parceria" className="underline">Robótica no Distrito Federal</a>
+        <a href="/#galeria" className="underline">Explorar a galeria</a>
         <a href="/equipes" className="underline">Encontrar equipes</a>
       </nav>
     </div>

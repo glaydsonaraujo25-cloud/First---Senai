@@ -13,6 +13,8 @@ interface HeaderProps {
 
 const beforeProgramLinks = [
   { label: 'Início', href: '#inicio' },
+  { label: 'Jornada', href: '#jornada' },
+  { label: 'Temporada', href: '#temporada' },
 ];
 
 const afterProgramLinks = [
@@ -21,8 +23,8 @@ const afterProgramLinks = [
   { label: 'FAQ', href: '#faq' },
 ];
 
-const observedSections = ['#inicio', '#programas', '#unidades-df', '#eventos', '#faq'];
-const programSections = new Set(['#programas', '#fll', '#ftc', '#frc']);
+const observedSections = ['#inicio', '#programas', '#jornada', '#guia-modalidades', '#comparar', '#temporada', '#galeria', '#unidades-df', '#eventos', '#faq'];
+const programSections = new Set(['#programas', '#guia-modalidades', '#comparar', '#fll', '#ftc', '#frc']);
 
 export const Header: React.FC<HeaderProps> = ({ isProgramPage = false, onNavigateHome, onOpenProgram, onOpenParticipation, onOpenTeamFinder }) => {
   const [isScrolled, setIsScrolled] = useState(false);
